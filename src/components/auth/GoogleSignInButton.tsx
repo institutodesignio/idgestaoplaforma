@@ -1,7 +1,7 @@
 type GoogleSignInButtonProps = {
   onClick: () => void;
-  loading?: boolean;
-  disabled?: boolean;
+  loading?: boolean | undefined;
+  disabled?: boolean | undefined;
 };
 
 export function GoogleSignInButton({ onClick, loading, disabled }: GoogleSignInButtonProps) {
