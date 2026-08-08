@@ -29,13 +29,13 @@ function AppPage() {
   const [signingOut, setSigningOut] = useState(false);
 
   useEffect(() => {
-    if (!loading && !user) void navigate({ to: "/login", replace: true });
+    if (!loading && !user) void navigate({ to: "/login", search: {}, replace: true });
   }, [loading, user, navigate]);
 
   async function handleSignOut() {
     setSigningOut(true);
     await signOut();
-    void navigate({ to: "/login", replace: true });
+    void navigate({ to: "/login", search: {}, replace: true });
   }
 
   if (loading || !user) {
