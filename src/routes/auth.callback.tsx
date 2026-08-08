@@ -70,7 +70,7 @@ function AuthCallbackPage() {
       aria-live="polite"
       aria-busy="true"
     >
-      <BrandMark className="h-14 w-auto" />
+      <BrandMark className="h-24 w-auto" />
       <span
         aria-hidden="true"
         className="size-7 animate-spin rounded-full border-2 border-muted border-t-primary"

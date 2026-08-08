@@ -10,7 +10,7 @@ export function InstitutionalPanel() {
       <AbstractCareGraphic />
 
       <div className="relative z-10 flex items-center gap-3">
-        <BrandMark className="h-11 w-auto" onDark />
+        <BrandMark className="h-28 w-auto" onDark />
       </div>
 
       <div className="relative z-10 max-w-md">

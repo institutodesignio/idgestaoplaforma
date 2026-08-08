@@ -11,7 +11,7 @@ type LoginCardProps = {
 export function LoginCard({ onGoogleSignIn, loading, disabled, error }: LoginCardProps) {
   return (
     <div className="w-full max-w-md">
-      <BrandMark className="mx-auto mb-8 h-16 w-auto lg:hidden" />
+      <BrandMark className="mx-auto mb-8 h-28 w-auto lg:hidden" />
 
       <div className="surface-card rounded-2xl p-7 sm:p-9">
         <h1 className="text-2xl font-semibold tracking-tight text-foreground sm:text-[1.7rem]">
