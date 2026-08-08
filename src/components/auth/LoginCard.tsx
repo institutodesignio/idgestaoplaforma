@@ -3,9 +3,9 @@ import { BrandMark } from "../branding/BrandMark";
 
 type LoginCardProps = {
   onGoogleSignIn: () => void;
-  loading?: boolean;
-  disabled?: boolean;
-  error?: string | null;
+  loading?: boolean | undefined;
+  disabled?: boolean | undefined;
+  error?: string | null | undefined;
 };
 
 export function LoginCard({ onGoogleSignIn, loading, disabled, error }: LoginCardProps) {
