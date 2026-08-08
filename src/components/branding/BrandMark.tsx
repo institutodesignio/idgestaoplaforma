@@ -1,4 +1,5 @@
-import logo from "@/assets/id-gestao-logo.png.asset.json";
+import logoDark from "@/assets/id-gestao-logo-dark.png.asset.json";
+import logoLight from "@/assets/id-gestao-logo-light.png.asset.json";
 
 type BrandMarkProps = {
   className?: string;
@@ -9,10 +10,9 @@ type BrandMarkProps = {
 export function BrandMark({ className, onDark = false }: BrandMarkProps) {
   return (
     <img
-      src={logo.url}
+      src={onDark ? logoLight.url : logoDark.url}
       alt="ID Gestão — Instituto Designio"
       className={className}
-      style={onDark ? { filter: "brightness(0) invert(1)" } : undefined}
     />
   );
 }
