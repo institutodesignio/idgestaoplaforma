@@ -42,7 +42,13 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-surface: var(--surface);
   --color-border: var(--border);
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-ring-offset-background: var(--background);
@@ -63,25 +69,39 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
+  /* Institucional ID Gestão — navy profundo + verde-sálvia acolhedor */
+  --background: oklch(0.985 0.006 95);
+  --foreground: oklch(0.255 0.052 262);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.129 0.042 264.695);
+  --card-foreground: oklch(0.255 0.052 262);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.208 0.042 265.755);
-  --primary-foreground: oklch(0.984 0.003 247.858);
-  --secondary: oklch(0.968 0.007 247.896);
-  --secondary-foreground: oklch(0.208 0.042 265.755);
-  --muted: oklch(0.968 0.007 247.896);
-  --muted-foreground: oklch(0.554 0.046 257.417);
-  --accent: oklch(0.968 0.007 247.896);
-  --accent-foreground: oklch(0.208 0.042 265.755);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.929 0.013 255.508);
-  --input: oklch(0.929 0.013 255.508);
-  --ring: oklch(0.704 0.04 256.788);
+  --popover-foreground: oklch(0.255 0.052 262);
+  --primary: oklch(0.288 0.062 261);
+  --primary-foreground: oklch(0.985 0.006 95);
+  --secondary: oklch(0.955 0.012 240);
+  --secondary-foreground: oklch(0.288 0.062 261);
+  --muted: oklch(0.958 0.008 250);
+  --muted-foreground: oklch(0.545 0.028 258);
+  --accent: oklch(0.72 0.055 168);
+  --accent-foreground: oklch(0.24 0.05 261);
+  --destructive: oklch(0.55 0.19 25);
+  --destructive-foreground: oklch(0.985 0.006 95);
+  --success: oklch(0.6 0.11 158);
+  --success-foreground: oklch(0.985 0.006 95);
+  --warning: oklch(0.78 0.13 75);
+  --warning-foreground: oklch(0.25 0.05 261);
+  --surface: oklch(0.972 0.008 250);
+  --border: oklch(0.905 0.012 255);
+  --input: oklch(0.905 0.012 255);
+  --ring: oklch(0.55 0.075 250);
+  --gradient-institutional: linear-gradient(
+    155deg,
+    oklch(0.24 0.055 262) 0%,
+    oklch(0.31 0.07 258) 45%,
+    oklch(0.38 0.065 218) 100%
+  );
+  --shadow-soft: 0 1px 2px oklch(0.255 0.052 262 / 0.05), 0 12px 32px -12px oklch(0.255 0.052 262 / 0.18);
+  --shadow-card: 0 1px 3px oklch(0.255 0.052 262 / 0.06), 0 24px 60px -24px oklch(0.255 0.052 262 / 0.22);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -140,5 +160,22 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
   }
+
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+}
+
+@utility surface-card {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+}
+
+@utility bg-institutional {
+  background-image: var(--gradient-institutional);
 }
