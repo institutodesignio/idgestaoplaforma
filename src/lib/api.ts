@@ -159,7 +159,7 @@ export async function apiFetch<T>(
 }
 
 export function apiGet<T>(path: string, query?: Record<string, QueryValue>) {
-  return apiFetch<T>(path, { method: "GET", query });
+  return apiFetch<T>(path, query ? { method: "GET", query } : { method: "GET" });
 }
 
 export function apiPost<T>(path: string, body: unknown) {

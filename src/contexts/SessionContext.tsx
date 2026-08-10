@@ -39,10 +39,12 @@ export type SessionContextValue = {
 
 const SessionCtx = createContext<SessionContextValue | null>(null);
 
-const FAILURE_TO_STATUS: Record<ApiFailureKind, SessionStatus> = {
+const FAILURE_TO_STATUS: Partial<Record<ApiFailureKind, SessionStatus>> = {
   unauthenticated: "unauthenticated",
   expired: "expired",
   no_context: "no_context",
+  forbidden: "no_context",
+  not_found: "no_context",
   temporary: "error",
 };
 
