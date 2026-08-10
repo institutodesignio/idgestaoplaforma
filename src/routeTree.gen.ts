@@ -13,6 +13,13 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppIndexRouteImport } from './routes/app/index'
+import { Route as AppAdministracaoRouteImport } from './routes/app/administracao'
+import { Route as AppAgendaRouteImport } from './routes/app/agenda'
+import { Route as AppDocumentosRouteImport } from './routes/app/documentos'
+import { Route as AppFinanceiroRouteImport } from './routes/app/financeiro'
+import { Route as AppPessoasRouteImport } from './routes/app/pessoas'
+import { Route as AppProjetosRouteImport } from './routes/app/projetos'
+import { Route as AppUnidadesRouteImport } from './routes/app/unidades'
 import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 
 const IndexRoute = IndexRouteImport.update({
@@ -35,6 +42,41 @@ const AppIndexRoute = AppIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppAdministracaoRoute = AppAdministracaoRouteImport.update({
+  id: '/administracao',
+  path: '/administracao',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAgendaRoute = AppAgendaRouteImport.update({
+  id: '/agenda',
+  path: '/agenda',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppDocumentosRoute = AppDocumentosRouteImport.update({
+  id: '/documentos',
+  path: '/documentos',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppFinanceiroRoute = AppFinanceiroRouteImport.update({
+  id: '/financeiro',
+  path: '/financeiro',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPessoasRoute = AppPessoasRouteImport.update({
+  id: '/pessoas',
+  path: '/pessoas',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppProjetosRoute = AppProjetosRouteImport.update({
+  id: '/projetos',
+  path: '/projetos',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppUnidadesRoute = AppUnidadesRouteImport.update({
+  id: '/unidades',
+  path: '/unidades',
+  getParentRoute: () => AppRoute,
+} as any)
 const AuthCallbackRoute = AuthCallbackRouteImport.update({
   id: '/auth/callback',
   path: '/auth/callback',
@@ -45,12 +87,26 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
+  '/app/administracao': typeof AppAdministracaoRoute
+  '/app/agenda': typeof AppAgendaRoute
+  '/app/documentos': typeof AppDocumentosRoute
+  '/app/financeiro': typeof AppFinanceiroRoute
+  '/app/pessoas': typeof AppPessoasRoute
+  '/app/projetos': typeof AppProjetosRoute
+  '/app/unidades': typeof AppUnidadesRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/app/': typeof AppIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/app/administracao': typeof AppAdministracaoRoute
+  '/app/agenda': typeof AppAgendaRoute
+  '/app/documentos': typeof AppDocumentosRoute
+  '/app/financeiro': typeof AppFinanceiroRoute
+  '/app/pessoas': typeof AppPessoasRoute
+  '/app/projetos': typeof AppProjetosRoute
+  '/app/unidades': typeof AppUnidadesRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/app': typeof AppIndexRoute
 }
@@ -59,15 +115,58 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
+  '/app/administracao': typeof AppAdministracaoRoute
+  '/app/agenda': typeof AppAgendaRoute
+  '/app/documentos': typeof AppDocumentosRoute
+  '/app/financeiro': typeof AppFinanceiroRoute
+  '/app/pessoas': typeof AppPessoasRoute
+  '/app/projetos': typeof AppProjetosRoute
+  '/app/unidades': typeof AppUnidadesRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/app/': typeof AppIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/app' | '/login' | '/auth/callback' | '/app/'
+  fullPaths:
+    | '/'
+    | '/app'
+    | '/login'
+    | '/app/administracao'
+    | '/app/agenda'
+    | '/app/documentos'
+    | '/app/financeiro'
+    | '/app/pessoas'
+    | '/app/projetos'
+    | '/app/unidades'
+    | '/auth/callback'
+    | '/app/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/auth/callback' | '/app'
-  id: '__root__' | '/' | '/app' | '/login' | '/auth/callback' | '/app/'
+  to:
+    | '/'
+    | '/login'
+    | '/app/administracao'
+    | '/app/agenda'
+    | '/app/documentos'
+    | '/app/financeiro'
+    | '/app/pessoas'
+    | '/app/projetos'
+    | '/app/unidades'
+    | '/auth/callback'
+    | '/app'
+  id:
+    | '__root__'
+    | '/'
+    | '/app'
+    | '/login'
+    | '/app/administracao'
+    | '/app/agenda'
+    | '/app/documentos'
+    | '/app/financeiro'
+    | '/app/pessoas'
+    | '/app/projetos'
+    | '/app/unidades'
+    | '/auth/callback'
+    | '/app/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -107,6 +206,55 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/administracao': {
+      id: '/app/administracao'
+      path: '/administracao'
+      fullPath: '/app/administracao'
+      preLoaderRoute: typeof AppAdministracaoRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/agenda': {
+      id: '/app/agenda'
+      path: '/agenda'
+      fullPath: '/app/agenda'
+      preLoaderRoute: typeof AppAgendaRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/documentos': {
+      id: '/app/documentos'
+      path: '/documentos'
+      fullPath: '/app/documentos'
+      preLoaderRoute: typeof AppDocumentosRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/financeiro': {
+      id: '/app/financeiro'
+      path: '/financeiro'
+      fullPath: '/app/financeiro'
+      preLoaderRoute: typeof AppFinanceiroRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/pessoas': {
+      id: '/app/pessoas'
+      path: '/pessoas'
+      fullPath: '/app/pessoas'
+      preLoaderRoute: typeof AppPessoasRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/projetos': {
+      id: '/app/projetos'
+      path: '/projetos'
+      fullPath: '/app/projetos'
+      preLoaderRoute: typeof AppProjetosRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/unidades': {
+      id: '/app/unidades'
+      path: '/unidades'
+      fullPath: '/app/unidades'
+      preLoaderRoute: typeof AppUnidadesRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/auth/callback': {
       id: '/auth/callback'
       path: '/auth/callback'
@@ -118,10 +266,24 @@ declare module '@tanstack/react-router' {
 }
 
 interface AppRouteChildren {
+  AppAdministracaoRoute: typeof AppAdministracaoRoute
+  AppAgendaRoute: typeof AppAgendaRoute
+  AppDocumentosRoute: typeof AppDocumentosRoute
+  AppFinanceiroRoute: typeof AppFinanceiroRoute
+  AppPessoasRoute: typeof AppPessoasRoute
+  AppProjetosRoute: typeof AppProjetosRoute
+  AppUnidadesRoute: typeof AppUnidadesRoute
   AppIndexRoute: typeof AppIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppAdministracaoRoute: AppAdministracaoRoute,
+  AppAgendaRoute: AppAgendaRoute,
+  AppDocumentosRoute: AppDocumentosRoute,
+  AppFinanceiroRoute: AppFinanceiroRoute,
+  AppPessoasRoute: AppPessoasRoute,
+  AppProjetosRoute: AppProjetosRoute,
+  AppUnidadesRoute: AppUnidadesRoute,
   AppIndexRoute: AppIndexRoute,
 }
 
