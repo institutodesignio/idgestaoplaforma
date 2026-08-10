@@ -22,6 +22,7 @@ import { Route as AppProjetosRouteImport } from './routes/app/projetos'
 import { Route as AppUnidadesRouteImport } from './routes/app/unidades'
 import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 import { Route as AppPessoasIndexRouteImport } from './routes/app/pessoas/index'
+import { Route as AppPessoasPersonIdRouteImport } from './routes/app/pessoas/$personId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -88,6 +89,11 @@ const AppPessoasIndexRoute = AppPessoasIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppPessoasRoute,
 } as any)
+const AppPessoasPersonIdRoute = AppPessoasPersonIdRouteImport.update({
+  id: '/$personId',
+  path: '/$personId',
+  getParentRoute: () => AppPessoasRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -102,6 +108,7 @@ export interface FileRoutesByFullPath {
   '/app/unidades': typeof AppUnidadesRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/app/': typeof AppIndexRoute
+  '/app/pessoas/$personId': typeof AppPessoasPersonIdRoute
   '/app/pessoas/': typeof AppPessoasIndexRoute
 }
 export interface FileRoutesByTo {
@@ -115,6 +122,7 @@ export interface FileRoutesByTo {
   '/app/unidades': typeof AppUnidadesRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/app': typeof AppIndexRoute
+  '/app/pessoas/$personId': typeof AppPessoasPersonIdRoute
   '/app/pessoas': typeof AppPessoasIndexRoute
 }
 export interface FileRoutesById {
@@ -131,6 +139,7 @@ export interface FileRoutesById {
   '/app/unidades': typeof AppUnidadesRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/app/': typeof AppIndexRoute
+  '/app/pessoas/$personId': typeof AppPessoasPersonIdRoute
   '/app/pessoas/': typeof AppPessoasIndexRoute
 }
 export interface FileRouteTypes {
@@ -148,6 +157,7 @@ export interface FileRouteTypes {
     | '/app/unidades'
     | '/auth/callback'
     | '/app/'
+    | '/app/pessoas/$personId'
     | '/app/pessoas/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -161,6 +171,7 @@ export interface FileRouteTypes {
     | '/app/unidades'
     | '/auth/callback'
     | '/app'
+    | '/app/pessoas/$personId'
     | '/app/pessoas'
   id:
     | '__root__'
@@ -176,6 +187,7 @@ export interface FileRouteTypes {
     | '/app/unidades'
     | '/auth/callback'
     | '/app/'
+    | '/app/pessoas/$personId'
     | '/app/pessoas/'
   fileRoutesById: FileRoutesById
 }
@@ -279,14 +291,23 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppPessoasIndexRouteImport
       parentRoute: typeof AppPessoasRoute
     }
+    '/app/pessoas/$personId': {
+      id: '/app/pessoas/$personId'
+      path: '/$personId'
+      fullPath: '/app/pessoas/$personId'
+      preLoaderRoute: typeof AppPessoasPersonIdRouteImport
+      parentRoute: typeof AppPessoasRoute
+    }
   }
 }
 
 interface AppPessoasRouteChildren {
+  AppPessoasPersonIdRoute: typeof AppPessoasPersonIdRoute
   AppPessoasIndexRoute: typeof AppPessoasIndexRoute
 }
 
 const AppPessoasRouteChildren: AppPessoasRouteChildren = {
+  AppPessoasPersonIdRoute: AppPessoasPersonIdRoute,
   AppPessoasIndexRoute: AppPessoasIndexRoute,
 }
 
