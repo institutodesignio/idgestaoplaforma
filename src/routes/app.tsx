@@ -1,7 +1,10 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { BrandMark } from "@/components/branding/BrandMark";
-import { useAuth, useSignOut } from "@/hooks/useAuth";
+import { AppHeader } from "@/components/shell/AppHeader";
+import { AppSidebar } from "@/components/shell/AppSidebar";
+import { FullScreenLoader, StateMessage } from "@/components/shell/StateScreens";
+import { SessionProvider, useSession } from "@/contexts/SessionContext";
+import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/app")({
   ssr: false,
@@ -10,109 +13,116 @@ export const Route = createFileRoute("/app")({
       { title: "Ambiente institucional | ID Gestão" },
       {
         name: "description",
-        content: "Área autenticada da plataforma ID Gestão do Instituto Designio.",
+        content:
+          "Ambiente institucional da plataforma ID Gestão do Instituto Designio: pessoas, projetos, unidades e gestão.",
       },
       { property: "og:title", content: "Ambiente institucional | ID Gestão" },
       {
         property: "og:description",
-        content: "Área autenticada da plataforma ID Gestão do Instituto Designio.",
+        content: "Gestão institucional do Instituto Designio em um só ambiente.",
       },
     ],
   }),
-  component: AppPage,
+  component: AppLayoutRoute,
 });
 
-function AppPage() {
+function AppLayoutRoute() {
+  return (
+    <SessionProvider>
+      <AppGate />
+    </SessionProvider>
+  );
+}
+
+function AppGate() {
   const navigate = useNavigate();
-  const { user, loading } = useAuth();
-  const signOut = useSignOut();
-  const [signingOut, setSigningOut] = useState(false);
+  const { status, reload } = useSession();
 
   useEffect(() => {
-    if (!loading && !user) void navigate({ to: "/login", search: { error: undefined }, replace: true });
-  }, [loading, user, navigate]);
+    if (status === "unauthenticated") {
+      void navigate({ to: "/login", search: { error: undefined }, replace: true });
+    }
+  }, [status, navigate]);
 
-  async function handleSignOut() {
-    setSigningOut(true);
-    await signOut();
-    void navigate({ to: "/login", search: { error: undefined }, replace: true });
+  if (status === "loading" || status === "unauthenticated") {
+    return <FullScreenLoader />;
   }
 
-  if (loading || !user) {
+  if (status === "expired") {
     return (
-      <main
-        className="flex min-h-dvh items-center justify-center bg-background"
-        aria-busy="true"
-        aria-live="polite"
-      >
-        <span
-          aria-hidden="true"
-          className="size-7 animate-spin rounded-full border-2 border-muted border-t-primary"
-        />
-        <span className="sr-only">Carregando sessão</span>
-      </main>
+      <StateMessage
+        title="Sua sessão expirou"
+        description="Por segurança, o acesso institucional foi encerrado. Entre novamente com sua conta Google para continuar."
+        actionLabel="Entrar novamente"
+        onAction={async () => {
+          await supabase.auth.signOut();
+          void navigate({ to: "/login", search: { error: undefined }, replace: true });
+        }}
+      />
     );
   }
 
-  const name =
-    (user.user_metadata?.['full_name'] as string | undefined) ??
-    (user.user_metadata?.['name'] as string | undefined) ??
-    "Colaborador";
-  const avatar =
-    (user.user_metadata?.['avatar_url'] as string | undefined) ??
-    (user.user_metadata?.['picture'] as string | undefined);
+  if (status === "no_context") {
+    return (
+      <StateMessage
+        title="Acesso ainda não liberado"
+        description="Sua autenticação foi concluída, mas ainda não existe um vínculo institucional ativo para esta conta. Solicite a liberação do seu acesso à administração do Instituto Designio."
+        actionLabel="Tentar novamente"
+        onAction={reload}
+        secondaryLabel="Sair"
+        onSecondary={async () => {
+          await supabase.auth.signOut();
+          void navigate({ to: "/login", search: { error: undefined }, replace: true });
+        }}
+      />
+    );
+  }
+
+  if (status === "error") {
+    return (
+      <StateMessage
+        title="Não conseguimos carregar seu contexto"
+        description="O servidor institucional está temporariamente indisponível. Tente novamente em alguns instantes."
+        actionLabel="Tentar novamente"
+        onAction={reload}
+      />
+    );
+  }
+
+  return <AppShell />;
+}
+
+function AppShell() {
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <main className="min-h-dvh bg-background">
-      <header className="border-b border-border bg-card">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-5 py-4 sm:px-8">
-          <BrandMark className="h-12 w-auto" />
+    <div className="flex min-h-dvh bg-background">
+      <aside className="hidden lg:block">
+        <div className="sticky top-0 h-dvh">
+          <AppSidebar />
+        </div>
+      </aside>
+
+      {menuOpen ? (
+        <div className="fixed inset-0 z-40 lg:hidden">
           <button
             type="button"
-            onClick={handleSignOut}
-            disabled={signingOut}
-            aria-busy={signingOut ? "true" : "false"}
-            className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-secondary focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-60"
-          >
-            {signingOut ? "Saindo…" : "Sair"}
-          </button>
-        </div>
-      </header>
-
-      <div className="mx-auto max-w-5xl px-5 py-14 sm:px-8">
-        <p className="text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground">
-          ID Gestão
-        </p>
-        <h1 className="mt-3 text-3xl font-semibold tracking-tight text-foreground">
-          Autenticação realizada com sucesso.
-        </h1>
-        <p className="mt-3 max-w-xl text-sm text-muted-foreground">
-          Tela temporária de validação. Roles, permissions e o dashboard serão definidos nas
-          próximas etapas pelo backend.
-        </p>
-
-        <section className="surface-card mt-10 flex max-w-md items-center gap-4 rounded-2xl p-6">
-          {avatar ? (
-            <img
-              src={avatar}
-              alt={`Foto de perfil de ${name}`}
-              className="size-14 rounded-full border border-border object-cover"
-              referrerPolicy="no-referrer"
-            />
-          ) : (
-            <div
-              aria-hidden="true"
-              className="flex size-14 items-center justify-center rounded-full bg-secondary text-lg font-semibold text-secondary-foreground"
-            >
-              {name.charAt(0).toUpperCase()}
-            </div>
-          )}
-          <div className="min-w-0">
-            <p className="truncate font-semibold text-foreground">{name}</p>
-            <p className="truncate text-sm text-muted-foreground">{user.email}</p>
+            aria-label="Fechar menu de navegação"
+            onClick={() => setMenuOpen(false)}
+            className="absolute inset-0 bg-foreground/40"
+          />
+          <div className="absolute inset-y-0 left-0 shadow-xl">
+            <AppSidebar onNavigate={() => setMenuOpen(false)} />
           </div>
-        </section>
+        </div>
+      ) : null}
+
+      <div className="flex min-w-0 flex-1 flex-col">
+        <AppHeader onOpenMenu={() => setMenuOpen(true)} />
+        <main className="flex-1 px-5 py-8 sm:px-8 sm:py-10">
+          <Outlet />
+        </main>
       </div>
-    </main>
+    </div>
   );
 }
