@@ -52,7 +52,7 @@ function PersonsListPage() {
     const trimmed = term.trim();
     if (trimmed === search) return;
     const timer = setTimeout(() => {
-      void navigate({ search: (prev) => ({ ...prev, search: trimmed, page: 1 }) });
+      void navigate({ search: (prev: PessoasSearch) => ({ ...prev, search: trimmed, page: 1 }) });
     }, 400);
     return () => clearTimeout(timer);
   }, [term, search, navigate]);
@@ -101,7 +101,7 @@ function PersonsListPage() {
             value={status || "ALL"}
             onValueChange={(value) =>
               void navigate({
-                search: (prev) => ({ ...prev, status: value === "ALL" ? "" : value, page: 1 }),
+                search: (prev: PessoasSearch) => ({ ...prev, status: value === "ALL" ? "" : value, page: 1 }),
               })
             }
           >
@@ -120,7 +120,7 @@ function PersonsListPage() {
             value={type || "ALL"}
             onValueChange={(value) =>
               void navigate({
-                search: (prev) => ({ ...prev, type: value === "ALL" ? "" : value, page: 1 }),
+                search: (prev: PessoasSearch) => ({ ...prev, type: value === "ALL" ? "" : value, page: 1 }),
               })
             }
           >
@@ -208,7 +208,7 @@ function PersonsListPage() {
                 disabled={!pagination.hasPreviousPage}
                 onClick={() =>
                   void navigate({
-                    search: (prev) => ({ ...prev, page: Math.max(1, pagination.page - 1) }),
+                    search: (prev: PessoasSearch) => ({ ...prev, page: Math.max(1, pagination.page - 1) }),
                   })
                 }
               >
@@ -219,7 +219,7 @@ function PersonsListPage() {
                 size="sm"
                 disabled={!pagination.hasNextPage}
                 onClick={() =>
-                  void navigate({ search: (prev) => ({ ...prev, page: pagination.page + 1 }) })
+                  void navigate({ search: (prev: PessoasSearch) => ({ ...prev, page: pagination.page + 1 }) })
                 }
               >
                 Próxima
