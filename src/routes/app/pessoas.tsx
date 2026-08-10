@@ -1,15 +1,14 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { ModulePlaceholder } from "@/components/shell/ModulePlaceholder";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { RequirePermission } from "@/components/shell/RequirePermission";
 
 export const Route = createFileRoute("/app/pessoas")({
-  component: Page,
+  component: PessoasLayout,
 });
 
-function Page() {
+function PessoasLayout() {
   return (
     <RequirePermission permission="person.read">
-      <ModulePlaceholder title="Pessoas" description="Cadastro e acompanhamento das pessoas atendidas e da equipe do Instituto Designio." />
+      <Outlet />
     </RequirePermission>
   );
 }
