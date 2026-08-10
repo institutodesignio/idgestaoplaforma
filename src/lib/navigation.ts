@@ -25,7 +25,7 @@ export const NAV_ITEMS: NavItem[] = [
   { label: "Pessoas", to: "/app/pessoas", icon: Users, permission: "person.read" },
   { label: "Projetos", to: "/app/projetos", icon: FolderKanban, permission: "project.read" },
   { label: "Unidades", to: "/app/unidades", icon: Building2, permission: "unit.read" },
-  { label: "Agenda", to: "/app/agenda", icon: CalendarDays, permission: "agenda.read" },
+  { label: "Agenda", to: "/app/agenda", icon: CalendarDays, permission: "appointment.read" },
   { label: "Documentos", to: "/app/documentos", icon: FileText, permission: "document.read" },
   { label: "Financeiro", to: "/app/financeiro", icon: Wallet, permission: "finance.read" },
   {
