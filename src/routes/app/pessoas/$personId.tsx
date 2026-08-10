@@ -203,7 +203,9 @@ function PersonDetailPage() {
                         {item.address_complement ? ` — ${item.address_complement}` : ""}
                       </p>
                       <p className="text-sm text-muted-foreground">
-                        {[item.neighborhood, item.city, item.state_code].filter(Boolean).join(" • ")}
+                        {[item.neighborhood, item.city, item.state_code]
+                          .filter(Boolean)
+                          .join(" • ")}
                       </p>
                       <p className="text-xs text-muted-foreground">
                         CEP {item.postal_code ?? "—"} • {item.country_code ?? "—"}

@@ -88,14 +88,27 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:title", content: "ID Gestão | Instituto Designio" },
       {
         property: "og:description",
-        content: "ID Gestão — Plataforma de Gestão e Projetos do Instituto Designio. Cuidado, gestão e impacto em um só ambiente.",
+        content:
+          "ID Gestão — Plataforma de Gestão e Projetos do Instituto Designio. Cuidado, gestão e impacto em um só ambiente.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "ID Gestão | Instituto Designio" },
-      { name: "twitter:description", content: "ID Gestão — Plataforma de Gestão e Projetos do Instituto Designio. Cuidado, gestão e impacto em um só ambiente." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/469c2e07f6ea7c3c86c217e8d9094203/id-preview-131af818--abc7cef2-170b-4bae-b829-776cfc52fb1b.lovable.app-1786172695084.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/469c2e07f6ea7c3c86c217e8d9094203/id-preview-131af818--abc7cef2-170b-4bae-b829-776cfc52fb1b.lovable.app-1786172695084.png" },
+      {
+        name: "twitter:description",
+        content:
+          "ID Gestão — Plataforma de Gestão e Projetos do Instituto Designio. Cuidado, gestão e impacto em um só ambiente.",
+      },
+      {
+        property: "og:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/469c2e07f6ea7c3c86c217e8d9094203/id-preview-131af818--abc7cef2-170b-4bae-b829-776cfc52fb1b.lovable.app-1786172695084.png",
+      },
+      {
+        name: "twitter:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/469c2e07f6ea7c3c86c217e8d9094203/id-preview-131af818--abc7cef2-170b-4bae-b829-776cfc52fb1b.lovable.app-1786172695084.png",
+      },
     ],
     links: [
       {

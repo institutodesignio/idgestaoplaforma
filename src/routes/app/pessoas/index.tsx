@@ -27,10 +27,10 @@ type PessoasSearch = {
 
 export const Route = createFileRoute("/app/pessoas/")({
   validateSearch: (search: Record<string, unknown>): PessoasSearch => ({
-    page: Number(search['page']) > 0 ? Number(search['page']) : 1,
-    search: typeof search['search'] === "string" ? search['search'] : "",
-    status: typeof search['status'] === "string" ? search['status'] : "",
-    type: typeof search['type'] === "string" ? search['type'] : "",
+    page: Number(search["page"]) > 0 ? Number(search["page"]) : 1,
+    search: typeof search["search"] === "string" ? search["search"] : "",
+    status: typeof search["status"] === "string" ? search["status"] : "",
+    type: typeof search["type"] === "string" ? search["type"] : "",
   }),
   component: PersonsListPage,
 });
@@ -101,7 +101,11 @@ function PersonsListPage() {
             value={status || "ALL"}
             onValueChange={(value) =>
               void navigate({
-                search: (prev: PessoasSearch) => ({ ...prev, status: value === "ALL" ? "" : value, page: 1 }),
+                search: (prev: PessoasSearch) => ({
+                  ...prev,
+                  status: value === "ALL" ? "" : value,
+                  page: 1,
+                }),
               })
             }
           >
@@ -120,7 +124,11 @@ function PersonsListPage() {
             value={type || "ALL"}
             onValueChange={(value) =>
               void navigate({
-                search: (prev: PessoasSearch) => ({ ...prev, type: value === "ALL" ? "" : value, page: 1 }),
+                search: (prev: PessoasSearch) => ({
+                  ...prev,
+                  type: value === "ALL" ? "" : value,
+                  page: 1,
+                }),
               })
             }
           >
@@ -208,7 +216,10 @@ function PersonsListPage() {
                 disabled={!pagination.hasPreviousPage}
                 onClick={() =>
                   void navigate({
-                    search: (prev: PessoasSearch) => ({ ...prev, page: Math.max(1, pagination.page - 1) }),
+                    search: (prev: PessoasSearch) => ({
+                      ...prev,
+                      page: Math.max(1, pagination.page - 1),
+                    }),
                   })
                 }
               >
@@ -219,7 +230,9 @@ function PersonsListPage() {
                 size="sm"
                 disabled={!pagination.hasNextPage}
                 onClick={() =>
-                  void navigate({ search: (prev: PessoasSearch) => ({ ...prev, page: pagination.page + 1 }) })
+                  void navigate({
+                    search: (prev: PessoasSearch) => ({ ...prev, page: pagination.page + 1 }),
+                  })
                 }
               >
                 Próxima

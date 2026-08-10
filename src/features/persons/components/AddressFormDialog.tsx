@@ -96,16 +96,16 @@ export function AddressFormDialog({
     const nextErrors: Record<string, string> = {};
     const postal = state.postal_code.replace(/\D/g, "");
     if (state.postal_code && postal.length !== 8) {
-      nextErrors['postal_code'] = "O CEP deve ter 8 dígitos.";
+      nextErrors["postal_code"] = "O CEP deve ter 8 dígitos.";
     }
     if (state.state_code && !/^[A-Za-z]{2}$/.test(state.state_code.trim())) {
-      nextErrors['state_code'] = "Use a sigla com 2 letras (ex.: SP).";
+      nextErrors["state_code"] = "Use a sigla com 2 letras (ex.: SP).";
     }
     if (state.country_code && !/^[A-Za-z]{2}$/.test(state.country_code.trim())) {
-      nextErrors['country_code'] = "Use o código com 2 letras (ex.: BR).";
+      nextErrors["country_code"] = "Use o código com 2 letras (ex.: BR).";
     }
-    if (!state.street.trim()) nextErrors['street'] = "Informe o logradouro.";
-    if (!state.city.trim()) nextErrors['city'] = "Informe a cidade.";
+    if (!state.street.trim()) nextErrors["street"] = "Informe o logradouro.";
+    if (!state.city.trim()) nextErrors["city"] = "Informe a cidade.";
 
     if (Object.keys(nextErrors).length > 0) {
       setErrors(nextErrors);
@@ -149,7 +149,7 @@ export function AddressFormDialog({
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="grid gap-4 sm:grid-cols-2">
-            <FormField id="address_type" label="Tipo de endereço" error={errors['address_type']}>
+            <FormField id="address_type" label="Tipo de endereço" error={errors["address_type"]}>
               <Select
                 value={state.address_type}
                 onValueChange={(value) => set("address_type", value)}
@@ -167,7 +167,7 @@ export function AddressFormDialog({
               </Select>
             </FormField>
 
-            <FormField id="postal_code" label="CEP" error={errors['postal_code']} hint="8 dígitos.">
+            <FormField id="postal_code" label="CEP" error={errors["postal_code"]} hint="8 dígitos.">
               <Input
                 id="postal_code"
                 value={state.postal_code}
@@ -177,7 +177,7 @@ export function AddressFormDialog({
               />
             </FormField>
 
-            <FormField id="street" label="Logradouro" error={errors['street']}>
+            <FormField id="street" label="Logradouro" error={errors["street"]}>
               <Input
                 id="street"
                 value={state.street}
@@ -186,7 +186,7 @@ export function AddressFormDialog({
               />
             </FormField>
 
-            <FormField id="street_number" label="Número" error={errors['street_number']}>
+            <FormField id="street_number" label="Número" error={errors["street_number"]}>
               <Input
                 id="street_number"
                 value={state.street_number}
@@ -198,7 +198,7 @@ export function AddressFormDialog({
             <FormField
               id="address_complement"
               label="Complemento"
-              error={errors['address_complement']}
+              error={errors["address_complement"]}
             >
               <Input
                 id="address_complement"
@@ -208,7 +208,7 @@ export function AddressFormDialog({
               />
             </FormField>
 
-            <FormField id="neighborhood" label="Bairro" error={errors['neighborhood']}>
+            <FormField id="neighborhood" label="Bairro" error={errors["neighborhood"]}>
               <Input
                 id="neighborhood"
                 value={state.neighborhood}
@@ -217,7 +217,7 @@ export function AddressFormDialog({
               />
             </FormField>
 
-            <FormField id="city" label="Cidade" error={errors['city']}>
+            <FormField id="city" label="Cidade" error={errors["city"]}>
               <Input
                 id="city"
                 value={state.city}
@@ -226,7 +226,7 @@ export function AddressFormDialog({
               />
             </FormField>
 
-            <FormField id="state_code" label="UF" error={errors['state_code']} hint="2 letras.">
+            <FormField id="state_code" label="UF" error={errors["state_code"]} hint="2 letras.">
               <Input
                 id="state_code"
                 value={state.state_code}
@@ -235,7 +235,12 @@ export function AddressFormDialog({
               />
             </FormField>
 
-            <FormField id="country_code" label="País" error={errors['country_code']} hint="2 letras.">
+            <FormField
+              id="country_code"
+              label="País"
+              error={errors["country_code"]}
+              hint="2 letras."
+            >
               <Input
                 id="country_code"
                 value={state.country_code}

@@ -95,16 +95,16 @@ export function RelationshipFormDialog({
 
     const nextErrors: Record<string, string> = {};
     if (!state.related_person_id) {
-      nextErrors['related_person_id'] = "Selecione a pessoa relacionada.";
+      nextErrors["related_person_id"] = "Selecione a pessoa relacionada.";
     }
     if (state.related_person_id === personId) {
-      nextErrors['related_person_id'] = "Não é possível vincular a pessoa a si mesma.";
+      nextErrors["related_person_id"] = "Não é possível vincular a pessoa a si mesma.";
     }
     if (!state.relationship_type) {
-      nextErrors['relationship_type'] = "Selecione o tipo de vínculo.";
+      nextErrors["relationship_type"] = "Selecione o tipo de vínculo.";
     }
     if (state.starts_at && state.ends_at && state.ends_at < state.starts_at) {
-      nextErrors['ends_at'] = "O término deve ser posterior ao início.";
+      nextErrors["ends_at"] = "O término deve ser posterior ao início.";
     }
     if (Object.keys(nextErrors).length > 0) {
       setErrors(nextErrors);
@@ -123,9 +123,7 @@ export function RelationshipFormDialog({
     };
 
     try {
-      await save.mutateAsync(
-        relationship ? { relationshipId: relationship.id, input } : { input },
-      );
+      await save.mutateAsync(relationship ? { relationshipId: relationship.id, input } : { input });
       toast.success(relationship ? "Vínculo atualizado." : "Vínculo adicionado.");
       onOpenChange(false);
     } catch (error) {
@@ -150,7 +148,7 @@ export function RelationshipFormDialog({
           <FormField
             id="related_person_id"
             label="Pessoa relacionada"
-            error={errors['related_person_id']}
+            error={errors["related_person_id"]}
           >
             <PersonPicker
               value={state.related_person_id}
@@ -170,7 +168,7 @@ export function RelationshipFormDialog({
             <FormField
               id="relationship_type"
               label="Tipo de vínculo"
-              error={errors['relationship_type']}
+              error={errors["relationship_type"]}
             >
               <Select
                 value={state.relationship_type}
@@ -189,7 +187,7 @@ export function RelationshipFormDialog({
               </Select>
             </FormField>
 
-            <FormField id="starts_at" label="Início" error={errors['starts_at']}>
+            <FormField id="starts_at" label="Início" error={errors["starts_at"]}>
               <Input
                 id="starts_at"
                 type="date"
@@ -198,7 +196,7 @@ export function RelationshipFormDialog({
               />
             </FormField>
 
-            <FormField id="ends_at" label="Término" error={errors['ends_at']}>
+            <FormField id="ends_at" label="Término" error={errors["ends_at"]}>
               <Input
                 id="ends_at"
                 type="date"
@@ -234,7 +232,7 @@ export function RelationshipFormDialog({
             </div>
           </div>
 
-          <FormField id="notes" label="Observações" error={errors['notes']}>
+          <FormField id="notes" label="Observações" error={errors["notes"]}>
             <Textarea
               id="notes"
               value={state.notes}

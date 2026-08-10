@@ -86,16 +86,16 @@ const digits = (value: string) => value.replace(/\D/g, "");
 function validate(state: FormState): Record<string, string> {
   const errors: Record<string, string> = {};
   if (state.full_name.trim().length < 3) {
-    errors['full_name'] = "Informe o nome completo (mínimo 3 caracteres).";
+    errors["full_name"] = "Informe o nome completo (mínimo 3 caracteres).";
   }
   if (state.primary_email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.primary_email.trim())) {
-    errors['primary_email'] = "E-mail inválido.";
+    errors["primary_email"] = "E-mail inválido.";
   }
   if (state.person_type === "INDIVIDUAL" && state.cpf && digits(state.cpf).length !== 11) {
-    errors['cpf'] = "O CPF deve ter 11 dígitos.";
+    errors["cpf"] = "O CPF deve ter 11 dígitos.";
   }
   if (state.person_type === "ORGANIZATION" && state.cnpj && digits(state.cnpj).length !== 14) {
-    errors['cnpj'] = "O CNPJ deve ter 14 dígitos.";
+    errors["cnpj"] = "O CNPJ deve ter 14 dígitos.";
   }
   return errors;
 }
@@ -199,7 +199,7 @@ export function PersonFormDialog({
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="grid gap-4 sm:grid-cols-2">
-            <FormField id="person_type" label="Tipo" error={errors['person_type']}>
+            <FormField id="person_type" label="Tipo" error={errors["person_type"]}>
               <Select
                 value={state.person_type}
                 onValueChange={(value) => set("person_type", value as PersonType)}
@@ -214,7 +214,7 @@ export function PersonFormDialog({
               </Select>
             </FormField>
 
-            <FormField id="status" label="Situação" error={errors['status']}>
+            <FormField id="status" label="Situação" error={errors["status"]}>
               <Select
                 value={state.status}
                 onValueChange={(value) => set("status", value as PersonStatus)}
@@ -233,7 +233,7 @@ export function PersonFormDialog({
             <FormField
               id="full_name"
               label={isIndividual ? "Nome completo" : "Razão social"}
-              error={errors['full_name']}
+              error={errors["full_name"]}
             >
               <Input
                 id="full_name"
@@ -247,7 +247,7 @@ export function PersonFormDialog({
             <FormField
               id="preferred_name"
               label={isIndividual ? "Nome preferido" : "Nome fantasia"}
-              error={errors['preferred_name']}
+              error={errors["preferred_name"]}
             >
               <Input
                 id="preferred_name"
@@ -258,7 +258,7 @@ export function PersonFormDialog({
             </FormField>
 
             {isIndividual ? (
-              <FormField id="cpf" label="CPF" error={errors['cpf']} hint="Somente números.">
+              <FormField id="cpf" label="CPF" error={errors["cpf"]} hint="Somente números.">
                 <Input
                   id="cpf"
                   value={state.cpf}
@@ -268,7 +268,7 @@ export function PersonFormDialog({
                 />
               </FormField>
             ) : (
-              <FormField id="cnpj" label="CNPJ" error={errors['cnpj']} hint="Somente números.">
+              <FormField id="cnpj" label="CNPJ" error={errors["cnpj"]} hint="Somente números.">
                 <Input
                   id="cnpj"
                   value={state.cnpj}
@@ -279,7 +279,7 @@ export function PersonFormDialog({
               </FormField>
             )}
 
-            <FormField id="primary_email" label="E-mail principal" error={errors['primary_email']}>
+            <FormField id="primary_email" label="E-mail principal" error={errors["primary_email"]}>
               <Input
                 id="primary_email"
                 type="email"
@@ -289,7 +289,11 @@ export function PersonFormDialog({
               />
             </FormField>
 
-            <FormField id="primary_phone" label="Telefone principal" error={errors['primary_phone']}>
+            <FormField
+              id="primary_phone"
+              label="Telefone principal"
+              error={errors["primary_phone"]}
+            >
               <Input
                 id="primary_phone"
                 value={state.primary_phone}
@@ -300,7 +304,7 @@ export function PersonFormDialog({
 
             {isIndividual ? (
               <>
-                <FormField id="birth_date" label="Data de nascimento" error={errors['birth_date']}>
+                <FormField id="birth_date" label="Data de nascimento" error={errors["birth_date"]}>
                   <Input
                     id="birth_date"
                     type="date"
@@ -309,7 +313,7 @@ export function PersonFormDialog({
                   />
                 </FormField>
 
-                <FormField id="gender" label="Gênero" error={errors['gender']}>
+                <FormField id="gender" label="Gênero" error={errors["gender"]}>
                   <Input
                     id="gender"
                     value={state.gender}
@@ -318,7 +322,11 @@ export function PersonFormDialog({
                   />
                 </FormField>
 
-                <FormField id="marital_status" label="Estado civil" error={errors['marital_status']}>
+                <FormField
+                  id="marital_status"
+                  label="Estado civil"
+                  error={errors["marital_status"]}
+                >
                   <Input
                     id="marital_status"
                     value={state.marital_status}
@@ -327,7 +335,7 @@ export function PersonFormDialog({
                   />
                 </FormField>
 
-                <FormField id="nationality" label="Nacionalidade" error={errors['nationality']}>
+                <FormField id="nationality" label="Nacionalidade" error={errors["nationality"]}>
                   <Input
                     id="nationality"
                     value={state.nationality}
@@ -336,7 +344,7 @@ export function PersonFormDialog({
                   />
                 </FormField>
 
-                <FormField id="occupation" label="Ocupação" error={errors['occupation']}>
+                <FormField id="occupation" label="Ocupação" error={errors["occupation"]}>
                   <Input
                     id="occupation"
                     value={state.occupation}
@@ -345,7 +353,7 @@ export function PersonFormDialog({
                   />
                 </FormField>
 
-                <FormField id="rg" label="RG" error={errors['rg']}>
+                <FormField id="rg" label="RG" error={errors["rg"]}>
                   <Input
                     id="rg"
                     value={state.rg}
@@ -354,7 +362,7 @@ export function PersonFormDialog({
                   />
                 </FormField>
 
-                <FormField id="rg_issuer" label="Órgão emissor do RG" error={errors['rg_issuer']}>
+                <FormField id="rg_issuer" label="Órgão emissor do RG" error={errors["rg_issuer"]}>
                   <Input
                     id="rg_issuer"
                     value={state.rg_issuer}
@@ -363,7 +371,7 @@ export function PersonFormDialog({
                   />
                 </FormField>
 
-                <FormField id="nis" label="NIS" error={errors['nis']}>
+                <FormField id="nis" label="NIS" error={errors["nis"]}>
                   <Input
                     id="nis"
                     value={state.nis}
@@ -373,7 +381,7 @@ export function PersonFormDialog({
                 </FormField>
               </>
             ) : (
-              <FormField id="occupation-org" label="Área de atuação" error={errors['occupation']}>
+              <FormField id="occupation-org" label="Área de atuação" error={errors["occupation"]}>
                 <Input
                   id="occupation-org"
                   value={state.occupation}

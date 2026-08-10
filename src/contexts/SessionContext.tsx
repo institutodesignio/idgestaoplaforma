@@ -9,19 +9,11 @@ import {
 } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { ApiError, type ApiFailureKind } from "@/lib/api";
-import {
-  fetchInstitutionalContext,
-  type InstitutionalContext,
-} from "@/lib/institutional";
+import { fetchInstitutionalContext, type InstitutionalContext } from "@/lib/institutional";
 import { supabase } from "@/lib/supabase";
 
 export type SessionStatus =
-  | "loading"
-  | "unauthenticated"
-  | "expired"
-  | "no_context"
-  | "error"
-  | "ready";
+  "loading" | "unauthenticated" | "expired" | "no_context" | "error" | "ready";
 
 export type SessionContextValue = {
   status: SessionStatus;
@@ -99,9 +91,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       } catch (error) {
         if (!active) return;
         setContext(null);
-        setStatus(
-          error instanceof ApiError ? (FAILURE_TO_STATUS[error.kind] ?? "error") : "error",
-        );
+        setStatus(error instanceof ApiError ? (FAILURE_TO_STATUS[error.kind] ?? "error") : "error");
       }
     })();
 
@@ -110,10 +100,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     };
   }, [session, sessionResolved, reloadKey]);
 
-  const permissions = useMemo(
-    () => new Set(context?.permissions ?? []),
-    [context],
-  );
+  const permissions = useMemo(() => new Set(context?.permissions ?? []), [context]);
   const roles = useMemo(() => new Set(context?.roles ?? []), [context]);
   const scopes = useMemo(() => new Set(context?.scopes ?? []), [context]);
 

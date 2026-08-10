@@ -2,8 +2,8 @@ import { supabase } from "@/lib/supabase";
 
 /** Backend institucional publicado (fonte de verdade de autorização). */
 export const API_BASE_URL = (
-  (import.meta.env['VITE_ID_GESTAO_API_URL'] as string | undefined) ??
-  (import.meta.env['VITE_API_BASE_URL'] as string | undefined) ??
+  (import.meta.env["VITE_ID_GESTAO_API_URL"] as string | undefined) ??
+  (import.meta.env["VITE_API_BASE_URL"] as string | undefined) ??
   "https://id-gestao-production.up.railway.app"
 ).replace(/\/+$/, "");
 
@@ -51,35 +51,43 @@ function buildUrl(path: string, query?: Record<string, QueryValue>) {
 }
 
 /** Extrai mensagem amigável + erros por campo, sem expor detalhes internos do banco. */
-function parseErrorBody(body: unknown): { message: string | null; fieldErrors: Record<string, string> } {
+function parseErrorBody(body: unknown): {
+  message: string | null;
+  fieldErrors: Record<string, string>;
+} {
   const fieldErrors: Record<string, string> = {};
   let message: string | null = null;
 
   if (body && typeof body === "object") {
     const record = body as Record<string, unknown>;
-    const raw = record['message'] ?? record['error'] ?? record['detail'];
-    if (typeof raw === "string" && raw.length < 200 && !/(relation|column|constraint|pg_|sql)/i.test(raw)) {
+    const raw = record["message"] ?? record["error"] ?? record["detail"];
+    if (
+      typeof raw === "string" &&
+      raw.length < 200 &&
+      !/(relation|column|constraint|pg_|sql)/i.test(raw)
+    ) {
       message = raw;
     }
 
-    const issues = record['errors'] ?? record['issues'] ?? record['details'];
+    const issues = record["errors"] ?? record["issues"] ?? record["details"];
     if (Array.isArray(issues)) {
       for (const issue of issues) {
         if (!issue || typeof issue !== "object") continue;
         const item = issue as Record<string, unknown>;
-        const pathValue = item['path'] ?? item['field'] ?? item['param'];
+        const pathValue = item["path"] ?? item["field"] ?? item["param"];
         const field = Array.isArray(pathValue)
           ? pathValue.map(String).join(".")
           : typeof pathValue === "string"
             ? pathValue
             : null;
-        const detail = item['message'];
+        const detail = item["message"];
         if (field && typeof detail === "string") fieldErrors[field] = detail;
       }
     } else if (issues && typeof issues === "object") {
       for (const [field, detail] of Object.entries(issues as Record<string, unknown>)) {
         if (typeof detail === "string") fieldErrors[field] = detail;
-        else if (Array.isArray(detail) && typeof detail[0] === "string") fieldErrors[field] = detail[0];
+        else if (Array.isArray(detail) && typeof detail[0] === "string")
+          fieldErrors[field] = detail[0];
       }
     }
   }
