@@ -23,6 +23,8 @@ export type SessionContextValue = {
   /** Autorização centralizada — sempre baseada no que /api/v1/me devolveu. */
   hasPermission: (code: string) => boolean;
   hasAnyPermission: (codes: string[]) => boolean;
+  /** Alias curto de hasPermission, usado nos módulos. */
+  can: (code: string) => boolean;
   hasRole: (code: string) => boolean;
   hasScope: (code: string) => boolean;
   reload: () => void;
@@ -134,6 +136,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       context,
       hasPermission,
       hasAnyPermission,
+      can: hasPermission,
       hasRole,
       hasScope,
       reload: () => setReloadKey((key) => key + 1),

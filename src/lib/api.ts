@@ -14,6 +14,7 @@ export type ApiFailureKind =
   | "forbidden"
   | "not_found"
   | "validation"
+  | "conflict"
   | "temporary";
 
 export class ApiError extends Error {
@@ -159,6 +160,14 @@ export async function apiFetch<T>(
     if (response.status === 404) {
       throw new ApiError("not_found", message ?? "Registro não encontrado.", 404);
     }
+    if (response.status === 409) {
+      throw new ApiError(
+        "conflict",
+        message ?? "Esta operação conflita com uma regra institucional já existente.",
+        409,
+        fieldErrors,
+      );
+    }
     throw new ApiError("temporary", "Erro temporário do servidor institucional.", response.status);
   }
 
@@ -178,6 +187,10 @@ export function apiPatch<T>(path: string, body: unknown) {
   return apiFetch<T>(path, { method: "PATCH", body: JSON.stringify(body) });
 }
 
+export function apiDelete<T>(path: string) {
+  return apiFetch<T>(path, { method: "DELETE" });
+}
+
 /** Mensagem amigável para qualquer falha de API. */
 export function apiErrorMessage(error: unknown): string {
   if (error instanceof ApiError) {
@@ -190,6 +203,8 @@ export function apiErrorMessage(error: unknown): string {
         return "Você não possui permissão para esta operação.";
       case "not_found":
         return "Registro não encontrado.";
+      case "conflict":
+        return error.message;
       case "validation":
         return error.message;
       default:

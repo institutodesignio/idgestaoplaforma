@@ -11,7 +11,7 @@ export function FormField({
   id: string;
   label: string;
   error?: string | undefined;
-  hint?: string;
+  hint?: string | undefined;
   children: ReactNode;
 }) {
   return (
