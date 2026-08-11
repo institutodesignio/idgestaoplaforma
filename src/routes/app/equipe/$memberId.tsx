@@ -62,6 +62,7 @@ function MemberDetailPage() {
     <div className="space-y-8">
       <Link
         to="/app/equipe"
+        search={{ page: 1, search: "" }}
         className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft aria-hidden="true" className="size-4" />

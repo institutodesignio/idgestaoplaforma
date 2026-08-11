@@ -48,7 +48,7 @@ function ProjectDetailPage() {
       await remove.mutateAsync(projectId);
       toast.success("Projeto excluído.");
       setConfirmOpen(false);
-      void navigate({ to: "/app/projetos" });
+      void navigate({ to: "/app/projetos", search: { page: 1, search: "", status: "", clinical: "" } });
     } catch (error) {
       toast.error(apiErrorMessage(error));
     }
@@ -79,6 +79,7 @@ function ProjectDetailPage() {
     <div className="space-y-8">
       <Link
         to="/app/projetos"
+        search={{ page: 1, search: "", status: "", clinical: "" }}
         className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft aria-hidden="true" className="size-4" />
