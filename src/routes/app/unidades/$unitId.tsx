@@ -50,7 +50,7 @@ function UnitDetailPage() {
       await remove.mutateAsync(unitId);
       toast.success("Unidade excluída.");
       setConfirmOpen(false);
-      void navigate({ to: "/app/unidades" });
+      void navigate({ to: "/app/unidades", search: { page: 1, search: "", status: "" } });
     } catch (error) {
       toast.error(apiErrorMessage(error));
     }
@@ -71,7 +71,7 @@ function UnitDetailPage() {
         <p className="text-sm font-medium text-foreground">Não foi possível carregar a unidade</p>
         <p className="mt-2 text-sm text-muted-foreground">{apiErrorMessage(query.error)}</p>
         <Button variant="outline" className="mt-5" asChild>
-          <Link to="/app/unidades">Voltar para unidades</Link>
+          <Link to="/app/unidades" search={{ page: 1, search: "", status: "" }}>Voltar para unidades</Link>
         </Button>
       </div>
     );
@@ -92,6 +92,7 @@ function UnitDetailPage() {
     <div className="space-y-8">
       <Link
         to="/app/unidades"
+        search={{ page: 1, search: "", status: "" }}
         className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft aria-hidden="true" className="size-4" />
