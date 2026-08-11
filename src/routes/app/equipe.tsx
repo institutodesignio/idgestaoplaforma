@@ -1,13 +1,13 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { RequirePermission } from "@/components/shell/RequirePermission";
 
-export const Route = createFileRoute("/app/unidades")({
-  component: UnitsLayout,
+export const Route = createFileRoute("/app/equipe")({
+  component: TeamLayout,
 });
 
-function UnitsLayout() {
+function TeamLayout() {
   return (
-    <RequirePermission permission="unit.read">
+    <RequirePermission anyPermission={["user.read", "role.read"]}>
       <Outlet />
     </RequirePermission>
   );

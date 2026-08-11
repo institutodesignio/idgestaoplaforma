@@ -1,15 +1,14 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { ModulePlaceholder } from "@/components/shell/ModulePlaceholder";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { RequirePermission } from "@/components/shell/RequirePermission";
 
 export const Route = createFileRoute("/app/projetos")({
-  component: Page,
+  component: ProjectsLayout,
 });
 
-function Page() {
+function ProjectsLayout() {
   return (
     <RequirePermission permission="project.read">
-      <ModulePlaceholder title="Projetos" description="Projetos institucionais, metas e acompanhamento de impacto." />
+      <Outlet />
     </RequirePermission>
   );
 }
