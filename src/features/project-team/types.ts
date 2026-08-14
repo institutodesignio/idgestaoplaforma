@@ -1,49 +1,47 @@
-import type { Member } from "@/features/members/types";
-
-/** Vínculo temporal de um membro institucional a um projeto. */
+/** Vínculo temporal de uma pessoa a um projeto (project_team_members). */
 export type ProjectTeamMember = {
-  id?: string;
-  member_id: string;
-  member?: Member | null;
-  full_name?: string | null;
-  email?: string | null;
-  project_role?: string | null;
-  role?: string | null;
+  id: string;
+  project_id: string;
+  person_id: string;
+  role_title: string | null;
   starts_at: string | null;
   ends_at: string | null;
-  notes?: string | null;
+  notes: string | null;
+  created_at?: string | null;
+  updated_at?: string | null;
+  person?: {
+    id?: string;
+    full_name?: string | null;
+    preferred_name?: string | null;
+    primary_email?: string | null;
+    primary_phone?: string | null;
+  } | null;
 };
 
 export type ProjectTeamInput = {
-  member_id: string;
-  project_role: string;
-  starts_at: string;
+  person_id: string;
+  role_title: string;
+  starts_at?: string | null;
   ends_at?: string | null;
   notes?: string | null;
 };
 
-export const PROJECT_ROLE_LABEL: Record<string, string> = {
-  COORDINATOR: "Coordenação",
-  TECHNICAL_RESPONSIBLE: "Responsável Técnico",
-  SUPERVISOR: "Supervisão",
-  PROFESSIONAL: "Profissional",
-  ASSISTANT: "Apoio",
-  INTERN: "Estágio",
-  VOLUNTEER: "Voluntariado",
+/** PATCH nunca altera a pessoa vinculada. */
+export type ProjectTeamUpdate = {
+  role_title?: string;
+  starts_at?: string | null;
+  ends_at?: string | null;
+  notes?: string | null;
 };
 
-export const PROJECT_ROLE_OPTIONS = Object.entries(PROJECT_ROLE_LABEL).map(([value, label]) => ({
-  value,
-  label,
-}));
+export const ROLE_TITLE_MAX_LENGTH = 120;
 
-export function teamRoleCode(item: ProjectTeamMember): string {
-  return item.project_role ?? item.role ?? "";
+export function teamPersonName(item: ProjectTeamMember): string {
+  return item.person?.full_name ?? item.person?.preferred_name ?? "Pessoa da equipe";
 }
 
 export function teamRoleLabel(item: ProjectTeamMember): string {
-  const code = teamRoleCode(item);
-  return PROJECT_ROLE_LABEL[code] ?? code ?? "Participação";
+  return item.role_title?.trim() || "Participação";
 }
 
 export function isTeamMemberActive(item: ProjectTeamMember): boolean {
