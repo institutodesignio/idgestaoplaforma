@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createSupervisionCase,
   createSupervisionSession,
+  findSupervisionCase,
   listSupervisionCases,
   listSupervisionSessions,
   updateSupervisionCase,
@@ -18,6 +19,7 @@ import type {
 export const supervisionKeys = {
   all: ["clinical-supervision"] as const,
   list: (params: SupervisionCasesListParams) => ["clinical-supervision", "list", params] as const,
+  detail: (id: string) => ["clinical-supervision", "detail", id] as const,
   sessions: (id: string) => ["clinical-supervision", "sessions", id] as const,
 };
 
@@ -32,14 +34,17 @@ export function useSupervisionCases(params: SupervisionCasesListParams, enabled 
 }
 
 /**
- * Não existe GET /cases/:id no backend: o caso é localizado na listagem
- * (aproveitando o cache do React Query).
+ * Não existe GET /cases/:id no backend: o caso é localizado percorrendo a
+ * listagem oficial (sem filtro de status) até encontrar o id.
  */
 export function useSupervisionCaseFromList(caseId: string, enabled = true) {
-  const params: SupervisionCasesListParams = { page: 1, limit: 100, status: "" };
-  const query = useSupervisionCases(params, enabled);
-  const found = (query.data?.data ?? []).find((item) => item.id === caseId) ?? null;
-  return { ...query, supervisionCase: found };
+  const query = useQuery({
+    queryKey: supervisionKeys.detail(caseId),
+    queryFn: () => findSupervisionCase(caseId),
+    enabled: enabled && Boolean(caseId),
+    retry: false,
+  });
+  return { ...query, supervisionCase: query.data ?? null };
 }
 
 export function useSupervisionSessions(caseId: string, enabled = true) {
