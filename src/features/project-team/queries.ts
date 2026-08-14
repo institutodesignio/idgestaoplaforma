@@ -25,14 +25,14 @@ export function useProjectTeam(projectId: string, enabled = true) {
 }
 
 export type SaveProjectTeamArgs =
-  | { teamMemberId: string; input: ProjectTeamUpdate }
-  | { teamMemberId?: undefined; input: ProjectTeamInput };
+  | { mode: "update"; teamMemberId: string; input: ProjectTeamUpdate }
+  | { mode: "create"; input: ProjectTeamInput };
 
 export function useSaveProjectTeamMember(projectId: string) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (args: SaveProjectTeamArgs) =>
-      args.teamMemberId
+      args.mode === "update"
         ? updateProjectTeamMember(projectId, args.teamMemberId, args.input)
         : addProjectTeamMember(projectId, args.input),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: projectTeamKeys.list(projectId) }),
