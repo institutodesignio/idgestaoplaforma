@@ -8,7 +8,7 @@ import { isSupabaseConfigured, supabase } from "@/lib/supabase";
 export const Route = createFileRoute("/login")({
   ssr: false,
   validateSearch: (search: Record<string, unknown>) => ({
-    error: typeof search['error'] === "string" ? (search['error'] as string) : undefined,
+    error: typeof search["error"] === "string" ? (search["error"] as string) : undefined,
   }),
   head: () => ({
     meta: [

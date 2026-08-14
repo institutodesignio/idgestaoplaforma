@@ -1,11 +1,5 @@
 export type ProjectStatus =
-  | "PLANNING"
-  | "APPROVED"
-  | "ACTIVE"
-  | "SUSPENDED"
-  | "COMPLETED"
-  | "CANCELLED"
-  | "ARCHIVED";
+  "PLANNING" | "APPROVED" | "ACTIVE" | "SUSPENDED" | "COMPLETED" | "CANCELLED" | "ARCHIVED";
 
 export type Project = {
   id: string;

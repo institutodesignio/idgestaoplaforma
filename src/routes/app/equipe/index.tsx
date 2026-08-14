@@ -134,7 +134,9 @@ function TeamListPage() {
                           <Badge
                             key={role.id}
                             variant={
-                              roleCode(role) === TECHNICAL_RESPONSIBLE_CODE ? "default" : "secondary"
+                              roleCode(role) === TECHNICAL_RESPONSIBLE_CODE
+                                ? "default"
+                                : "secondary"
                             }
                           >
                             {roleLabel(role)}

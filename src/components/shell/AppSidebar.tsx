@@ -45,6 +45,11 @@ export function AppSidebar({ onNavigate }: { onNavigate?: () => void }) {
               >
                 <item.icon aria-hidden="true" className="size-4.5" />
                 <span>{item.label}</span>
+                {item.planned ? (
+                  <span className="ml-auto rounded-full border border-primary-foreground/25 px-2 py-0.5 text-[10px] font-medium text-primary-foreground/60">
+                    em planejamento
+                  </span>
+                ) : null}
               </Link>
             </li>
           );

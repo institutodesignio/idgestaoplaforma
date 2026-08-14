@@ -35,7 +35,10 @@ function OverviewPage() {
         </p>
       </section>
 
-      <section aria-label="Resumo do contexto institucional" className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <section
+        aria-label="Resumo do contexto institucional"
+        className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4"
+      >
         {stats.map((stat) => (
           <div key={stat.label} className="surface-card rounded-2xl p-5">
             <p className="text-3xl font-semibold tracking-tight text-foreground">{stat.value}</p>
@@ -63,7 +66,12 @@ function OverviewPage() {
                   <span className="flex size-11 items-center justify-center rounded-xl bg-secondary text-secondary-foreground">
                     <item.icon aria-hidden="true" className="size-5" />
                   </span>
-                  <span className="font-medium text-foreground">{item.label}</span>
+                  <span className="flex-1 font-medium text-foreground">{item.label}</span>
+                  {item.planned ? (
+                    <span className="rounded-full border border-border px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
+                      em planejamento
+                    </span>
+                  ) : null}
                 </Link>
               </li>
             ))}

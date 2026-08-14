@@ -29,7 +29,7 @@ function toCodes(value: unknown): string[] {
       if (typeof item === "string") return item;
       if (item && typeof item === "object") {
         const record = item as Record<string, unknown>;
-        const code = record['code'] ?? record['slug'] ?? record['permission'] ?? record['name'];
+        const code = record["code"] ?? record["slug"] ?? record["permission"] ?? record["name"];
         if (typeof code === "string") return code;
       }
       return null;
@@ -45,16 +45,15 @@ function asObject(value: unknown): Record<string, unknown> | null {
 
 export function normalizeMe(payload: unknown): InstitutionalContext {
   const root = asObject(payload) ?? {};
-  const body = asObject(root['data']) ?? root;
+  const body = asObject(root["data"]) ?? root;
 
   return {
-    user: asObject(body['user']) as InstitutionalUser | null,
-    organization: (asObject(body['organization']) ??
-      asObject(body['org'])) as NamedEntity | null,
-    membership: asObject(body['membership']) as NamedEntity | null,
-    roles: toCodes(body['roles']),
-    permissions: toCodes(body['permissions']),
-    scopes: toCodes(body['scopes']),
+    user: asObject(body["user"]) as InstitutionalUser | null,
+    organization: (asObject(body["organization"]) ?? asObject(body["org"])) as NamedEntity | null,
+    membership: asObject(body["membership"]) as NamedEntity | null,
+    roles: toCodes(body["roles"]),
+    permissions: toCodes(body["permissions"]),
+    scopes: toCodes(body["scopes"]),
     raw: payload,
   };
 }

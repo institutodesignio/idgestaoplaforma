@@ -90,7 +90,10 @@ export function ProjectUnitsSection({
       ) : (
         <ul className="space-y-3">
           {units.map((item) => (
-            <li key={item.id} className="surface-card flex flex-wrap items-center gap-4 rounded-2xl p-4">
+            <li
+              key={item.id}
+              className="surface-card flex flex-wrap items-center gap-4 rounded-2xl p-4"
+            >
               <span className="flex size-10 items-center justify-center rounded-xl bg-secondary text-secondary-foreground">
                 <Building2 aria-hidden="true" className="size-5" />
               </span>
@@ -146,7 +149,12 @@ export function ProjectUnitsSection({
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={(event) => { event.preventDefault(); void handleUnlink(); }}>
+            <AlertDialogAction
+              onClick={(event) => {
+                event.preventDefault();
+                void handleUnlink();
+              }}
+            >
               Remover
             </AlertDialogAction>
           </AlertDialogFooter>

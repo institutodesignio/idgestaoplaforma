@@ -18,6 +18,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useSession } from "@/contexts/SessionContext";
 import { ProjectFormDialog } from "@/features/projects/components/ProjectFormDialog";
 import { ProjectUnitsSection } from "@/features/projects/components/ProjectUnitsSection";
+import { ProjectTeamSection } from "@/features/project-team/components/ProjectTeamSection";
 import { useDeleteProject, useProject } from "@/features/projects/queries";
 import { PROJECT_STATUS_LABEL } from "@/features/projects/types";
 import { apiErrorMessage } from "@/lib/api";
@@ -48,7 +49,10 @@ function ProjectDetailPage() {
       await remove.mutateAsync(projectId);
       toast.success("Projeto excluído.");
       setConfirmOpen(false);
-      void navigate({ to: "/app/projetos", search: { page: 1, search: "", status: "", clinical: "" } });
+      void navigate({
+        to: "/app/projetos",
+        search: { page: 1, search: "", status: "", clinical: "" },
+      });
     } catch (error) {
       toast.error(apiErrorMessage(error));
     }
@@ -69,7 +73,9 @@ function ProjectDetailPage() {
         <p className="text-sm font-medium text-foreground">Não foi possível carregar o projeto</p>
         <p className="mt-2 text-sm text-muted-foreground">{apiErrorMessage(query.error)}</p>
         <Button variant="outline" className="mt-5" asChild>
-          <Link to="/app/projetos">Voltar para projetos</Link>
+          <Link to="/app/projetos" search={{ page: 1, search: "", status: "", clinical: "" }}>
+            Voltar para projetos
+          </Link>
         </Button>
       </div>
     );
@@ -150,6 +156,8 @@ function ProjectDetailPage() {
       </section>
 
       <ProjectUnitsSection projectId={projectId} embeddedUnits={query.data?.units ?? null} />
+
+      <ProjectTeamSection projectId={projectId} />
 
       <ProjectFormDialog open={editOpen} onOpenChange={setEditOpen} project={project} />
 

@@ -50,7 +50,9 @@ function MemberDetailPage() {
         <p className="text-sm font-medium text-foreground">Não foi possível carregar o membro</p>
         <p className="mt-2 text-sm text-muted-foreground">{apiErrorMessage(query.error)}</p>
         <Button variant="outline" className="mt-5" asChild>
-          <Link to="/app/equipe">Voltar para a equipe</Link>
+          <Link to="/app/equipe" search={{ page: 1, search: "" }}>
+            Voltar para a equipe
+          </Link>
         </Button>
       </div>
     );
@@ -89,7 +91,10 @@ function MemberDetailPage() {
         ) : null}
       </header>
 
-      <section aria-label="Dados do vínculo" className="surface-card grid gap-5 rounded-2xl p-6 sm:grid-cols-2">
+      <section
+        aria-label="Dados do vínculo"
+        className="surface-card grid gap-5 rounded-2xl p-6 sm:grid-cols-2"
+      >
         <div>
           <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
             Entrada na equipe

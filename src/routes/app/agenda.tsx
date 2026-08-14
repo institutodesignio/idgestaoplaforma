@@ -9,7 +9,10 @@ export const Route = createFileRoute("/app/agenda")({
 function Page() {
   return (
     <RequirePermission permission="appointment.read">
-      <ModulePlaceholder title="Agenda" description="Agenda institucional de atendimentos, encontros e atividades." />
+      <ModulePlaceholder
+        title="Agenda"
+        description="Agenda institucional de atendimentos, encontros e atividades."
+      />
     </RequirePermission>
   );
 }

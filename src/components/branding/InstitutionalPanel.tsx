@@ -20,9 +20,7 @@ export function InstitutionalPanel() {
         <h2 className="mt-4 text-4xl font-semibold leading-tight text-primary-foreground">
           ID Gestão
         </h2>
-        <p className="mt-3 text-base text-primary-foreground/75">
-          Plataforma de Gestão e Projetos
-        </p>
+        <p className="mt-3 text-base text-primary-foreground/75">Plataforma de Gestão e Projetos</p>
         <div className="mt-8 h-px w-16 bg-primary-foreground/25" />
         <p className="mt-6 text-lg font-light italic leading-relaxed text-primary-foreground/85">
           “Cuidado, gestão e impacto em um só ambiente.”

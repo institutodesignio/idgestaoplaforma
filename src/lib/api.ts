@@ -191,6 +191,57 @@ export function apiDelete<T>(path: string) {
   return apiFetch<T>(path, { method: "DELETE" });
 }
 
+/**
+ * Download autenticado: usado quando a resposta é um arquivo (Content-Disposition)
+ * e não um JSON — o helper comum não serve nesse caso.
+ */
+export async function apiDownload(
+  path: string,
+  fallbackFileName: string,
+): Promise<{ blob: Blob; fileName: string }> {
+  const { data, error } = await supabase.auth.getSession();
+  if (error) throw new ApiError("temporary", "Falha ao ler a sessão atual.");
+  const session = data.session;
+  if (!session?.access_token) throw new ApiError("unauthenticated", "Nenhuma sessão ativa.");
+
+  let response: Response;
+  try {
+    response = await fetch(`${API_BASE_URL}${path}`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${session.access_token}`,
+      },
+    });
+  } catch {
+    throw new ApiError("temporary", "Não foi possível contactar o servidor institucional.");
+  }
+
+  if (response.status === 401) throw new ApiError("expired", "Sessão expirada ou inválida.", 401);
+  if (response.status === 403)
+    throw new ApiError("forbidden", "Você não possui permissão para exportar estes dados.", 403);
+  if (response.status === 404) throw new ApiError("not_found", "Registro não encontrado.", 404);
+  if (!response.ok)
+    throw new ApiError("temporary", "Erro temporário do servidor institucional.", response.status);
+
+  const disposition = response.headers.get("content-disposition") ?? "";
+  const match = /filename\*?=(?:UTF-8'')?"?([^";]+)"?/i.exec(disposition);
+  const fileName = match?.[1] ? decodeURIComponent(match[1]) : fallbackFileName;
+  return { blob: await response.blob(), fileName };
+}
+
+/** Dispara o download no navegador sem persistir o conteúdo em qualquer storage. */
+export function saveBlob(blob: Blob, fileName: string) {
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = fileName;
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+  URL.revokeObjectURL(url);
+}
+
 /** Mensagem amigável para qualquer falha de API. */
 export function apiErrorMessage(error: unknown): string {
   if (error instanceof ApiError) {

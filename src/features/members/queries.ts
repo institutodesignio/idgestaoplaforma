@@ -3,9 +3,11 @@ import {
   assignMemberRole,
   endMemberRole,
   getMember,
+  inviteMember,
   listMembers,
   listRoles,
   unwrapMember,
+  type MemberInviteInput,
   type MembersListParams,
 } from "./api";
 import type { MemberRoleInput } from "./types";
@@ -66,6 +68,14 @@ export function useEndMemberRole(memberId: string) {
   return useMutation({
     mutationFn: ({ memberRoleId, endsAt }: { memberRoleId: string; endsAt: string }) =>
       endMemberRole(memberId, memberRoleId, endsAt),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: memberKeys.all }),
+  });
+}
+
+export function useInviteMember() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (input: MemberInviteInput) => inviteMember(input),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: memberKeys.all }),
   });
 }
