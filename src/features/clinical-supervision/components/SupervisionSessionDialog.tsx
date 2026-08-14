@@ -19,13 +19,11 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { FormField } from "@/features/persons/components/FormField";
-import { useMembersList } from "@/features/members/queries";
-import { memberDisplayName } from "@/features/members/types";
+import { PersonPicker } from "@/features/persons/components/PersonPicker";
 import { ApiError, apiErrorMessage } from "@/lib/api";
-import { toDateTimeInput } from "@/lib/format";
+import { toDateTimeInput, toIsoWithOffset } from "@/lib/format";
 import { useSaveSupervisionSession } from "../queries";
 import {
-  SUPERVISION_MODALITY_OPTIONS,
   SUPERVISION_SESSION_STATUS_OPTIONS,
   type SupervisionSession,
   type SupervisionSessionStatus,
@@ -44,52 +42,55 @@ export function SupervisionSessionDialog({
 }) {
   const editing = Boolean(session);
   const save = useSaveSupervisionSession(caseId);
-  const membersQuery = useMembersList({ page: 1, limit: 100 }, open);
 
   const [scheduledAt, setScheduledAt] = useState("");
-  const [modality, setModality] = useState("IN_PERSON");
   const [status, setStatus] = useState<SupervisionSessionStatus>("SCHEDULED");
-  const [supervisor, setSupervisor] = useState("");
-  const [agenda, setAgenda] = useState("");
-  const [deliberations, setDeliberations] = useState("");
+  const [supervisorId, setSupervisorId] = useState("");
+  const [supervisorName, setSupervisorName] = useState<string | null>(null);
+  const [notes, setNotes] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (!open) return;
     setErrors({});
     setScheduledAt(toDateTimeInput(session?.scheduled_at ?? null));
-    setModality(session?.modality ?? "IN_PERSON");
     setStatus((session?.status as SupervisionSessionStatus) ?? "SCHEDULED");
-    setSupervisor(session?.supervisor_member_id ?? "");
-    setAgenda(session?.agenda ?? "");
-    setDeliberations(session?.deliberations ?? "");
+    setSupervisorId(session?.supervisor_person_id ?? "");
+    setSupervisorName(null);
+    setNotes(session?.notes ?? "");
   }, [open, session]);
 
   async function handleSubmit() {
     const nextErrors: Record<string, string> = {};
     if (!scheduledAt) nextErrors["scheduled_at"] = "Informe a data e hora da sessão.";
+    if (!editing && !supervisorId)
+      nextErrors["supervisor_person_id"] = "Selecione a pessoa supervisora.";
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length > 0) return;
 
-    const iso = new Date(scheduledAt).toISOString();
+    const iso = toIsoWithOffset(scheduledAt);
+    if (!iso) {
+      setErrors({ scheduled_at: "Data e hora inválidas." });
+      return;
+    }
 
     try {
-      await save.mutateAsync({
-        ...(editing && session?.id ? { sessionId: session.id } : {}),
-        input: {
-          scheduled_at: iso,
-          modality,
-          status,
-          supervisor_member_id: supervisor || null,
-          agenda: agenda.trim() || null,
-          ...(editing
-            ? {
-                deliberations: deliberations.trim() || null,
-                held_at: status === "HELD" ? iso : null,
-              }
-            : {}),
-        },
-      });
+      if (editing && session?.id) {
+        await save.mutateAsync({
+          mode: "update",
+          sessionId: session.id,
+          input: { scheduled_at: iso, status, notes: notes.trim() || null },
+        });
+      } else {
+        await save.mutateAsync({
+          mode: "create",
+          input: {
+            supervisor_person_id: supervisorId,
+            scheduled_at: iso,
+            notes: notes.trim() || null,
+          },
+        });
+      }
       toast.success(editing ? "Sessão atualizada." : "Sessão registrada.");
       onOpenChange(false);
     } catch (error) {
@@ -100,35 +101,37 @@ export function SupervisionSessionDialog({
     }
   }
 
-  const members = membersQuery.data?.data ?? [];
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg">
+      <DialogContent className="max-h-[90vh] max-w-lg overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{editing ? "Atualizar sessão" : "Nova sessão de supervisão"}</DialogTitle>
           <DialogDescription>
-            Registre agenda e deliberações da supervisão de forma objetiva e respeitosa.
+            Registre data, situação e observações da supervisão de forma objetiva e respeitosa.
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
-          <div className="grid gap-4 sm:grid-cols-2">
-            <FormField id="session-date" label="Data e hora" error={errors["scheduled_at"]}>
-              <Input
-                id="session-date"
-                type="datetime-local"
-                value={scheduledAt}
-                onChange={(event) => setScheduledAt(event.target.value)}
-              />
-            </FormField>
-            <FormField id="session-modality" label="Modalidade" error={errors["modality"]}>
-              <Select value={modality} onValueChange={setModality}>
-                <SelectTrigger id="session-modality">
+          <FormField id="session-date" label="Data e hora" error={errors["scheduled_at"]}>
+            <Input
+              id="session-date"
+              type="datetime-local"
+              value={scheduledAt}
+              onChange={(event) => setScheduledAt(event.target.value)}
+            />
+          </FormField>
+
+          {editing ? (
+            <FormField id="session-status" label="Situação" error={errors["status"]}>
+              <Select
+                value={status}
+                onValueChange={(value) => setStatus(value as SupervisionSessionStatus)}
+              >
+                <SelectTrigger id="session-status">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {SUPERVISION_MODALITY_OPTIONS.map((option) => (
+                  {SUPERVISION_SESSION_STATUS_OPTIONS.map((option) => (
                     <SelectItem key={option.value} value={option.value}>
                       {option.label}
                     </SelectItem>
@@ -136,73 +139,36 @@ export function SupervisionSessionDialog({
                 </SelectContent>
               </Select>
             </FormField>
-          </div>
-
-          <FormField id="session-status" label="Situação" error={errors["status"]}>
-            <Select
-              value={status}
-              onValueChange={(value) => setStatus(value as SupervisionSessionStatus)}
-            >
-              <SelectTrigger id="session-status">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {SUPERVISION_SESSION_STATUS_OPTIONS.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </FormField>
-
-          <FormField
-            id="session-supervisor"
-            label="Supervisor"
-            error={errors["supervisor_member_id"]}
-            hint="Opcional."
-          >
-            <Select
-              value={supervisor || "NONE"}
-              onValueChange={(value) => setSupervisor(value === "NONE" ? "" : value)}
-            >
-              <SelectTrigger id="session-supervisor">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="NONE">Não definido</SelectItem>
-                {members.map((member) => (
-                  <SelectItem key={member.id} value={member.id}>
-                    {memberDisplayName(member)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </FormField>
-
-          <FormField id="session-agenda" label="Pauta" error={errors["agenda"]}>
-            <Textarea
-              id="session-agenda"
-              value={agenda}
-              onChange={(event) => setAgenda(event.target.value)}
-              rows={3}
-            />
-          </FormField>
-
-          {editing ? (
+          ) : (
             <FormField
-              id="session-deliberations"
-              label="Deliberações"
-              error={errors["deliberations"]}
+              id="session-supervisor"
+              label="Pessoa supervisora"
+              error={errors["supervisor_person_id"]}
             >
-              <Textarea
-                id="session-deliberations"
-                value={deliberations}
-                onChange={(event) => setDeliberations(event.target.value)}
-                rows={4}
+              <PersonPicker
+                value={supervisorId}
+                selectedLabel={supervisorName}
+                onChange={(id, person) => {
+                  setSupervisorId(id);
+                  setSupervisorName(person.full_name ?? null);
+                }}
               />
             </FormField>
-          ) : null}
+          )}
+
+          <FormField
+            id="session-notes"
+            label="Observações"
+            error={errors["notes"]}
+            hint="Pauta e deliberações registradas de forma objetiva."
+          >
+            <Textarea
+              id="session-notes"
+              value={notes}
+              onChange={(event) => setNotes(event.target.value)}
+              rows={4}
+            />
+          </FormField>
         </div>
 
         <DialogFooter>
