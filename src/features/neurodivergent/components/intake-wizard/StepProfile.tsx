@@ -1,3 +1,4 @@
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -5,10 +6,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { OptionCheckboxGroup } from "@/components/forms/OptionCheckboxGroup";
 import { FormField } from "@/features/persons/components/FormField";
-import { CONDITION_OPTIONS, DIAGNOSIS_STATUS_OPTIONS, SUPPORT_LEVEL_OPTIONS } from "../../types";
+import {
+  CONDITION_OPTIONS,
+  IDENTIFICATION_STATUS_OPTIONS,
+  REPORT_STATUS_OPTIONS,
+} from "../../types";
 import type { IntakeDraft, StepErrors } from "./state";
 
 export function StepProfile({
@@ -22,30 +26,21 @@ export function StepProfile({
 }) {
   return (
     <div className="space-y-6">
-      <OptionCheckboxGroup
-        legend="Condições declaradas"
-        hint="Você pode escolher mais de uma. Nada aqui é obrigatório declarar."
-        options={CONDITION_OPTIONS}
-        selected={draft.conditions}
-        onChange={(conditions) => onChange({ conditions })}
-        error={errors["conditions"]}
-      />
-
       <div className="grid gap-4 sm:grid-cols-2">
         <FormField
-          id="intake-diagnosis"
-          label="Situação do diagnóstico"
-          error={errors["diagnosis_status"]}
+          id="intake-identification"
+          label="Situação de identificação"
+          error={errors["identification_status"]}
         >
           <Select
-            value={draft.diagnosisStatus}
-            onValueChange={(value) => onChange({ diagnosisStatus: value })}
+            value={draft.identificationStatus}
+            onValueChange={(value) => onChange({ identificationStatus: value })}
           >
-            <SelectTrigger id="intake-diagnosis">
+            <SelectTrigger id="intake-identification">
               <SelectValue placeholder="Selecione" />
             </SelectTrigger>
             <SelectContent>
-              {DIAGNOSIS_STATUS_OPTIONS.map((option) => (
+              {IDENTIFICATION_STATUS_OPTIONS.map((option) => (
                 <SelectItem key={option.value} value={option.value}>
                   {option.label}
                 </SelectItem>
@@ -54,16 +49,20 @@ export function StepProfile({
           </Select>
         </FormField>
 
-        <FormField id="intake-support" label="Nível de apoio necessário">
+        <FormField
+          id="intake-report"
+          label="Laudo ou relatório"
+          error={errors["report_status"]}
+        >
           <Select
-            value={draft.supportLevel}
-            onValueChange={(value) => onChange({ supportLevel: value })}
+            value={draft.reportStatus}
+            onValueChange={(value) => onChange({ reportStatus: value })}
           >
-            <SelectTrigger id="intake-support">
+            <SelectTrigger id="intake-report">
               <SelectValue placeholder="Selecione" />
             </SelectTrigger>
             <SelectContent>
-              {SUPPORT_LEVEL_OPTIONS.map((option) => (
+              {REPORT_STATUS_OPTIONS.map((option) => (
                 <SelectItem key={option.value} value={option.value}>
                   {option.label}
                 </SelectItem>
@@ -73,18 +72,28 @@ export function StepProfile({
         </FormField>
       </div>
 
-      <FormField
-        id="intake-communication"
-        label="Comunicação e preferências de acolhimento"
-        hint="Conte o que ajuda no atendimento (ambiente, ritmo, formas de comunicar)."
-      >
-        <Textarea
-          id="intake-communication"
-          value={draft.communicationNotes}
-          onChange={(event) => onChange({ communicationNotes: event.target.value })}
-          rows={4}
-        />
-      </FormField>
+      <OptionCheckboxGroup
+        legend="Condições declaradas"
+        hint="Pode escolher mais de uma."
+        options={CONDITION_OPTIONS}
+        selected={draft.conditions}
+        onChange={(conditions) => onChange({ conditions })}
+        error={errors["conditions"]}
+      />
+
+      {draft.conditions.includes("OTHER") ? (
+        <FormField
+          id="intake-other-condition"
+          label="Qual outra condição"
+          error={errors["other_condition"]}
+        >
+          <Input
+            id="intake-other-condition"
+            value={draft.otherCondition}
+            onChange={(event) => onChange({ otherCondition: event.target.value })}
+          />
+        </FormField>
+      ) : null}
     </div>
   );
 }

@@ -1,6 +1,4 @@
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -8,8 +6,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { OptionCheckboxGroup } from "@/components/forms/OptionCheckboxGroup";
 import { FormField } from "@/features/persons/components/FormField";
-import { EDUCATION_STATUS_OPTIONS, WORK_STATUS_OPTIONS } from "../../types";
+import { EDUCATION_STATUS_OPTIONS, EMPLOYMENT_STATUS_OPTIONS } from "../../types";
 import type { IntakeDraft, StepErrors } from "./state";
 
 export function StepEducationWork({
@@ -22,40 +22,35 @@ export function StepEducationWork({
   onChange: (patch: Partial<IntakeDraft>) => void;
 }) {
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
+      <OptionCheckboxGroup
+        legend="Situação educacional"
+        hint="Pode escolher mais de uma opção."
+        options={EDUCATION_STATUS_OPTIONS}
+        selected={draft.educationStatuses}
+        onChange={(educationStatuses) => onChange({ educationStatuses })}
+        error={errors["education_statuses"]}
+      />
+
       <div className="grid gap-4 sm:grid-cols-2">
-        <FormField
-          id="intake-education"
-          label="Situação educacional"
-          error={errors["education_status"]}
-        >
-          <Select
-            value={draft.educationStatus}
-            onValueChange={(value) => onChange({ educationStatus: value })}
-          >
-            <SelectTrigger id="intake-education">
-              <SelectValue placeholder="Selecione" />
-            </SelectTrigger>
-            <SelectContent>
-              {EDUCATION_STATUS_OPTIONS.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+        <FormField id="intake-institution" label="Instituição de ensino">
+          <Input
+            id="intake-institution"
+            value={draft.educationInstitution}
+            onChange={(event) => onChange({ educationInstitution: event.target.value })}
+          />
         </FormField>
 
-        <FormField id="intake-work" label="Situação de trabalho" error={errors["work_status"]}>
+        <FormField id="intake-employment" label="Situação de trabalho">
           <Select
-            value={draft.workStatus}
-            onValueChange={(value) => onChange({ workStatus: value })}
+            value={draft.employmentStatus}
+            onValueChange={(value) => onChange({ employmentStatus: value })}
           >
-            <SelectTrigger id="intake-work">
+            <SelectTrigger id="intake-employment">
               <SelectValue placeholder="Selecione" />
             </SelectTrigger>
             <SelectContent>
-              {WORK_STATUS_OPTIONS.map((option) => (
+              {EMPLOYMENT_STATUS_OPTIONS.map((option) => (
                 <SelectItem key={option.value} value={option.value}>
                   {option.label}
                 </SelectItem>
@@ -65,27 +60,18 @@ export function StepEducationWork({
         </FormField>
       </div>
 
-      <FormField id="intake-school" label="Escola ou instituição de ensino">
-        <Input
-          id="intake-school"
-          value={draft.schoolName}
-          onChange={(event) => onChange({ schoolName: event.target.value })}
+      <FormField
+        id="intake-school-support"
+        label="Apoio escolar necessário"
+        hint="Descreva o que ajudaria no ambiente educacional."
+      >
+        <Textarea
+          id="intake-school-support"
+          value={draft.schoolSupportNeeded}
+          onChange={(event) => onChange({ schoolSupportNeeded: event.target.value })}
+          rows={3}
         />
       </FormField>
-
-      <div className="flex items-start gap-2">
-        <Checkbox
-          id="intake-school-support"
-          checked={draft.hasSchoolSupport}
-          onCheckedChange={(checked) => onChange({ hasSchoolSupport: checked === true })}
-        />
-        <Label
-          htmlFor="intake-school-support"
-          className="text-sm font-normal leading-snug text-foreground"
-        >
-          Recebe apoio educacional especializado atualmente
-        </Label>
-      </div>
     </div>
   );
 }
