@@ -2,7 +2,6 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Plus, Search, Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
 import { EmptyState, ErrorState, ListSkeleton } from "@/components/data/QueryStates";
-import { Pager } from "@/components/data/Pager";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,11 +13,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useSession } from "@/contexts/SessionContext";
+import { PersonName } from "@/features/persons/components/PersonName";
 import { useIntakesList } from "@/features/neurodivergent/queries";
 import {
   INTAKE_STATUS_LABEL,
   INTAKE_STATUS_OPTIONS,
-  intakeName,
   intakeProtocol,
 } from "@/features/neurodivergent/types";
 import { formatDate } from "@/lib/format";
@@ -149,12 +148,12 @@ function IntakesListPage() {
                     <Sparkles aria-hidden="true" className="size-5" />
                   </span>
                   <div className="min-w-48 flex-1">
-                    <p className="font-medium text-foreground">{intakeName(intake)}</p>
+                    <p className="font-medium text-foreground">
+                      <PersonName personId={intake.person_id} />
+                    </p>
                     <p className="text-xs text-muted-foreground">
                       Protocolo {intakeProtocol(intake)} •{" "}
-                      {[intake.city, intake.state_code].filter(Boolean).join(" / ") ||
-                        "território não informado"}{" "}
-                      • {formatDate(intake.submitted_at ?? intake.created_at)}
+                      {formatDate(intake.submitted_at ?? intake.created_at)}
                     </p>
                   </div>
                   <Badge variant="outline">
@@ -166,13 +165,36 @@ function IntakesListPage() {
           </ul>
         )}
 
-        <Pager
-          pagination={query.data?.pagination}
-          unitLabel="cadastros"
-          onChange={(next) =>
-            void navigate({ search: (prev: IntakesSearch) => ({ ...prev, page: next }) })
-          }
-        />
+        <nav
+          aria-label="Paginação"
+          className="flex flex-wrap items-center justify-between gap-3 pt-2"
+        >
+          <p className="text-xs text-muted-foreground">Página {page}</p>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={page <= 1}
+              onClick={() =>
+                void navigate({
+                  search: (prev: IntakesSearch) => ({ ...prev, page: Math.max(1, page - 1) }),
+                })
+              }
+            >
+              Anterior
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={intakes.length < LIMIT}
+              onClick={() =>
+                void navigate({ search: (prev: IntakesSearch) => ({ ...prev, page: page + 1 }) })
+              }
+            >
+              Próxima
+            </Button>
+          </div>
+        </nav>
       </section>
     </div>
   );
