@@ -1,173 +1,184 @@
-import { MAX_PRIORITY_NEEDS, type IntakeSubmitInput } from "../../types";
+import { nowIsoWithOffset } from "@/lib/format";
+import {
+  CONSENT_TERM_VERSION,
+  MAX_PRIORITY_NEEDS,
+  type CommunicationChannel,
+  type ConsentRole,
+  type IntakeChannel,
+  type IntakeRespondentRole,
+  type IntakeSubmitInput,
+} from "../../types";
 
 export type IntakeDraft = {
   personId: string;
   personLabel: string | null;
-  fullName: string;
-  preferredName: string;
-  birthDate: string;
-  phone: string;
-  email: string;
-  postalCode: string;
-  city: string;
-  stateCode: string;
-  neighborhood: string;
+  respondentRole: IntakeRespondentRole | "";
+  respondentPersonId: string;
+  respondentPersonLabel: string | null;
+  respondentRelationship: string;
+  channel: IntakeChannel;
+  identificationStatus: string;
   conditions: string[];
-  diagnosisStatus: string;
-  supportLevel: string;
-  communicationNotes: string;
-  educationStatus: string;
-  schoolName: string;
-  hasSchoolSupport: boolean;
-  workStatus: string;
-  supportNetwork: string[];
+  otherCondition: string;
+  reportStatus: string;
+  educationStatuses: string[];
+  educationInstitution: string;
+  schoolSupportNeeded: string;
+  employmentStatus: string;
+  serviceNetworks: string[];
+  currentServices: string;
+  waitingForService: boolean;
+  waitingDetails: string;
   priorityNeeds: string[];
-  additionalNotes: string;
-  guardians: {
-    fullName: string;
-    relationship: string;
-    phone: string;
-    email: string;
-    isLegalGuardian: boolean;
-  }[];
-  consents: Record<string, boolean>;
+  primaryNeedBarrier: string;
+  accessibilitySupports: string[];
+  accessibilityOther: string;
+  consentedByPersonId: string;
+  consentedByPersonLabel: string | null;
+  consentRole: ConsentRole | "";
+  sensitiveDataConsent: boolean;
+  assentRecorded: boolean;
+  communicationChannels: string[];
 };
 
 export const EMPTY_DRAFT: IntakeDraft = {
   personId: "",
   personLabel: null,
-  fullName: "",
-  preferredName: "",
-  birthDate: "",
-  phone: "",
-  email: "",
-  postalCode: "",
-  city: "",
-  stateCode: "",
-  neighborhood: "",
+  respondentRole: "",
+  respondentPersonId: "",
+  respondentPersonLabel: null,
+  respondentRelationship: "",
+  channel: "IN_PERSON",
+  identificationStatus: "",
   conditions: [],
-  diagnosisStatus: "",
-  supportLevel: "",
-  communicationNotes: "",
-  educationStatus: "",
-  schoolName: "",
-  hasSchoolSupport: false,
-  workStatus: "",
-  supportNetwork: [],
+  otherCondition: "",
+  reportStatus: "",
+  educationStatuses: [],
+  educationInstitution: "",
+  schoolSupportNeeded: "",
+  employmentStatus: "",
+  serviceNetworks: [],
+  currentServices: "",
+  waitingForService: false,
+  waitingDetails: "",
   priorityNeeds: [],
-  additionalNotes: "",
-  guardians: [],
-  consents: {},
+  primaryNeedBarrier: "",
+  accessibilitySupports: [],
+  accessibilityOther: "",
+  consentedByPersonId: "",
+  consentedByPersonLabel: null,
+  consentRole: "",
+  sensitiveDataConsent: false,
+  assentRecorded: false,
+  communicationChannels: [],
 };
 
 export const STEP_TITLES = [
-  "Pessoa e território",
+  "Pessoa e quem responde",
   "Perfil",
   "Educação e trabalho",
   "Rede e necessidades",
-  "Responsáveis",
-  "Privacidade",
+  "Consentimento",
   "Revisão",
 ];
 
 export type StepErrors = Record<string, string>;
 
-/** Validação por etapa — nenhuma etapa avança com dado essencial ausente. */
-export function validateStep(
-  step: number,
-  draft: IntakeDraft,
-  requiredConsents: string[],
-): StepErrors {
+/** Validação por etapa espelhando os schemas estritos do backend. */
+export function validateStep(step: number, draft: IntakeDraft): StepErrors {
   const errors: StepErrors = {};
 
   if (step === 0) {
-    if (!draft.fullName.trim()) errors["full_name"] = "Informe o nome da pessoa.";
-    if (!draft.city.trim()) errors["city"] = "Informe a cidade.";
-    if (!draft.stateCode.trim()) errors["state_code"] = "Informe o estado (UF).";
+    if (!draft.personId) errors["person_id"] = "Selecione a pessoa já cadastrada em Pessoas.";
+    if (!draft.respondentRole) errors["respondent_role"] = "Informe quem está respondendo.";
+    if (draft.respondentRole && draft.respondentRole !== "SELF" && !draft.respondentPersonId)
+      errors["respondent_person_id"] = "Selecione a pessoa que está respondendo.";
+    if (draft.respondentRole === "OTHER" && !draft.respondentRelationship.trim())
+      errors["respondent_relationship"] = "Descreva o vínculo com a pessoa.";
   }
 
   if (step === 1) {
+    if (!draft.identificationStatus)
+      errors["identification_status"] = "Escolha a situação de identificação.";
     if (draft.conditions.length === 0)
-      errors["conditions"] = "Selecione ao menos uma opção, inclusive “Prefiro não informar”.";
-    if (!draft.diagnosisStatus) errors["diagnosis_status"] = "Escolha a situação do diagnóstico.";
+      errors["conditions"] = "Selecione ao menos uma condição declarada.";
+    if (draft.conditions.includes("OTHER") && !draft.otherCondition.trim())
+      errors["other_condition"] = "Descreva a outra condição.";
+    if (!draft.reportStatus) errors["report_status"] = "Informe a situação do laudo ou relatório.";
   }
 
   if (step === 2) {
-    if (!draft.educationStatus) errors["education_status"] = "Escolha a situação educacional.";
-    if (!draft.workStatus) errors["work_status"] = "Escolha a situação de trabalho.";
+    if (draft.educationStatuses.length === 0)
+      errors["education_statuses"] = "Selecione ao menos uma situação educacional.";
   }
 
   if (step === 3) {
-    if (draft.supportNetwork.length === 0)
-      errors["support_network"] = "Selecione ao menos uma opção de rede de apoio.";
+    if (draft.serviceNetworks.length === 0)
+      errors["service_networks"] = "Selecione ao menos uma rede de serviços.";
     if (draft.priorityNeeds.length === 0)
       errors["priority_needs"] = "Escolha ao menos uma necessidade prioritária.";
     if (draft.priorityNeeds.length > MAX_PRIORITY_NEEDS)
       errors["priority_needs"] = `Escolha no máximo ${MAX_PRIORITY_NEEDS} necessidades.`;
+    if (!draft.primaryNeedBarrier.trim())
+      errors["primary_need_barrier"] = "Descreva a principal barreira enfrentada.";
+    if (draft.accessibilitySupports.includes("OTHER") && !draft.accessibilityOther.trim())
+      errors["accessibility_other"] = "Descreva o outro apoio de acessibilidade.";
+    if (draft.waitingForService && !draft.waitingDetails.trim())
+      errors["waiting_details"] = "Informe o que está aguardando.";
   }
 
   if (step === 4) {
-    draft.guardians.forEach((guardian, index) => {
-      if (!guardian.fullName.trim()) errors[`guardian_${index}_name`] = "Informe o nome.";
-      if (!guardian.relationship.trim())
-        errors[`guardian_${index}_relationship`] = "Informe o vínculo com a pessoa.";
-    });
-  }
-
-  if (step === 5) {
-    for (const type of requiredConsents) {
-      if (!draft.consents[type]) {
-        errors[`consent_${type}`] = "Este consentimento é necessário para concluir o cadastro.";
-      }
-    }
+    if (!draft.consentedByPersonId)
+      errors["consented_by_person_id"] = "Selecione quem assina o consentimento.";
+    if (!draft.consentRole) errors["consent_role"] = "Informe o papel de quem consente.";
+    if (!draft.sensitiveDataConsent)
+      errors["sensitive_data_consent"] =
+        "O consentimento para dados sensíveis é necessário para concluir.";
+    if (draft.communicationChannels.length === 0)
+      errors["communication_channels"] = "Escolha ao menos um canal de comunicação.";
   }
 
   return errors;
 }
 
 export function draftToPayload(draft: IntakeDraft): IntakeSubmitInput {
+  const isSelf = draft.respondentRole === "SELF";
   return {
-    person: {
-      person_id: draft.personId || null,
-      full_name: draft.fullName.trim(),
-      preferred_name: draft.preferredName.trim() || null,
-      birth_date: draft.birthDate || null,
-      primary_phone: draft.phone.trim() || null,
-      primary_email: draft.email.trim() || null,
-    },
-    territory: {
-      postal_code: draft.postalCode.trim() || null,
-      city: draft.city.trim(),
-      state_code: draft.stateCode.trim().toUpperCase(),
-      neighborhood: draft.neighborhood.trim() || null,
-    },
+    person_id: draft.personId,
+    respondent_person_id: isSelf ? null : draft.respondentPersonId || null,
+    respondent_role: draft.respondentRole as IntakeRespondentRole,
+    respondent_relationship: draft.respondentRelationship.trim() || null,
+    channel: draft.channel,
     profile: {
+      identification_status: draft.identificationStatus,
       conditions: draft.conditions,
-      diagnosis_status: draft.diagnosisStatus,
-      support_level: draft.supportLevel || null,
-      communication_notes: draft.communicationNotes.trim() || null,
-    },
-    education_work: {
-      education_status: draft.educationStatus,
-      school_name: draft.schoolName.trim() || null,
-      has_school_support: draft.hasSchoolSupport,
-      work_status: draft.workStatus,
-    },
-    network_needs: {
-      support_network: draft.supportNetwork,
+      other_condition: draft.conditions.includes("OTHER")
+        ? draft.otherCondition.trim() || null
+        : null,
+      report_status: draft.reportStatus,
+      education_statuses: draft.educationStatuses,
+      education_institution: draft.educationInstitution.trim() || null,
+      school_support_needed: draft.schoolSupportNeeded.trim() || null,
+      employment_status: draft.employmentStatus || null,
+      service_networks: draft.serviceNetworks,
+      current_services: draft.currentServices.trim() || null,
+      waiting_for_service: draft.waitingForService,
+      waiting_details: draft.waitingForService ? draft.waitingDetails.trim() || null : null,
       priority_needs: draft.priorityNeeds,
-      additional_notes: draft.additionalNotes.trim() || null,
+      primary_need_barrier: draft.primaryNeedBarrier.trim(),
+      accessibility_supports: draft.accessibilitySupports,
+      accessibility_other: draft.accessibilitySupports.includes("OTHER")
+        ? draft.accessibilityOther.trim() || null
+        : null,
     },
-    guardians: draft.guardians.map((guardian) => ({
-      full_name: guardian.fullName.trim(),
-      relationship: guardian.relationship.trim(),
-      phone: guardian.phone.trim() || null,
-      email: guardian.email.trim() || null,
-      is_legal_guardian: guardian.isLegalGuardian,
-    })),
-    consents: Object.entries(draft.consents).map(([consent_type, granted]) => ({
-      consent_type,
-      granted,
-    })),
+    consent: {
+      consented_by_person_id: draft.consentedByPersonId,
+      consent_role: draft.consentRole as ConsentRole,
+      term_version: CONSENT_TERM_VERSION,
+      sensitive_data_consent: true,
+      assent_recorded: draft.assentRecorded,
+      communication_channels: draft.communicationChannels as CommunicationChannel[],
+      signed_at: nowIsoWithOffset(),
+    },
   };
 }
