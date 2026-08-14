@@ -15,6 +15,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppIndexRouteImport } from './routes/app/index'
 import { Route as AppAdministracaoRouteImport } from './routes/app/administracao'
 import { Route as AppAgendaRouteImport } from './routes/app/agenda'
+import { Route as AppCadastroNeurodivergenteRouteImport } from './routes/app/cadastro-neurodivergente'
 import { Route as AppDemandasRouteImport } from './routes/app/demandas'
 import { Route as AppDocumentosRouteImport } from './routes/app/documentos'
 import { Route as AppEquipeRouteImport } from './routes/app/equipe'
@@ -24,6 +25,9 @@ import { Route as AppProjetosRouteImport } from './routes/app/projetos'
 import { Route as AppSupervisaoRouteImport } from './routes/app/supervisao'
 import { Route as AppUnidadesRouteImport } from './routes/app/unidades'
 import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
+import { Route as AppCadastroNeurodivergenteIndexRouteImport } from './routes/app/cadastro-neurodivergente/index'
+import { Route as AppCadastroNeurodivergenteIntakeIdRouteImport } from './routes/app/cadastro-neurodivergente/$intakeId'
+import { Route as AppCadastroNeurodivergenteNovoRouteImport } from './routes/app/cadastro-neurodivergente/novo'
 import { Route as AppEquipeIndexRouteImport } from './routes/app/equipe/index'
 import { Route as AppEquipeMemberIdRouteImport } from './routes/app/equipe/$memberId'
 import { Route as AppPessoasIndexRouteImport } from './routes/app/pessoas/index'
@@ -65,6 +69,12 @@ const AppAgendaRoute = AppAgendaRouteImport.update({
   path: '/agenda',
   getParentRoute: () => AppRoute,
 } as any)
+const AppCadastroNeurodivergenteRoute =
+  AppCadastroNeurodivergenteRouteImport.update({
+    id: '/cadastro-neurodivergente',
+    path: '/cadastro-neurodivergente',
+    getParentRoute: () => AppRoute,
+  } as any)
 const AppDemandasRoute = AppDemandasRouteImport.update({
   id: '/demandas',
   path: '/demandas',
@@ -110,6 +120,24 @@ const AuthCallbackRoute = AuthCallbackRouteImport.update({
   path: '/auth/callback',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppCadastroNeurodivergenteIndexRoute =
+  AppCadastroNeurodivergenteIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AppCadastroNeurodivergenteRoute,
+  } as any)
+const AppCadastroNeurodivergenteIntakeIdRoute =
+  AppCadastroNeurodivergenteIntakeIdRouteImport.update({
+    id: '/$intakeId',
+    path: '/$intakeId',
+    getParentRoute: () => AppCadastroNeurodivergenteRoute,
+  } as any)
+const AppCadastroNeurodivergenteNovoRoute =
+  AppCadastroNeurodivergenteNovoRouteImport.update({
+    id: '/novo',
+    path: '/novo',
+    getParentRoute: () => AppCadastroNeurodivergenteRoute,
+  } as any)
 const AppEquipeIndexRoute = AppEquipeIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -167,6 +195,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/app/administracao': typeof AppAdministracaoRoute
   '/app/agenda': typeof AppAgendaRoute
+  '/app/cadastro-neurodivergente': typeof AppCadastroNeurodivergenteRouteWithChildren
   '/app/demandas': typeof AppDemandasRoute
   '/app/documentos': typeof AppDocumentosRoute
   '/app/equipe': typeof AppEquipeRouteWithChildren
@@ -177,11 +206,14 @@ export interface FileRoutesByFullPath {
   '/app/unidades': typeof AppUnidadesRouteWithChildren
   '/auth/callback': typeof AuthCallbackRoute
   '/app/': typeof AppIndexRoute
+  '/app/cadastro-neurodivergente/$intakeId': typeof AppCadastroNeurodivergenteIntakeIdRoute
+  '/app/cadastro-neurodivergente/novo': typeof AppCadastroNeurodivergenteNovoRoute
   '/app/equipe/$memberId': typeof AppEquipeMemberIdRoute
   '/app/pessoas/$personId': typeof AppPessoasPersonIdRoute
   '/app/projetos/$projectId': typeof AppProjetosProjectIdRoute
   '/app/supervisao/$caseId': typeof AppSupervisaoCaseIdRoute
   '/app/unidades/$unitId': typeof AppUnidadesUnitIdRoute
+  '/app/cadastro-neurodivergente/': typeof AppCadastroNeurodivergenteIndexRoute
   '/app/equipe/': typeof AppEquipeIndexRoute
   '/app/pessoas/': typeof AppPessoasIndexRoute
   '/app/projetos/': typeof AppProjetosIndexRoute
@@ -198,11 +230,14 @@ export interface FileRoutesByTo {
   '/app/financeiro': typeof AppFinanceiroRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/app': typeof AppIndexRoute
+  '/app/cadastro-neurodivergente/$intakeId': typeof AppCadastroNeurodivergenteIntakeIdRoute
+  '/app/cadastro-neurodivergente/novo': typeof AppCadastroNeurodivergenteNovoRoute
   '/app/equipe/$memberId': typeof AppEquipeMemberIdRoute
   '/app/pessoas/$personId': typeof AppPessoasPersonIdRoute
   '/app/projetos/$projectId': typeof AppProjetosProjectIdRoute
   '/app/supervisao/$caseId': typeof AppSupervisaoCaseIdRoute
   '/app/unidades/$unitId': typeof AppUnidadesUnitIdRoute
+  '/app/cadastro-neurodivergente': typeof AppCadastroNeurodivergenteIndexRoute
   '/app/equipe': typeof AppEquipeIndexRoute
   '/app/pessoas': typeof AppPessoasIndexRoute
   '/app/projetos': typeof AppProjetosIndexRoute
@@ -216,6 +251,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/app/administracao': typeof AppAdministracaoRoute
   '/app/agenda': typeof AppAgendaRoute
+  '/app/cadastro-neurodivergente': typeof AppCadastroNeurodivergenteRouteWithChildren
   '/app/demandas': typeof AppDemandasRoute
   '/app/documentos': typeof AppDocumentosRoute
   '/app/equipe': typeof AppEquipeRouteWithChildren
@@ -226,11 +262,14 @@ export interface FileRoutesById {
   '/app/unidades': typeof AppUnidadesRouteWithChildren
   '/auth/callback': typeof AuthCallbackRoute
   '/app/': typeof AppIndexRoute
+  '/app/cadastro-neurodivergente/$intakeId': typeof AppCadastroNeurodivergenteIntakeIdRoute
+  '/app/cadastro-neurodivergente/novo': typeof AppCadastroNeurodivergenteNovoRoute
   '/app/equipe/$memberId': typeof AppEquipeMemberIdRoute
   '/app/pessoas/$personId': typeof AppPessoasPersonIdRoute
   '/app/projetos/$projectId': typeof AppProjetosProjectIdRoute
   '/app/supervisao/$caseId': typeof AppSupervisaoCaseIdRoute
   '/app/unidades/$unitId': typeof AppUnidadesUnitIdRoute
+  '/app/cadastro-neurodivergente/': typeof AppCadastroNeurodivergenteIndexRoute
   '/app/equipe/': typeof AppEquipeIndexRoute
   '/app/pessoas/': typeof AppPessoasIndexRoute
   '/app/projetos/': typeof AppProjetosIndexRoute
@@ -245,6 +284,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/app/administracao'
     | '/app/agenda'
+    | '/app/cadastro-neurodivergente'
     | '/app/demandas'
     | '/app/documentos'
     | '/app/equipe'
@@ -255,11 +295,14 @@ export interface FileRouteTypes {
     | '/app/unidades'
     | '/auth/callback'
     | '/app/'
+    | '/app/cadastro-neurodivergente/$intakeId'
+    | '/app/cadastro-neurodivergente/novo'
     | '/app/equipe/$memberId'
     | '/app/pessoas/$personId'
     | '/app/projetos/$projectId'
     | '/app/supervisao/$caseId'
     | '/app/unidades/$unitId'
+    | '/app/cadastro-neurodivergente/'
     | '/app/equipe/'
     | '/app/pessoas/'
     | '/app/projetos/'
@@ -276,11 +319,14 @@ export interface FileRouteTypes {
     | '/app/financeiro'
     | '/auth/callback'
     | '/app'
+    | '/app/cadastro-neurodivergente/$intakeId'
+    | '/app/cadastro-neurodivergente/novo'
     | '/app/equipe/$memberId'
     | '/app/pessoas/$personId'
     | '/app/projetos/$projectId'
     | '/app/supervisao/$caseId'
     | '/app/unidades/$unitId'
+    | '/app/cadastro-neurodivergente'
     | '/app/equipe'
     | '/app/pessoas'
     | '/app/projetos'
@@ -293,6 +339,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/app/administracao'
     | '/app/agenda'
+    | '/app/cadastro-neurodivergente'
     | '/app/demandas'
     | '/app/documentos'
     | '/app/equipe'
@@ -303,11 +350,14 @@ export interface FileRouteTypes {
     | '/app/unidades'
     | '/auth/callback'
     | '/app/'
+    | '/app/cadastro-neurodivergente/$intakeId'
+    | '/app/cadastro-neurodivergente/novo'
     | '/app/equipe/$memberId'
     | '/app/pessoas/$personId'
     | '/app/projetos/$projectId'
     | '/app/supervisao/$caseId'
     | '/app/unidades/$unitId'
+    | '/app/cadastro-neurodivergente/'
     | '/app/equipe/'
     | '/app/pessoas/'
     | '/app/projetos/'
@@ -364,6 +414,13 @@ declare module '@tanstack/react-router' {
       path: '/agenda'
       fullPath: '/app/agenda'
       preLoaderRoute: typeof AppAgendaRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/cadastro-neurodivergente': {
+      id: '/app/cadastro-neurodivergente'
+      path: '/cadastro-neurodivergente'
+      fullPath: '/app/cadastro-neurodivergente'
+      preLoaderRoute: typeof AppCadastroNeurodivergenteRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/demandas': {
@@ -428,6 +485,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/auth/callback'
       preLoaderRoute: typeof AuthCallbackRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/app/cadastro-neurodivergente/': {
+      id: '/app/cadastro-neurodivergente/'
+      path: '/'
+      fullPath: '/app/cadastro-neurodivergente/'
+      preLoaderRoute: typeof AppCadastroNeurodivergenteIndexRouteImport
+      parentRoute: typeof AppCadastroNeurodivergenteRoute
+    }
+    '/app/cadastro-neurodivergente/$intakeId': {
+      id: '/app/cadastro-neurodivergente/$intakeId'
+      path: '/$intakeId'
+      fullPath: '/app/cadastro-neurodivergente/$intakeId'
+      preLoaderRoute: typeof AppCadastroNeurodivergenteIntakeIdRouteImport
+      parentRoute: typeof AppCadastroNeurodivergenteRoute
+    }
+    '/app/cadastro-neurodivergente/novo': {
+      id: '/app/cadastro-neurodivergente/novo'
+      path: '/novo'
+      fullPath: '/app/cadastro-neurodivergente/novo'
+      preLoaderRoute: typeof AppCadastroNeurodivergenteNovoRouteImport
+      parentRoute: typeof AppCadastroNeurodivergenteRoute
     }
     '/app/equipe/': {
       id: '/app/equipe/'
@@ -502,6 +580,25 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AppCadastroNeurodivergenteRouteChildren {
+  AppCadastroNeurodivergenteIntakeIdRoute: typeof AppCadastroNeurodivergenteIntakeIdRoute
+  AppCadastroNeurodivergenteNovoRoute: typeof AppCadastroNeurodivergenteNovoRoute
+  AppCadastroNeurodivergenteIndexRoute: typeof AppCadastroNeurodivergenteIndexRoute
+}
+
+const AppCadastroNeurodivergenteRouteChildren: AppCadastroNeurodivergenteRouteChildren =
+  {
+    AppCadastroNeurodivergenteIntakeIdRoute:
+      AppCadastroNeurodivergenteIntakeIdRoute,
+    AppCadastroNeurodivergenteNovoRoute: AppCadastroNeurodivergenteNovoRoute,
+    AppCadastroNeurodivergenteIndexRoute: AppCadastroNeurodivergenteIndexRoute,
+  }
+
+const AppCadastroNeurodivergenteRouteWithChildren =
+  AppCadastroNeurodivergenteRoute._addFileChildren(
+    AppCadastroNeurodivergenteRouteChildren,
+  )
+
 interface AppEquipeRouteChildren {
   AppEquipeMemberIdRoute: typeof AppEquipeMemberIdRoute
   AppEquipeIndexRoute: typeof AppEquipeIndexRoute
@@ -575,6 +672,7 @@ const AppUnidadesRouteWithChildren = AppUnidadesRoute._addFileChildren(
 interface AppRouteChildren {
   AppAdministracaoRoute: typeof AppAdministracaoRoute
   AppAgendaRoute: typeof AppAgendaRoute
+  AppCadastroNeurodivergenteRoute: typeof AppCadastroNeurodivergenteRouteWithChildren
   AppDemandasRoute: typeof AppDemandasRoute
   AppDocumentosRoute: typeof AppDocumentosRoute
   AppEquipeRoute: typeof AppEquipeRouteWithChildren
@@ -589,6 +687,7 @@ interface AppRouteChildren {
 const AppRouteChildren: AppRouteChildren = {
   AppAdministracaoRoute: AppAdministracaoRoute,
   AppAgendaRoute: AppAgendaRoute,
+  AppCadastroNeurodivergenteRoute: AppCadastroNeurodivergenteRouteWithChildren,
   AppDemandasRoute: AppDemandasRoute,
   AppDocumentosRoute: AppDocumentosRoute,
   AppEquipeRoute: AppEquipeRouteWithChildren,
