@@ -18,7 +18,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { useSession } from "@/contexts/SessionContext";
 import { FormField } from "@/features/persons/components/FormField";
 import { PersonPicker } from "@/features/persons/components/PersonPicker";
 import { ApiError, apiErrorMessage } from "@/lib/api";
@@ -32,14 +31,12 @@ export function PrivacyRequestFormDialog({
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
-  const { can } = useSession();
   const create = useCreatePrivacyRequest();
 
   const [requestType, setRequestType] = useState<PrivacyRequestType>("ACCESS");
   const [personId, setPersonId] = useState("");
   const [personName, setPersonName] = useState<string | null>(null);
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [dueAt, setDueAt] = useState("");
   const [description, setDescription] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -48,16 +45,14 @@ export function PrivacyRequestFormDialog({
     setRequestType("ACCESS");
     setPersonId("");
     setPersonName(null);
-    setName("");
-    setEmail("");
+    setDueAt("");
     setDescription("");
     setErrors({});
   }, [open]);
 
   async function handleSubmit() {
     const nextErrors: Record<string, string> = {};
-    if (!name.trim()) nextErrors["requester_name"] = "Informe o nome do titular ou solicitante.";
-    if (!email.trim()) nextErrors["requester_email"] = "Informe um e-mail para retorno.";
+    if (!personId) nextErrors["person_id"] = "Selecione o titular já cadastrado em Pessoas.";
     if (!description.trim()) nextErrors["description"] = "Descreva o pedido recebido.";
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length > 0) return;
@@ -65,10 +60,9 @@ export function PrivacyRequestFormDialog({
     try {
       await create.mutateAsync({
         request_type: requestType,
-        person_id: personId || null,
-        requester_name: name.trim(),
-        requester_email: email.trim(),
+        person_id: personId,
         description: description.trim(),
+        due_at: dueAt || null,
       });
       toast.success("Solicitação registrada.");
       onOpenChange(false);
@@ -109,40 +103,35 @@ export function PrivacyRequestFormDialog({
             </Select>
           </FormField>
 
-          {can("person.read") ? (
-            <FormField
-              id="privacy-person"
-              label="Pessoa relacionada"
-              hint="Opcional, quando o titular já está cadastrado."
-            >
-              <PersonPicker
-                value={personId}
-                selectedLabel={personName}
-                onChange={(id, person) => {
-                  setPersonId(id);
-                  setPersonName(person.full_name ?? null);
-                }}
-              />
-            </FormField>
-          ) : null}
+          <FormField
+            id="privacy-person"
+            label="Titular dos dados"
+            error={errors["person_id"]}
+            hint="O titular precisa estar cadastrado no módulo Pessoas."
+          >
+            <PersonPicker
+              value={personId}
+              selectedLabel={personName}
+              onChange={(id, person) => {
+                setPersonId(id);
+                setPersonName(person.full_name ?? null);
+              }}
+            />
+          </FormField>
 
-          <div className="grid gap-4 sm:grid-cols-2">
-            <FormField id="privacy-name" label="Solicitante" error={errors["requester_name"]}>
-              <Input
-                id="privacy-name"
-                value={name}
-                onChange={(event) => setName(event.target.value)}
-              />
-            </FormField>
-            <FormField id="privacy-email" label="E-mail" error={errors["requester_email"]}>
-              <Input
-                id="privacy-email"
-                type="email"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-              />
-            </FormField>
-          </div>
+          <FormField
+            id="privacy-due"
+            label="Prazo de resposta"
+            error={errors["due_at"]}
+            hint="Opcional. O backend aplica o prazo legal padrão quando não informado."
+          >
+            <Input
+              id="privacy-due"
+              type="date"
+              value={dueAt}
+              onChange={(event) => setDueAt(event.target.value)}
+            />
+          </FormField>
 
           <FormField id="privacy-description" label="Descrição" error={errors["description"]}>
             <Textarea
