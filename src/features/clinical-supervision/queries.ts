@@ -2,10 +2,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createSupervisionCase,
   createSupervisionSession,
-  getSupervisionCase,
   listSupervisionCases,
   listSupervisionSessions,
-  unwrapSupervisionCase,
   updateSupervisionCase,
   updateSupervisionSession,
   type SupervisionCasesListParams,
@@ -20,7 +18,6 @@ import type {
 export const supervisionKeys = {
   all: ["clinical-supervision"] as const,
   list: (params: SupervisionCasesListParams) => ["clinical-supervision", "list", params] as const,
-  detail: (id: string) => ["clinical-supervision", "detail", id] as const,
   sessions: (id: string) => ["clinical-supervision", "sessions", id] as const,
 };
 
@@ -34,16 +31,15 @@ export function useSupervisionCases(params: SupervisionCasesListParams, enabled 
   });
 }
 
-export function useSupervisionCase(id: string, enabled = true) {
-  return useQuery({
-    queryKey: supervisionKeys.detail(id),
-    queryFn: async () => {
-      const payload = await getSupervisionCase(id);
-      return { case: unwrapSupervisionCase(payload), sessions: payload.sessions ?? null };
-    },
-    enabled: enabled && Boolean(id),
-    retry: false,
-  });
+/**
+ * Não existe GET /cases/:id no backend: o caso é localizado na listagem
+ * (aproveitando o cache do React Query).
+ */
+export function useSupervisionCaseFromList(caseId: string, enabled = true) {
+  const params: SupervisionCasesListParams = { page: 1, limit: 100, status: "" };
+  const query = useSupervisionCases(params, enabled);
+  const found = (query.data?.data ?? []).find((item) => item.id === caseId) ?? null;
+  return { ...query, supervisionCase: found };
 }
 
 export function useSupervisionSessions(caseId: string, enabled = true) {
@@ -51,7 +47,7 @@ export function useSupervisionSessions(caseId: string, enabled = true) {
     queryKey: supervisionKeys.sessions(caseId),
     queryFn: async () => {
       const payload = await listSupervisionSessions(caseId);
-      return payload.data ?? payload.sessions ?? [];
+      return payload.data ?? [];
     },
     enabled: enabled && Boolean(caseId),
     retry: false,

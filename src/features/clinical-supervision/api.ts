@@ -1,5 +1,4 @@
 import { apiGet, apiPatch, apiPost } from "@/lib/api";
-import type { Pagination } from "@/features/persons/types";
 import type {
   SupervisionCase,
   SupervisionCaseInput,
@@ -18,8 +17,9 @@ export type SupervisionCasesListParams = {
 
 const BASE = "/api/v1/clinical-supervision/cases";
 
+/** A listagem do backend clínico não devolve paginação. */
 export function listSupervisionCases(params: SupervisionCasesListParams) {
-  return apiGet<{ data: SupervisionCase[]; pagination?: Pagination }>(BASE, {
+  return apiGet<{ data: SupervisionCase[] }>(BASE, {
     page: params.page,
     limit: params.limit,
     status: params.status || undefined,
@@ -27,31 +27,20 @@ export function listSupervisionCases(params: SupervisionCasesListParams) {
   });
 }
 
-export type SupervisionCaseDetailResponse = {
-  case?: SupervisionCase;
-  sessions?: SupervisionSession[];
-} & Partial<SupervisionCase>;
-
-export function getSupervisionCase(id: string) {
-  return apiGet<SupervisionCaseDetailResponse>(`${BASE}/${id}`);
-}
-
 export function createSupervisionCase(input: SupervisionCaseInput) {
-  return apiPost<{ case?: SupervisionCase }>(BASE, input);
+  return apiPost<{ data?: SupervisionCase }>(BASE, input);
 }
 
 export function updateSupervisionCase(id: string, input: SupervisionCaseUpdate) {
-  return apiPatch<{ case?: SupervisionCase }>(`${BASE}/${id}`, input);
+  return apiPatch<{ data?: SupervisionCase }>(`${BASE}/${id}`, input);
 }
 
 export function listSupervisionSessions(caseId: string) {
-  return apiGet<{ data?: SupervisionSession[]; sessions?: SupervisionSession[] }>(
-    `${BASE}/${caseId}/sessions`,
-  );
+  return apiGet<{ data: SupervisionSession[] }>(`${BASE}/${caseId}/sessions`);
 }
 
 export function createSupervisionSession(caseId: string, input: SupervisionSessionInput) {
-  return apiPost<{ session?: SupervisionSession }>(`${BASE}/${caseId}/sessions`, input);
+  return apiPost<{ data?: SupervisionSession }>(`${BASE}/${caseId}/sessions`, input);
 }
 
 export function updateSupervisionSession(
@@ -59,16 +48,5 @@ export function updateSupervisionSession(
   sessionId: string,
   input: SupervisionSessionUpdate,
 ) {
-  return apiPatch<{ session?: SupervisionSession }>(
-    `${BASE}/${caseId}/sessions/${sessionId}`,
-    input,
-  );
-}
-
-export function unwrapSupervisionCase(
-  payload: SupervisionCaseDetailResponse | undefined,
-): SupervisionCase | null {
-  if (!payload || typeof payload !== "object") return null;
-  if (payload.case) return payload.case;
-  return payload.id ? (payload as SupervisionCase) : null;
+  return apiPatch<{ data?: SupervisionSession }>(`${BASE}/${caseId}/sessions/${sessionId}`, input);
 }
