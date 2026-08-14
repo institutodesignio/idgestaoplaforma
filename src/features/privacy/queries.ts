@@ -30,7 +30,7 @@ export function useRetentionReviews(enabled = true) {
     queryKey: privacyKeys.retention,
     queryFn: async () => {
       const payload = await listRetentionReviews();
-      return payload.data ?? payload.reviews ?? [];
+      return payload.data ?? [];
     },
     enabled,
     retry: false,

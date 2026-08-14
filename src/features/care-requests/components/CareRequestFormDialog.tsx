@@ -43,8 +43,8 @@ export function CareRequestFormDialog({
   const [personId, setPersonId] = useState("");
   const [personName, setPersonName] = useState<string | null>(null);
   const [projectId, setProjectId] = useState("");
-  const [service, setService] = useState("");
-  const [priority, setPriority] = useState<CareRequestPriority>("MEDIUM");
+  const [category, setCategory] = useState("");
+  const [priority, setPriority] = useState<CareRequestPriority>("NORMAL");
   const [description, setDescription] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -53,8 +53,8 @@ export function CareRequestFormDialog({
     setPersonId("");
     setPersonName(null);
     setProjectId("");
-    setService("");
-    setPriority("MEDIUM");
+    setCategory("");
+    setPriority("NORMAL");
     setDescription("");
     setErrors({});
   }, [open]);
@@ -62,7 +62,8 @@ export function CareRequestFormDialog({
   async function handleSubmit() {
     const nextErrors: Record<string, string> = {};
     if (!personId) nextErrors["person_id"] = "Selecione a pessoa desta demanda.";
-    if (!service.trim()) nextErrors["requested_service"] = "Descreva o serviço solicitado.";
+    if (!category.trim()) nextErrors["category"] = "Informe a categoria da demanda.";
+    if (!description.trim()) nextErrors["description"] = "Descreva a demanda.";
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length > 0) return;
 
@@ -70,8 +71,8 @@ export function CareRequestFormDialog({
       await create.mutateAsync({
         person_id: personId,
         project_id: projectId || null,
-        requested_service: service.trim(),
-        description: description.trim() || null,
+        category: category.trim(),
+        description: description.trim(),
         priority,
       });
       toast.success("Demanda registrada.");
@@ -134,15 +135,11 @@ export function CareRequestFormDialog({
             </FormField>
           ) : null}
 
-          <FormField
-            id="care-service"
-            label="Serviço solicitado"
-            error={errors["requested_service"]}
-          >
+          <FormField id="care-category" label="Categoria da demanda" error={errors["category"]}>
             <Input
-              id="care-service"
-              value={service}
-              onChange={(event) => setService(event.target.value)}
+              id="care-category"
+              value={category}
+              onChange={(event) => setCategory(event.target.value)}
               placeholder="Ex.: avaliação inicial, orientação familiar"
             />
           </FormField>

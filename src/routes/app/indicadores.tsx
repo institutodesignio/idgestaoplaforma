@@ -8,9 +8,7 @@ export const Route = createFileRoute("/app/indicadores")({
 
 function IndicatorsPage() {
   return (
-    <RequirePermission
-      anyPermission={["neurodivergent_profile.read", "neurodivergent_profile.manage"]}
-    >
+    <RequirePermission permission="indicator.read">
       <div className="space-y-8">
         <header>
           <p className="text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground">

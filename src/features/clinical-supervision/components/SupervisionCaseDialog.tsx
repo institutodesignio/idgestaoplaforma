@@ -9,7 +9,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -21,17 +20,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { useSession } from "@/contexts/SessionContext";
 import { FormField } from "@/features/persons/components/FormField";
 import { PersonPicker } from "@/features/persons/components/PersonPicker";
-import { useMembersList } from "@/features/members/queries";
-import { memberDisplayName } from "@/features/members/types";
 import { useProjectsList } from "@/features/projects/queries";
 import { ApiError, apiErrorMessage } from "@/lib/api";
-import { toDateInput, todayInput } from "@/lib/format";
 import { useCreateSupervisionCase, useUpdateSupervisionCase } from "../queries";
 import {
   SUPERVISION_CASE_STATUS_OPTIONS,
-  casePersonName,
+  SUPERVISION_PRIORITY_OPTIONS,
   type SupervisionCase,
   type SupervisionCaseStatus,
+  type SupervisionPriority,
 } from "../types";
 
 export function SupervisionCaseDialog({
@@ -49,60 +46,63 @@ export function SupervisionCaseDialog({
   const { can } = useSession();
   const create = useCreateSupervisionCase();
   const update = useUpdateSupervisionCase(supervisionCase?.id ?? "");
-  const membersQuery = useMembersList({ page: 1, limit: 100 }, open);
   const projectsQuery = useProjectsList(
     { page: 1, limit: 100, search: "", status: "ACTIVE" },
     open && can("project.read"),
   );
 
-  const [personId, setPersonId] = useState("");
-  const [personName, setPersonName] = useState<string | null>(null);
+  const [beneficiaryId, setBeneficiaryId] = useState("");
+  const [beneficiaryName, setBeneficiaryName] = useState<string | null>(null);
+  const [technicalId, setTechnicalId] = useState("");
+  const [technicalName, setTechnicalName] = useState<string | null>(null);
   const [projectId, setProjectId] = useState("");
-  const [responsible, setResponsible] = useState("");
+  const [priority, setPriority] = useState<SupervisionPriority>("NORMAL");
   const [status, setStatus] = useState<SupervisionCaseStatus>("OPEN");
-  const [openedAt, setOpenedAt] = useState(todayInput());
   const [summary, setSummary] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (!open) return;
     setErrors({});
-    setPersonId(supervisionCase?.person_id ?? "");
-    setPersonName(supervisionCase ? casePersonName(supervisionCase) : null);
+    setBeneficiaryId(supervisionCase?.beneficiary_person_id ?? "");
+    setBeneficiaryName(null);
+    setTechnicalId(supervisionCase?.assigned_technical_person_id ?? "");
+    setTechnicalName(null);
     setProjectId(supervisionCase?.project_id ?? "");
-    setResponsible(supervisionCase?.technical_responsible_member_id ?? "");
+    setPriority((supervisionCase?.priority as SupervisionPriority) ?? "NORMAL");
     setStatus((supervisionCase?.status as SupervisionCaseStatus) ?? "OPEN");
-    setOpenedAt(
-      supervisionCase ? toDateInput(supervisionCase.opened_at) || todayInput() : todayInput(),
-    );
     setSummary(supervisionCase?.summary ?? "");
   }, [open, supervisionCase]);
 
   async function handleSubmit() {
     const nextErrors: Record<string, string> = {};
-    if (!personId) nextErrors["person_id"] = "Selecione a pessoa acompanhada.";
-    if (!responsible)
-      nextErrors["technical_responsible_member_id"] = "Indique o Responsável Técnico do caso.";
+    if (!summary.trim()) nextErrors["summary"] = "Descreva o objetivo do acompanhamento.";
+    if (!editing) {
+      if (!beneficiaryId) nextErrors["beneficiary_person_id"] = "Selecione a pessoa acompanhada.";
+      if (!projectId) nextErrors["project_id"] = "Selecione o projeto responsável pelo caso.";
+    }
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length > 0) return;
 
-    const payload = {
-      person_id: personId,
-      project_id: projectId || null,
-      technical_responsible_member_id: responsible,
-      status,
-      opened_at: openedAt || null,
-      summary: summary.trim() || null,
-    };
-
     try {
       if (editing) {
-        await update.mutateAsync(payload);
+        await update.mutateAsync({
+          assigned_technical_person_id: technicalId || null,
+          priority,
+          status,
+          summary: summary.trim(),
+        });
         toast.success("Caso atualizado.");
       } else {
-        const result = await create.mutateAsync(payload);
+        const result = await create.mutateAsync({
+          project_id: projectId,
+          beneficiary_person_id: beneficiaryId,
+          assigned_technical_person_id: technicalId || null,
+          priority,
+          summary: summary.trim(),
+        });
         toast.success("Caso aberto para supervisão.");
-        if (result?.case?.id) onCreated?.(result.case.id);
+        if (result?.data?.id) onCreated?.(result.data.id);
       }
       onOpenChange(false);
     } catch (error) {
@@ -113,13 +113,12 @@ export function SupervisionCaseDialog({
     }
   }
 
-  const members = membersQuery.data?.data ?? [];
   const projects = projectsQuery.data?.data ?? [];
   const pending = create.isPending || update.isPending;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg">
+      <DialogContent className="max-h-[90vh] max-w-lg overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{editing ? "Atualizar caso" : "Abrir caso de supervisão"}</DialogTitle>
           <DialogDescription>
@@ -129,79 +128,67 @@ export function SupervisionCaseDialog({
         </DialogHeader>
 
         <div className="space-y-4">
-          {editing ? (
-            <p className="text-sm text-muted-foreground">
-              Pessoa acompanhada: <span className="font-medium text-foreground">{personName}</span>
-            </p>
-          ) : (
-            <FormField id="case-person" label="Pessoa acompanhada" error={errors["person_id"]}>
-              <PersonPicker
-                value={personId}
-                selectedLabel={personName}
-                onChange={(id, person) => {
-                  setPersonId(id);
-                  setPersonName(person.full_name ?? null);
-                }}
-              />
-            </FormField>
+          {editing ? null : (
+            <>
+              <FormField
+                id="case-beneficiary"
+                label="Pessoa acompanhada"
+                error={errors["beneficiary_person_id"]}
+              >
+                <PersonPicker
+                  value={beneficiaryId}
+                  selectedLabel={beneficiaryName}
+                  onChange={(id, person) => {
+                    setBeneficiaryId(id);
+                    setBeneficiaryName(person.full_name ?? null);
+                  }}
+                />
+              </FormField>
+
+              <FormField id="case-project" label="Projeto" error={errors["project_id"]}>
+                <Select value={projectId} onValueChange={setProjectId}>
+                  <SelectTrigger id="case-project">
+                    <SelectValue placeholder="Selecione o projeto" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {projects.map((project) => (
+                      <SelectItem key={project.id} value={project.id}>
+                        {project.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FormField>
+            </>
           )}
 
           <FormField
-            id="case-responsible"
+            id="case-technical"
             label="Responsável Técnico"
-            error={errors["technical_responsible_member_id"]}
+            error={errors["assigned_technical_person_id"]}
+            hint="Opcional. Selecione a pessoa responsável pelo caso."
           >
-            <Select value={responsible} onValueChange={setResponsible}>
-              <SelectTrigger id="case-responsible">
-                <SelectValue placeholder="Selecione o Responsável Técnico" />
-              </SelectTrigger>
-              <SelectContent>
-                {members.map((member) => (
-                  <SelectItem key={member.id} value={member.id}>
-                    {memberDisplayName(member)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <PersonPicker
+              value={technicalId}
+              selectedLabel={technicalName}
+              onChange={(id, person) => {
+                setTechnicalId(id);
+                setTechnicalName(person.full_name ?? null);
+              }}
+            />
           </FormField>
 
-          {projects.length > 0 ? (
-            <FormField
-              id="case-project"
-              label="Projeto"
-              error={errors["project_id"]}
-              hint="Opcional."
-            >
-              <Select
-                value={projectId || "NONE"}
-                onValueChange={(value) => setProjectId(value === "NONE" ? "" : value)}
-              >
-                <SelectTrigger id="case-project">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="NONE">Sem projeto definido</SelectItem>
-                  {projects.map((project) => (
-                    <SelectItem key={project.id} value={project.id}>
-                      {project.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </FormField>
-          ) : null}
-
           <div className="grid gap-4 sm:grid-cols-2">
-            <FormField id="case-status" label="Situação" error={errors["status"]}>
+            <FormField id="case-priority" label="Prioridade" error={errors["priority"]}>
               <Select
-                value={status}
-                onValueChange={(value) => setStatus(value as SupervisionCaseStatus)}
+                value={priority}
+                onValueChange={(value) => setPriority(value as SupervisionPriority)}
               >
-                <SelectTrigger id="case-status">
+                <SelectTrigger id="case-priority">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {SUPERVISION_CASE_STATUS_OPTIONS.map((option) => (
+                  {SUPERVISION_PRIORITY_OPTIONS.map((option) => (
                     <SelectItem key={option.value} value={option.value}>
                       {option.label}
                     </SelectItem>
@@ -209,14 +196,26 @@ export function SupervisionCaseDialog({
                 </SelectContent>
               </Select>
             </FormField>
-            <FormField id="case-opened" label="Abertura" error={errors["opened_at"]}>
-              <Input
-                id="case-opened"
-                type="date"
-                value={openedAt}
-                onChange={(event) => setOpenedAt(event.target.value)}
-              />
-            </FormField>
+
+            {editing ? (
+              <FormField id="case-status" label="Situação" error={errors["status"]}>
+                <Select
+                  value={status}
+                  onValueChange={(value) => setStatus(value as SupervisionCaseStatus)}
+                >
+                  <SelectTrigger id="case-status">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {SUPERVISION_CASE_STATUS_OPTIONS.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FormField>
+            ) : null}
           </div>
 
           <FormField

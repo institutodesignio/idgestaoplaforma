@@ -5,7 +5,7 @@ import {
   removeProjectTeamMember,
   updateProjectTeamMember,
 } from "./api";
-import type { ProjectTeamInput } from "./types";
+import type { ProjectTeamInput, ProjectTeamUpdate } from "./types";
 
 export const projectTeamKeys = {
   all: ["project-team"] as const,
@@ -17,20 +17,24 @@ export function useProjectTeam(projectId: string, enabled = true) {
     queryKey: projectTeamKeys.list(projectId),
     queryFn: async () => {
       const payload = await listProjectTeam(projectId);
-      return payload.data ?? payload.team ?? [];
+      return payload.data ?? [];
     },
     enabled: enabled && Boolean(projectId),
     retry: false,
   });
 }
 
+export type SaveProjectTeamArgs =
+  | { mode: "update"; teamMemberId: string; input: ProjectTeamUpdate }
+  | { mode: "create"; input: ProjectTeamInput };
+
 export function useSaveProjectTeamMember(projectId: string) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ memberId, input }: { memberId?: string; input: ProjectTeamInput }) =>
-      memberId
-        ? updateProjectTeamMember(projectId, memberId, input)
-        : addProjectTeamMember(projectId, input),
+    mutationFn: (args: SaveProjectTeamArgs) =>
+      args.mode === "update"
+        ? updateProjectTeamMember(projectId, args.teamMemberId, args.input)
+        : addProjectTeamMember(projectId, args.input),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: projectTeamKeys.list(projectId) }),
   });
 }
@@ -38,7 +42,7 @@ export function useSaveProjectTeamMember(projectId: string) {
 export function useRemoveProjectTeamMember(projectId: string) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (memberId: string) => removeProjectTeamMember(projectId, memberId),
+    mutationFn: (teamMemberId: string) => removeProjectTeamMember(projectId, teamMemberId),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: projectTeamKeys.list(projectId) }),
   });
 }

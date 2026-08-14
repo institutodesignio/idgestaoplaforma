@@ -1,73 +1,76 @@
 export type PrivacyRequestType =
-  "ACCESS" | "CORRECTION" | "DELETION" | "PORTABILITY" | "CONSENT_REVOCATION" | "INFORMATION";
+  | "CONFIRMATION"
+  | "ACCESS"
+  | "CORRECTION"
+  | "SHARING_INFORMATION"
+  | "REVOCATION"
+  | "DELETION"
+  | "ANONYMIZATION";
 
 export type PrivacyRequestStatus =
-  "RECEIVED" | "IN_ANALYSIS" | "AWAITING_REQUESTER" | "FULFILLED" | "REJECTED";
+  "RECEIVED" | "IDENTITY_CHECK" | "IN_PROGRESS" | "COMPLETED" | "DENIED";
 
 export type PrivacyRequest = {
   id: string;
-  protocol?: string | null;
-  request_type: PrivacyRequestType | string;
-  status: PrivacyRequestStatus | string;
   person_id: string | null;
-  person?: { id?: string; full_name?: string | null } | null;
-  requester_name: string | null;
-  requester_email: string | null;
+  request_type: PrivacyRequestType | string;
   description: string | null;
-  response_notes?: string | null;
+  status: PrivacyRequestStatus | string;
   received_at: string | null;
   due_at: string | null;
-  resolved_at: string | null;
+  completed_at: string | null;
+  decision_reason: string | null;
   created_at?: string | null;
+  updated_at?: string | null;
 };
 
 export type PrivacyRequestInput = {
+  person_id: string;
   request_type: PrivacyRequestType;
-  person_id?: string | null;
-  requester_name: string;
-  requester_email: string;
-  description: string;
+  description?: string | null;
+  /** YYYY-MM-DD */
+  due_at?: string | null;
 };
 
 export type PrivacyRequestUpdate = {
   status?: PrivacyRequestStatus;
-  response_notes?: string | null;
-  resolved_at?: string | null;
+  due_at?: string | null;
+  decision_reason?: string | null;
 };
+
+export type RetentionDecision = "KEEP_ACTIVE" | "ANONYMIZE" | "DELETE" | "LEGAL_HOLD";
 
 export type RetentionReview = {
   id: string;
-  resource_type: string | null;
-  resource_id: string | null;
-  person?: { id?: string; full_name?: string | null } | null;
-  retention_policy?: string | null;
-  status: string | null;
-  decision?: string | null;
-  due_at: string | null;
-  reviewed_at: string | null;
-  notes?: string | null;
+  person_id: string | null;
+  last_confirmation_at: string | null;
+  review_due_at: string | null;
+  decision: RetentionDecision | string | null;
+  decided_at: string | null;
+  reason: string | null;
 };
 
 export type RetentionReviewUpdate = {
-  decision: string;
-  notes?: string | null;
+  decision: RetentionDecision;
+  reason: string;
 };
 
 export const PRIVACY_REQUEST_TYPE_LABEL: Record<string, string> = {
+  CONFIRMATION: "Confirmação de tratamento",
   ACCESS: "Acesso aos dados",
   CORRECTION: "Correção de dados",
+  SHARING_INFORMATION: "Informação sobre compartilhamento",
+  REVOCATION: "Revogação de consentimento",
   DELETION: "Eliminação de dados",
-  PORTABILITY: "Portabilidade",
-  CONSENT_REVOCATION: "Revogação de consentimento",
-  INFORMATION: "Informação sobre tratamento",
+  ANONYMIZATION: "Anonimização",
 };
 
 export const PRIVACY_REQUEST_STATUS_LABEL: Record<string, string> = {
   RECEIVED: "Recebida",
-  IN_ANALYSIS: "Em análise",
-  AWAITING_REQUESTER: "Aguardando titular",
-  FULFILLED: "Atendida",
-  REJECTED: "Recusada",
+  IDENTITY_CHECK: "Verificação de identidade",
+  IN_PROGRESS: "Em andamento",
+  COMPLETED: "Atendida",
+  DENIED: "Recusada",
 };
 
 export const PRIVACY_REQUEST_TYPE_OPTIONS = Object.entries(PRIVACY_REQUEST_TYPE_LABEL).map(
@@ -78,19 +81,16 @@ export const PRIVACY_REQUEST_STATUS_OPTIONS = Object.entries(PRIVACY_REQUEST_STA
   ([value, label]) => ({ value, label }),
 );
 
-export const RETENTION_DECISION_OPTIONS = [
-  { value: "KEEP", label: "Manter pelo prazo legal" },
-  { value: "ANONYMIZE", label: "Anonimizar" },
-  { value: "DELETE", label: "Eliminar" },
-  { value: "POSTPONE", label: "Reavaliar depois" },
-];
-
-export const RETENTION_STATUS_LABEL: Record<string, string> = {
-  PENDING: "Pendente",
-  IN_REVIEW: "Em revisão",
-  COMPLETED: "Concluída",
-  OVERDUE: "Atrasada",
+export const RETENTION_DECISION_LABEL: Record<string, string> = {
+  KEEP_ACTIVE: "Manter ativo",
+  ANONYMIZE: "Anonimizar",
+  DELETE: "Eliminar",
+  LEGAL_HOLD: "Retenção legal",
 };
+
+export const RETENTION_DECISION_OPTIONS = Object.entries(RETENTION_DECISION_LABEL).map(
+  ([value, label]) => ({ value, label }),
+);
 
 /** Prazo legal: destacamos atraso e proximidade sem inventar datas. */
 export function daysUntil(value: string | null | undefined): number | null {

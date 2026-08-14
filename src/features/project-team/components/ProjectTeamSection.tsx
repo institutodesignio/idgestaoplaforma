@@ -18,19 +18,13 @@ import { useSession } from "@/contexts/SessionContext";
 import { apiErrorMessage } from "@/lib/api";
 import { formatDate } from "@/lib/format";
 import { useProjectTeam, useRemoveProjectTeamMember } from "../queries";
-import { isTeamMemberActive, teamRoleLabel, type ProjectTeamMember } from "../types";
+import {
+  isTeamMemberActive,
+  teamPersonName,
+  teamRoleLabel,
+  type ProjectTeamMember,
+} from "../types";
 import { ProjectTeamFormDialog } from "./ProjectTeamFormDialog";
-
-function memberName(entry: ProjectTeamMember): string {
-  return (
-    entry.full_name ??
-    entry.member?.full_name ??
-    entry.member?.user?.full_name ??
-    entry.email ??
-    entry.member?.email ??
-    "Membro da equipe"
-  );
-}
 
 export function ProjectTeamSection({ projectId }: { projectId: string }) {
   const { can } = useSession();
@@ -47,7 +41,7 @@ export function ProjectTeamSection({ projectId }: { projectId: string }) {
   async function handleRemove() {
     if (!removing) return;
     try {
-      await remove.mutateAsync(removing.member_id);
+      await remove.mutateAsync(removing.id);
       toast.success("Participação encerrada.");
       setRemoving(null);
     } catch (error) {
@@ -98,14 +92,14 @@ export function ProjectTeamSection({ projectId }: { projectId: string }) {
             const active = isTeamMemberActive(entry);
             return (
               <li
-                key={entry.id ?? entry.member_id}
+                key={entry.id}
                 className="surface-card flex flex-wrap items-center gap-4 rounded-2xl p-4"
               >
                 <span className="flex size-10 items-center justify-center rounded-xl bg-secondary text-secondary-foreground">
                   <UserRound aria-hidden="true" className="size-5" />
                 </span>
                 <div className="min-w-48 flex-1">
-                  <p className="font-medium text-foreground">{memberName(entry)}</p>
+                  <p className="font-medium text-foreground">{teamPersonName(entry)}</p>
                   <p className="text-xs text-muted-foreground">
                     {formatDate(entry.starts_at)} —{" "}
                     {entry.ends_at ? formatDate(entry.ends_at) : "em atuação"}
@@ -152,8 +146,8 @@ export function ProjectTeamSection({ projectId }: { projectId: string }) {
           <AlertDialogHeader>
             <AlertDialogTitle>Encerrar a participação?</AlertDialogTitle>
             <AlertDialogDescription>
-              {removing ? memberName(removing) : "Este membro"} deixará de constar na equipe ativa
-              do projeto. O histórico institucional é preservado pelo sistema.
+              {removing ? teamPersonName(removing) : "Esta pessoa"} deixará de constar na equipe
+              ativa do projeto. O histórico institucional é preservado pelo sistema.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

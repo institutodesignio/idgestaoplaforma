@@ -8,17 +8,17 @@ import { useSession } from "@/contexts/SessionContext";
 import { SupervisionCaseDialog } from "@/features/clinical-supervision/components/SupervisionCaseDialog";
 import { SupervisionSessionDialog } from "@/features/clinical-supervision/components/SupervisionSessionDialog";
 import {
-  useSupervisionCase,
+  useSupervisionCaseFromList,
   useSupervisionSessions,
 } from "@/features/clinical-supervision/queries";
 import {
   SUPERVISION_CASE_STATUS_LABEL,
-  SUPERVISION_MODALITY_LABEL,
+  SUPERVISION_PRIORITY_LABEL,
   SUPERVISION_SESSION_STATUS_LABEL,
-  casePersonName,
-  caseTechnicalResponsible,
   type SupervisionSession,
 } from "@/features/clinical-supervision/types";
+import { PersonName } from "@/features/persons/components/PersonName";
+import { useProject } from "@/features/projects/queries";
 import { formatDate, formatDateTime } from "@/lib/format";
 
 export const Route = createFileRoute("/app/supervisao/$caseId")({
@@ -30,16 +30,19 @@ function SupervisionCaseDetailPage() {
   const { can } = useSession();
   const canManage = can("clinical_supervision.manage");
 
-  const caseQuery = useSupervisionCase(caseId);
-  const embedded = caseQuery.data?.sessions ?? null;
-  const sessionsQuery = useSupervisionSessions(caseId, embedded === null);
+  const caseQuery = useSupervisionCaseFromList(caseId);
+  const sessionsQuery = useSupervisionSessions(caseId);
 
   const [editOpen, setEditOpen] = useState(false);
   const [sessionOpen, setSessionOpen] = useState(false);
   const [editingSession, setEditingSession] = useState<SupervisionSession | null>(null);
 
-  const supervisionCase = caseQuery.data?.case ?? null;
-  const sessions = embedded ?? sessionsQuery.data ?? [];
+  const supervisionCase = caseQuery.supervisionCase;
+  const sessions: SupervisionSession[] = sessionsQuery.data ?? [];
+  const projectQuery = useProject(
+    supervisionCase?.project_id ?? "",
+    Boolean(supervisionCase?.project_id) && can("project.read"),
+  );
 
   if (caseQuery.isLoading) return <ListSkeleton rows={4} />;
 
@@ -68,16 +71,29 @@ function SupervisionCaseDetailPage() {
         <div>
           <div className="flex flex-wrap items-center gap-3">
             <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-              {casePersonName(supervisionCase)}
+              <PersonName
+                personId={supervisionCase.beneficiary_person_id}
+                fallback="Pessoa acompanhada"
+              />
             </h1>
             <Badge variant="outline">
               {SUPERVISION_CASE_STATUS_LABEL[String(supervisionCase.status)] ??
                 supervisionCase.status}
             </Badge>
+            {supervisionCase.priority ? (
+              <Badge variant="secondary">
+                {SUPERVISION_PRIORITY_LABEL[String(supervisionCase.priority)] ??
+                  supervisionCase.priority}
+              </Badge>
+            ) : null}
           </div>
           <p className="mt-2 text-sm text-muted-foreground">
-            {caseTechnicalResponsible(supervisionCase)} • aberto em{" "}
-            {formatDate(supervisionCase.opened_at)}
+            RT:{" "}
+            <PersonName
+              personId={supervisionCase.assigned_technical_person_id}
+              fallback="Responsável Técnico não definido"
+            />{" "}
+            • aberto em {formatDate(supervisionCase.opened_at)}
           </p>
         </div>
         {canManage ? (
@@ -95,7 +111,7 @@ function SupervisionCaseDetailPage() {
               Projeto
             </p>
             <p className="mt-1 text-sm text-foreground">
-              {supervisionCase.project?.name ?? "Não vinculado"}
+              {projectQuery.data?.project?.name ?? "Não vinculado"}
             </p>
           </div>
           <div>
@@ -139,9 +155,9 @@ function SupervisionCaseDetailPage() {
           ) : null}
         </header>
 
-        {sessionsQuery.isLoading && embedded === null ? (
+        {sessionsQuery.isLoading ? (
           <ListSkeleton rows={3} />
-        ) : sessionsQuery.isError && embedded === null ? (
+        ) : sessionsQuery.isError ? (
           <ErrorState
             title="Não foi possível carregar as sessões"
             error={sessionsQuery.error}
@@ -160,11 +176,6 @@ function SupervisionCaseDetailPage() {
                   <p className="flex-1 font-medium text-foreground">
                     {formatDateTime(session.scheduled_at)}
                   </p>
-                  {session.modality ? (
-                    <Badge variant="secondary">
-                      {SUPERVISION_MODALITY_LABEL[session.modality] ?? session.modality}
-                    </Badge>
-                  ) : null}
                   <Badge variant="outline">
                     {SUPERVISION_SESSION_STATUS_LABEL[String(session.status)] ?? session.status}
                   </Badge>
@@ -181,14 +192,12 @@ function SupervisionCaseDetailPage() {
                     </Button>
                   ) : null}
                 </div>
-                {session.agenda ? (
-                  <p className="text-sm leading-relaxed text-muted-foreground">{session.agenda}</p>
-                ) : null}
-                {session.deliberations ? (
-                  <p className="text-sm leading-relaxed text-foreground">
-                    <span className="font-medium">Deliberações: </span>
-                    {session.deliberations}
-                  </p>
+                <p className="text-xs text-muted-foreground">
+                  Supervisão:{" "}
+                  <PersonName personId={session.supervisor_person_id} fallback="Não informada" />
+                </p>
+                {session.notes ? (
+                  <p className="text-sm leading-relaxed text-foreground">{session.notes}</p>
                 ) : null}
               </li>
             ))}

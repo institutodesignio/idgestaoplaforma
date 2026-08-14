@@ -16,9 +16,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { FormField } from "@/features/persons/components/FormField";
 import { ApiError, apiErrorMessage } from "@/lib/api";
+import { toDateInput } from "@/lib/format";
 import { useUpdatePrivacyRequest } from "../queries";
 import {
   PRIVACY_REQUEST_STATUS_OPTIONS,
@@ -38,22 +40,24 @@ export function PrivacyRequestUpdateDialog({
 }) {
   const update = useUpdatePrivacyRequest();
   const [status, setStatus] = useState<PrivacyRequestStatus>("RECEIVED");
-  const [notes, setNotes] = useState("");
+  const [reason, setReason] = useState("");
+  const [dueAt, setDueAt] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (!open || !request) return;
     setStatus((request.status as PrivacyRequestStatus) ?? "RECEIVED");
-    setNotes(request.response_notes ?? "");
+    setReason(request.decision_reason ?? "");
+    setDueAt(toDateInput(request.due_at ?? null));
     setErrors({});
   }, [open, request]);
 
-  const closing = status === "FULFILLED" || status === "REJECTED";
+  const closing = status === "COMPLETED" || status === "DENIED";
 
   async function handleSubmit() {
     if (!request) return;
-    if (closing && !notes.trim()) {
-      setErrors({ response_notes: "Registre a resposta dada ao titular." });
+    if (closing && !reason.trim()) {
+      setErrors({ decision_reason: "Registre a decisão comunicada ao titular." });
       return;
     }
 
@@ -62,8 +66,8 @@ export function PrivacyRequestUpdateDialog({
         id: request.id,
         input: {
           status,
-          response_notes: notes.trim() || null,
-          resolved_at: closing ? new Date().toISOString() : null,
+          due_at: dueAt || null,
+          decision_reason: reason.trim() || null,
         },
       });
       toast.success("Solicitação atualizada.");
@@ -108,14 +112,29 @@ export function PrivacyRequestUpdateDialog({
           </FormField>
 
           <FormField
-            id="privacy-notes"
-            label="Resposta institucional"
-            error={errors["response_notes"]}
+            id="privacy-due"
+            label="Prazo de resposta"
+            error={errors["due_at"]}
+            hint="Opcional."
+          >
+            <Input
+              id="privacy-due"
+              type="date"
+              value={dueAt}
+              onChange={(event) => setDueAt(event.target.value)}
+            />
+          </FormField>
+
+          <FormField
+            id="privacy-reason"
+            label="Decisão institucional"
+            error={errors["decision_reason"]}
+            hint="Comunicação registrada ao titular."
           >
             <Textarea
-              id="privacy-notes"
-              value={notes}
-              onChange={(event) => setNotes(event.target.value)}
+              id="privacy-reason"
+              value={reason}
+              onChange={(event) => setReason(event.target.value)}
               rows={4}
             />
           </FormField>

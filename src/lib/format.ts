@@ -31,3 +31,27 @@ export function toDateInput(value: string | null | undefined): string {
 export function todayInput(): string {
   return new Date().toISOString().slice(0, 10);
 }
+
+/**
+ * Converte um valor de input[type=datetime-local] em ISO 8601 COM offset
+ * (exigido pelos schemas do backend institucional).
+ */
+export function toIsoWithOffset(localValue: string): string | null {
+  if (!localValue) return null;
+  const date = new Date(localValue);
+  if (Number.isNaN(date.getTime())) return null;
+  const pad = (n: number) => String(n).padStart(2, "0");
+  const offsetMinutes = -date.getTimezoneOffset();
+  const sign = offsetMinutes >= 0 ? "+" : "-";
+  const abs = Math.abs(offsetMinutes);
+  return (
+    `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}` +
+    `T${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}` +
+    `${sign}${pad(Math.floor(abs / 60))}:${pad(abs % 60)}`
+  );
+}
+
+/** Data e hora atuais em ISO 8601 com offset local. */
+export function nowIsoWithOffset(): string {
+  return toIsoWithOffset(toDateTimeInput(new Date().toISOString())) ?? new Date().toISOString();
+}

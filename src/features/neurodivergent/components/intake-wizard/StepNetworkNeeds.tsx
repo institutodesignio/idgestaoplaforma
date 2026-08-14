@@ -1,7 +1,15 @@
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { OptionCheckboxGroup } from "@/components/forms/OptionCheckboxGroup";
 import { FormField } from "@/features/persons/components/FormField";
-import { MAX_PRIORITY_NEEDS, PRIORITY_NEED_OPTIONS, SUPPORT_NETWORK_OPTIONS } from "../../types";
+import {
+  ACCESSIBILITY_SUPPORT_OPTIONS,
+  MAX_PRIORITY_NEEDS,
+  PRIORITY_NEED_OPTIONS,
+  SERVICE_NETWORK_OPTIONS,
+} from "../../types";
 import type { IntakeDraft, StepErrors } from "./state";
 
 export function StepNetworkNeeds({
@@ -16,13 +24,50 @@ export function StepNetworkNeeds({
   return (
     <div className="space-y-6">
       <OptionCheckboxGroup
-        legend="Rede de apoio"
-        hint="Quem acompanha e apoia hoje."
-        options={SUPPORT_NETWORK_OPTIONS}
-        selected={draft.supportNetwork}
-        onChange={(supportNetwork) => onChange({ supportNetwork })}
-        error={errors["support_network"]}
+        legend="Redes de serviço acessadas"
+        options={SERVICE_NETWORK_OPTIONS}
+        selected={draft.serviceNetworks}
+        onChange={(serviceNetworks) => onChange({ serviceNetworks })}
+        error={errors["service_networks"]}
       />
+
+      <FormField id="intake-current-services" label="Serviços em andamento">
+        <Textarea
+          id="intake-current-services"
+          value={draft.currentServices}
+          onChange={(event) => onChange({ currentServices: event.target.value })}
+          rows={3}
+        />
+      </FormField>
+
+      <div className="flex items-start gap-2">
+        <Checkbox
+          id="intake-waiting"
+          checked={draft.waitingForService}
+          onCheckedChange={(checked) => onChange({ waitingForService: checked === true })}
+        />
+        <Label
+          htmlFor="intake-waiting"
+          className="text-sm font-normal leading-snug text-foreground"
+        >
+          Está aguardando algum serviço ou avaliação
+        </Label>
+      </div>
+
+      {draft.waitingForService ? (
+        <FormField
+          id="intake-waiting-details"
+          label="O que está aguardando"
+          error={errors["waiting_details"]}
+        >
+          <Textarea
+            id="intake-waiting-details"
+            value={draft.waitingDetails}
+            onChange={(event) => onChange({ waitingDetails: event.target.value })}
+            rows={3}
+          />
+        </FormField>
+      ) : null}
 
       <OptionCheckboxGroup
         legend="Necessidades prioritárias"
@@ -34,14 +79,39 @@ export function StepNetworkNeeds({
         error={errors["priority_needs"]}
       />
 
-      <FormField id="intake-notes" label="Algo mais que queira contar">
+      <FormField
+        id="intake-barrier"
+        label="Principal barreira enfrentada hoje"
+        error={errors["primary_need_barrier"]}
+      >
         <Textarea
-          id="intake-notes"
-          value={draft.additionalNotes}
-          onChange={(event) => onChange({ additionalNotes: event.target.value })}
-          rows={4}
+          id="intake-barrier"
+          value={draft.primaryNeedBarrier}
+          onChange={(event) => onChange({ primaryNeedBarrier: event.target.value })}
+          rows={3}
         />
       </FormField>
+
+      <OptionCheckboxGroup
+        legend="Apoios de acessibilidade"
+        options={ACCESSIBILITY_SUPPORT_OPTIONS}
+        selected={draft.accessibilitySupports}
+        onChange={(accessibilitySupports) => onChange({ accessibilitySupports })}
+      />
+
+      {draft.accessibilitySupports.includes("OTHER") ? (
+        <FormField
+          id="intake-accessibility-other"
+          label="Qual outro apoio"
+          error={errors["accessibility_other"]}
+        >
+          <Input
+            id="intake-accessibility-other"
+            value={draft.accessibilityOther}
+            onChange={(event) => onChange({ accessibilityOther: event.target.value })}
+          />
+        </FormField>
+      ) : null}
     </div>
   );
 }

@@ -10,21 +10,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { FormField } from "@/features/persons/components/FormField";
-import { useMembersList } from "@/features/members/queries";
-import { memberDisplayName } from "@/features/members/types";
+import { PersonPicker } from "@/features/persons/components/PersonPicker";
 import { ApiError, apiErrorMessage } from "@/lib/api";
 import { toDateInput, todayInput } from "@/lib/format";
 import { useSaveProjectTeamMember } from "../queries";
-import { PROJECT_ROLE_OPTIONS, teamRoleCode, type ProjectTeamMember } from "../types";
+import { ROLE_TITLE_MAX_LENGTH, teamPersonName, type ProjectTeamMember } from "../types";
 
 export function ProjectTeamFormDialog({
   projectId,
@@ -39,10 +31,10 @@ export function ProjectTeamFormDialog({
 }) {
   const editing = Boolean(entry);
   const save = useSaveProjectTeamMember(projectId);
-  const membersQuery = useMembersList({ page: 1, limit: 100, status: "" }, open && !editing);
 
-  const [memberId, setMemberId] = useState("");
-  const [projectRole, setProjectRole] = useState("PROFESSIONAL");
+  const [personId, setPersonId] = useState("");
+  const [personName, setPersonName] = useState<string | null>(null);
+  const [roleTitle, setRoleTitle] = useState("");
   const [startsAt, setStartsAt] = useState(todayInput());
   const [endsAt, setEndsAt] = useState("");
   const [notes, setNotes] = useState("");
@@ -51,8 +43,9 @@ export function ProjectTeamFormDialog({
   useEffect(() => {
     if (!open) return;
     setErrors({});
-    setMemberId(entry?.member_id ?? "");
-    setProjectRole(entry ? teamRoleCode(entry) || "PROFESSIONAL" : "PROFESSIONAL");
+    setPersonId(entry?.person_id ?? "");
+    setPersonName(entry ? teamPersonName(entry) : null);
+    setRoleTitle(entry?.role_title ?? "");
     setStartsAt(entry ? toDateInput(entry.starts_at) || todayInput() : todayInput());
     setEndsAt(entry ? toDateInput(entry.ends_at) : "");
     setNotes(entry?.notes ?? "");
@@ -60,24 +53,27 @@ export function ProjectTeamFormDialog({
 
   async function handleSubmit() {
     const nextErrors: Record<string, string> = {};
-    if (!memberId) nextErrors["member_id"] = "Selecione um membro da equipe institucional.";
-    if (!startsAt) nextErrors["starts_at"] = "Informe a data de início.";
+    if (!editing && !personId) nextErrors["person_id"] = "Selecione a pessoa a ser vinculada.";
+    if (!roleTitle.trim()) nextErrors["role_title"] = "Informe a função nesta equipe.";
+    if (roleTitle.trim().length > ROLE_TITLE_MAX_LENGTH)
+      nextErrors["role_title"] = `Use no máximo ${ROLE_TITLE_MAX_LENGTH} caracteres.`;
     if (endsAt && startsAt && endsAt < startsAt)
       nextErrors["ends_at"] = "O encerramento não pode ser anterior ao início.";
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length > 0) return;
 
     try {
-      await save.mutateAsync({
-        ...(editing ? { memberId } : {}),
-        input: {
-          member_id: memberId,
-          project_role: projectRole,
-          starts_at: startsAt,
-          ends_at: endsAt || null,
-          notes: notes.trim() || null,
-        },
-      });
+      const shared = {
+        role_title: roleTitle.trim(),
+        starts_at: startsAt || null,
+        ends_at: endsAt || null,
+        notes: notes.trim() || null,
+      };
+      if (editing && entry) {
+        await save.mutateAsync({ mode: "update", teamMemberId: entry.id, input: shared });
+      } else {
+        await save.mutateAsync({ mode: "create", input: { person_id: personId, ...shared } });
+      }
       toast.success(editing ? "Participação atualizada." : "Membro incluído na equipe.");
       onOpenChange(false);
     } catch (error) {
@@ -87,8 +83,6 @@ export function ProjectTeamFormDialog({
       toast.error(apiErrorMessage(error));
     }
   }
-
-  const members = membersQuery.data?.data ?? [];
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -103,41 +97,36 @@ export function ProjectTeamFormDialog({
         <div className="space-y-4">
           {editing ? (
             <p className="text-sm text-muted-foreground">
-              Membro:{" "}
+              Pessoa:{" "}
               <span className="font-medium text-foreground">
-                {entry?.full_name ?? entry?.member?.full_name ?? entry?.email ?? memberId}
+                {personName ?? "não identificada"}
               </span>
             </p>
           ) : (
-            <FormField id="team-member" label="Membro institucional" error={errors["member_id"]}>
-              <Select value={memberId} onValueChange={setMemberId}>
-                <SelectTrigger id="team-member">
-                  <SelectValue placeholder="Selecione um membro" />
-                </SelectTrigger>
-                <SelectContent>
-                  {members.map((member) => (
-                    <SelectItem key={member.id} value={member.id}>
-                      {memberDisplayName(member)}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+            <FormField id="team-person" label="Pessoa" error={errors["person_id"]}>
+              <PersonPicker
+                value={personId}
+                selectedLabel={personName}
+                onChange={(id, person) => {
+                  setPersonId(id);
+                  setPersonName(person.full_name ?? null);
+                }}
+              />
             </FormField>
           )}
 
-          <FormField id="team-role" label="Papel no projeto" error={errors["project_role"]}>
-            <Select value={projectRole} onValueChange={setProjectRole}>
-              <SelectTrigger id="team-role">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {PROJECT_ROLE_OPTIONS.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          <FormField
+            id="team-role"
+            label="Função na equipe"
+            error={errors["role_title"]}
+            hint="Texto livre, como “Coordenação” ou “Psicóloga responsável”."
+          >
+            <Input
+              id="team-role"
+              value={roleTitle}
+              maxLength={ROLE_TITLE_MAX_LENGTH}
+              onChange={(event) => setRoleTitle(event.target.value)}
+            />
           </FormField>
 
           <div className="grid gap-4 sm:grid-cols-2">

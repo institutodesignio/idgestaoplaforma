@@ -2,7 +2,6 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { HeartHandshake, Plus } from "lucide-react";
 import { useState } from "react";
 import { EmptyState, ErrorState, ListSkeleton } from "@/components/data/QueryStates";
-import { Pager } from "@/components/data/Pager";
 import { RequirePermission } from "@/components/shell/RequirePermission";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -22,10 +21,10 @@ import {
   CARE_REQUEST_PRIORITY_OPTIONS,
   CARE_REQUEST_STATUS_LABEL,
   CARE_REQUEST_STATUS_OPTIONS,
-  careRequestPersonName,
   waitingDays,
   type CareRequest,
 } from "@/features/care-requests/types";
+import { PersonName } from "@/features/persons/components/PersonName";
 
 type DemandasSearch = { page: number; status: string; priority: string };
 
@@ -159,9 +158,11 @@ function CareRequestsPage() {
                     <HeartHandshake aria-hidden="true" className="size-5" />
                   </span>
                   <div className="min-w-48 flex-1">
-                    <p className="font-medium text-foreground">{careRequestPersonName(request)}</p>
+                    <p className="font-medium text-foreground">
+                      <PersonName personId={request.person_id} />
+                    </p>
                     <p className="text-xs text-muted-foreground">
-                      {request.requested_service ?? "Serviço não informado"}
+                      {request.category ?? "Categoria não informada"}
                       {days !== null ? ` • ${days} dia(s) de espera` : ""}
                     </p>
                   </div>
@@ -184,13 +185,42 @@ function CareRequestsPage() {
           </ul>
         )}
 
-        <Pager
-          pagination={query.data?.pagination}
-          unitLabel="demandas"
-          onChange={(next) =>
-            void navigate({ search: (prev: DemandasSearch) => ({ ...prev, page: next }) })
-          }
-        />
+        {requests.length > 0 ? (
+          <div className="flex items-center justify-between gap-3 pt-2">
+            <p className="text-xs text-muted-foreground">
+              Página {page} • {requests.length} demanda(s) nesta página
+            </p>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={page <= 1}
+                onClick={() =>
+                  void navigate({
+                    search: (prev: DemandasSearch) => ({
+                      ...prev,
+                      page: Math.max(1, prev.page - 1),
+                    }),
+                  })
+                }
+              >
+                Anterior
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={requests.length < LIMIT}
+                onClick={() =>
+                  void navigate({
+                    search: (prev: DemandasSearch) => ({ ...prev, page: prev.page + 1 }),
+                  })
+                }
+              >
+                Próxima
+              </Button>
+            </div>
+          </div>
+        ) : null}
       </section>
 
       <CareRequestFormDialog open={createOpen} onOpenChange={setCreateOpen} />

@@ -1,4 +1,4 @@
-/** Agregado protegido: o backend suprime grupos pequenos e o frontend nunca infere valores. */
+/** Agregado protegido: o backend define o tamanho mínimo de grupo e não devolve dados identificados. */
 export type IndicatorDimension = "condition" | "priority_need";
 
 export type IndicatorBucket = {
@@ -6,26 +6,22 @@ export type IndicatorBucket = {
   label?: string | null;
   value?: number | null;
   count?: number | null;
-  suppressed?: boolean | null;
+};
+
+export type IndicatorPrivacy = {
+  minimum_group_size?: number | null;
+  identified_data?: boolean | null;
 };
 
 export type IndicatorResponse = {
-  dimension?: string;
-  total?: number | null;
   data?: IndicatorBucket[];
-  buckets?: IndicatorBucket[];
-  results?: IndicatorBucket[];
-  suppression_threshold?: number | null;
-  generated_at?: string | null;
-  notice?: string | null;
+  privacy?: IndicatorPrivacy;
 };
 
 export type NormalizedIndicator = {
-  total: number | null;
-  threshold: number | null;
-  generatedAt: string | null;
-  notice: string | null;
-  buckets: { label: string; value: number | null; suppressed: boolean }[];
+  minimumGroupSize: number | null;
+  identifiedData: boolean;
+  buckets: { label: string; value: number }[];
 };
 
 export const DIMENSION_LABEL: Record<IndicatorDimension, string> = {
@@ -34,19 +30,13 @@ export const DIMENSION_LABEL: Record<IndicatorDimension, string> = {
 };
 
 export function normalizeIndicator(payload: IndicatorResponse | undefined): NormalizedIndicator {
-  const rows = payload?.data ?? payload?.buckets ?? payload?.results ?? [];
+  const rows = payload?.data ?? [];
   return {
-    total: payload?.total ?? null,
-    threshold: payload?.suppression_threshold ?? null,
-    generatedAt: payload?.generated_at ?? null,
-    notice: payload?.notice ?? null,
-    buckets: rows.map((row) => {
-      const value = row.value ?? row.count ?? null;
-      return {
-        label: row.label ?? row.key ?? "Não informado",
-        value: row.suppressed ? null : value,
-        suppressed: Boolean(row.suppressed) || value === null,
-      };
-    }),
+    minimumGroupSize: payload?.privacy?.minimum_group_size ?? null,
+    identifiedData: Boolean(payload?.privacy?.identified_data),
+    buckets: rows.map((row) => ({
+      label: row.label ?? row.key ?? "Não informado",
+      value: row.value ?? row.count ?? 0,
+    })),
   };
 }

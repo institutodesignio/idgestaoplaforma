@@ -31,15 +31,14 @@ export function listRoles() {
 }
 
 export function assignMemberRole(memberId: string, input: MemberRoleInput) {
-  return apiPost<{ member_role?: MemberRole }>(`/api/v1/members/${memberId}/roles`, input);
+  return apiPost<{ data?: MemberRole }>(`/api/v1/members/${memberId}/roles`, input);
 }
 
 /** Encerramento temporal — o histórico de papéis nunca é apagado. */
 export function endMemberRole(memberId: string, memberRoleId: string, endsAt: string) {
-  return apiPatch<{ member_role?: MemberRole }>(
-    `/api/v1/members/${memberId}/roles/${memberRoleId}`,
-    { ends_at: endsAt },
-  );
+  return apiPatch<{ data?: MemberRole }>(`/api/v1/members/${memberId}/roles/${memberRoleId}/end`, {
+    ends_at: endsAt,
+  });
 }
 
 export function unwrapMember(payload: MemberDetailResponse | undefined): Member | null {
@@ -50,7 +49,16 @@ export function unwrapMember(payload: MemberDetailResponse | undefined): Member 
 
 export type MemberInviteInput = { email: string; full_name: string; role_id: string };
 
+export type MemberInviteResult = {
+  auth_user_id: string;
+  person_id: string;
+  user_profile_id: string;
+  member_id: string;
+  email: string;
+  invited: boolean;
+};
+
 /** Convite institucional — exige user.invite e user.manage_roles. */
 export function inviteMember(input: MemberInviteInput) {
-  return apiPost<{ member?: Member; invite?: { id: string } }>("/api/v1/members/invite", input);
+  return apiPost<{ data?: MemberInviteResult }>("/api/v1/members/invite", input);
 }
