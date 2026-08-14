@@ -47,3 +47,10 @@ export function unwrapMember(payload: MemberDetailResponse | undefined): Member 
   if (payload.member) return payload.member;
   return payload.id ? (payload as Member) : null;
 }
+
+export type MemberInviteInput = { email: string; full_name: string; role_id: string };
+
+/** Convite institucional — exige user.invite e user.manage_roles. */
+export function inviteMember(input: MemberInviteInput) {
+  return apiPost<{ member?: Member; invite?: { id: string } }>("/api/v1/members/invite", input);
+}
