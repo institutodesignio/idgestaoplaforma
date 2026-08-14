@@ -2,7 +2,6 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Plus, Stethoscope } from "lucide-react";
 import { useState } from "react";
 import { EmptyState, ErrorState, ListSkeleton } from "@/components/data/QueryStates";
-import { Pager } from "@/components/data/Pager";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,9 +17,9 @@ import { useSupervisionCases } from "@/features/clinical-supervision/queries";
 import {
   SUPERVISION_CASE_STATUS_LABEL,
   SUPERVISION_CASE_STATUS_OPTIONS,
-  casePersonName,
-  caseTechnicalResponsible,
+  SUPERVISION_PRIORITY_LABEL,
 } from "@/features/clinical-supervision/types";
+import { PersonName } from "@/features/persons/components/PersonName";
 import { formatDate } from "@/lib/format";
 
 type SupervisionSearch = { page: number; status: string };
@@ -121,11 +120,26 @@ function SupervisionCasesPage() {
                     <Stethoscope aria-hidden="true" className="size-5" />
                   </span>
                   <div className="min-w-48 flex-1">
-                    <p className="font-medium text-foreground">{casePersonName(item)}</p>
+                    <p className="font-medium text-foreground">
+                      <PersonName
+                        personId={item.beneficiary_person_id}
+                        fallback="Pessoa acompanhada"
+                      />
+                    </p>
                     <p className="text-xs text-muted-foreground">
-                      {caseTechnicalResponsible(item)} • aberto em {formatDate(item.opened_at)}
+                      RT:{" "}
+                      <PersonName
+                        personId={item.assigned_technical_person_id}
+                        fallback="Responsável Técnico não definido"
+                      />{" "}
+                      • aberto em {formatDate(item.opened_at)}
                     </p>
                   </div>
+                  {item.priority ? (
+                    <Badge variant="secondary">
+                      {SUPERVISION_PRIORITY_LABEL[String(item.priority)] ?? item.priority}
+                    </Badge>
+                  ) : null}
                   <Badge variant="outline">
                     {SUPERVISION_CASE_STATUS_LABEL[String(item.status)] ?? item.status}
                   </Badge>
@@ -135,13 +149,42 @@ function SupervisionCasesPage() {
           </ul>
         )}
 
-        <Pager
-          pagination={query.data?.pagination}
-          unitLabel="casos"
-          onChange={(next) =>
-            void navigate({ search: (prev: SupervisionSearch) => ({ ...prev, page: next }) })
-          }
-        />
+        {cases.length > 0 ? (
+          <div className="flex items-center justify-between gap-3 pt-2">
+            <p className="text-xs text-muted-foreground">
+              Página {page} • {cases.length} caso(s) nesta página
+            </p>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={page <= 1}
+                onClick={() =>
+                  void navigate({
+                    search: (prev: SupervisionSearch) => ({
+                      ...prev,
+                      page: Math.max(1, prev.page - 1),
+                    }),
+                  })
+                }
+              >
+                Anterior
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={cases.length < LIMIT}
+                onClick={() =>
+                  void navigate({
+                    search: (prev: SupervisionSearch) => ({ ...prev, page: prev.page + 1 }),
+                  })
+                }
+              >
+                Próxima
+              </Button>
+            </div>
+          </div>
+        ) : null}
       </section>
 
       <SupervisionCaseDialog
