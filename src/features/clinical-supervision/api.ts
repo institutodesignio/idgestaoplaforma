@@ -39,6 +39,24 @@ export function listSupervisionSessions(caseId: string) {
   return apiGet<{ data: SupervisionSession[] }>(`${BASE}/${caseId}/sessions`);
 }
 
+const LOOKUP_PAGE_SIZE = 100;
+const LOOKUP_MAX_PAGES = 20;
+
+/**
+ * Não existe GET /cases/:id no backend: o caso é localizado percorrendo a
+ * listagem oficial página a página, sem filtro de status, até encontrá-lo.
+ */
+export async function findSupervisionCase(caseId: string): Promise<SupervisionCase | null> {
+  for (let page = 1; page <= LOOKUP_MAX_PAGES; page += 1) {
+    const payload = await listSupervisionCases({ page, limit: LOOKUP_PAGE_SIZE });
+    const items = payload.data ?? [];
+    const found = items.find((item) => item.id === caseId);
+    if (found) return found;
+    if (items.length < LOOKUP_PAGE_SIZE) break;
+  }
+  return null;
+}
+
 export function createSupervisionSession(caseId: string, input: SupervisionSessionInput) {
   return apiPost<{ data?: SupervisionSession }>(`${BASE}/${caseId}/sessions`, input);
 }
