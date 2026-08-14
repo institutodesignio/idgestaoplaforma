@@ -11,12 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useAuditEvents } from "@/features/audit/queries";
-import {
-  AUDIT_RESOURCE_OPTIONS,
-  auditAction,
-  auditActor,
-  auditDate,
-} from "@/features/audit/types";
+import { AUDIT_RESOURCE_OPTIONS, auditAction, auditActor, auditDate } from "@/features/audit/types";
 import { formatDateTime } from "@/lib/format";
 
 type AuditSearch = { page: number; resource: string };

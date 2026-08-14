@@ -15,8 +15,8 @@ export function StepPrivacy({
   return (
     <div className="space-y-5">
       <p className="text-sm leading-relaxed text-muted-foreground">
-        Nenhum consentimento vem marcado. Você decide o que autorizar e pode revogar depois,
-        falando com o Instituto Designio.
+        Nenhum consentimento vem marcado. Você decide o que autorizar e pode revogar depois, falando
+        com o Instituto Designio.
       </p>
 
       <ul className="space-y-4">

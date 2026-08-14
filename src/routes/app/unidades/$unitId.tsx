@@ -71,7 +71,9 @@ function UnitDetailPage() {
         <p className="text-sm font-medium text-foreground">Não foi possível carregar a unidade</p>
         <p className="mt-2 text-sm text-muted-foreground">{apiErrorMessage(query.error)}</p>
         <Button variant="outline" className="mt-5" asChild>
-          <Link to="/app/unidades" search={{ page: 1, search: "", status: "" }}>Voltar para unidades</Link>
+          <Link to="/app/unidades" search={{ page: 1, search: "", status: "" }}>
+            Voltar para unidades
+          </Link>
         </Button>
       </div>
     );
@@ -128,7 +130,10 @@ function UnitDetailPage() {
         </div>
       </header>
 
-      <section aria-label="Dados da unidade" className="surface-card grid gap-5 rounded-2xl p-6 sm:grid-cols-2">
+      <section
+        aria-label="Dados da unidade"
+        className="surface-card grid gap-5 rounded-2xl p-6 sm:grid-cols-2"
+      >
         <Field label="Identificador" value={unit.slug} />
         <Field label="Situação" value={UNIT_STATUS_LABEL[String(unit.status)]} />
         <Field label="E-mail" value={unit.email} />

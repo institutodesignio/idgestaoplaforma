@@ -107,7 +107,8 @@ export function ProjectTeamSection({ projectId }: { projectId: string }) {
                 <div className="min-w-48 flex-1">
                   <p className="font-medium text-foreground">{memberName(entry)}</p>
                   <p className="text-xs text-muted-foreground">
-                    {formatDate(entry.starts_at)} — {entry.ends_at ? formatDate(entry.ends_at) : "em atuação"}
+                    {formatDate(entry.starts_at)} —{" "}
+                    {entry.ends_at ? formatDate(entry.ends_at) : "em atuação"}
                   </p>
                 </div>
                 <Badge variant="outline">{teamRoleLabel(entry)}</Badge>

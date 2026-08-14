@@ -1,6 +1,10 @@
 import { BrandMark } from "@/components/branding/BrandMark";
 
-export function FullScreenLoader({ label = "Carregando contexto institucional…" }: { label?: string }) {
+export function FullScreenLoader({
+  label = "Carregando contexto institucional…",
+}: {
+  label?: string;
+}) {
   return (
     <main
       className="flex min-h-dvh flex-col items-center justify-center gap-6 bg-background px-6"

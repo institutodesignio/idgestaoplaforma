@@ -76,13 +76,7 @@ export function useDeleteProject() {
 export function useSaveProjectUnit(projectId: string) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({
-      projectUnitId,
-      input,
-    }: {
-      projectUnitId?: string;
-      input: ProjectUnitInput;
-    }) =>
+    mutationFn: ({ projectUnitId, input }: { projectUnitId?: string; input: ProjectUnitInput }) =>
       projectUnitId
         ? updateProjectUnit(projectId, projectUnitId, input)
         : linkProjectUnit(projectId, input),

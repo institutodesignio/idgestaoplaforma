@@ -7,9 +7,7 @@ export const Route = createFileRoute("/app/supervisao")({
 
 function SupervisionLayout() {
   return (
-    <RequirePermission
-      anyPermission={["clinical_supervision.read", "clinical_supervision.manage"]}
-    >
+    <RequirePermission anyPermission={["clinical_supervision.read", "clinical_supervision.manage"]}>
       <Outlet />
     </RequirePermission>
   );

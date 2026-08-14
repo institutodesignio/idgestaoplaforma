@@ -31,10 +31,7 @@ export function IndicatorPanel({ dimension }: { dimension: IndicatorDimension })
     );
   }
 
-  const maxValue = indicator.buckets.reduce(
-    (max, bucket) => Math.max(max, bucket.value ?? 0),
-    0,
-  );
+  const maxValue = indicator.buckets.reduce((max, bucket) => Math.max(max, bucket.value ?? 0), 0);
 
   return (
     <section aria-label={DIMENSION_LABEL[dimension]} className="surface-card rounded-2xl p-6">
@@ -44,7 +41,8 @@ export function IndicatorPanel({ dimension }: { dimension: IndicatorDimension })
         </h2>
         {indicator.total !== null ? (
           <p className="text-sm text-muted-foreground">
-            Total considerado: <span className="font-medium text-foreground">{indicator.total}</span>
+            Total considerado:{" "}
+            <span className="font-medium text-foreground">{indicator.total}</span>
           </p>
         ) : null}
       </header>

@@ -31,8 +31,7 @@ export function useSaveProjectTeamMember(projectId: string) {
       memberId
         ? updateProjectTeamMember(projectId, memberId, input)
         : addProjectTeamMember(projectId, input),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: projectTeamKeys.list(projectId) }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: projectTeamKeys.list(projectId) }),
   });
 }
 
@@ -40,7 +39,6 @@ export function useRemoveProjectTeamMember(projectId: string) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (memberId: string) => removeProjectTeamMember(projectId, memberId),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: projectTeamKeys.list(projectId) }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: projectTeamKeys.list(projectId) }),
   });
 }

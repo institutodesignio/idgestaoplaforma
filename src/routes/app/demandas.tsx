@@ -159,9 +159,7 @@ function CareRequestsPage() {
                     <HeartHandshake aria-hidden="true" className="size-5" />
                   </span>
                   <div className="min-w-48 flex-1">
-                    <p className="font-medium text-foreground">
-                      {careRequestPersonName(request)}
-                    </p>
+                    <p className="font-medium text-foreground">{careRequestPersonName(request)}</p>
                     <p className="text-xs text-muted-foreground">
                       {request.requested_service ?? "Serviço não informado"}
                       {days !== null ? ` • ${days} dia(s) de espera` : ""}

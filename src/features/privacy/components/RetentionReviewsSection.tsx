@@ -62,7 +62,10 @@ export function RetentionReviewsSection({ canManage }: { canManage: boolean }) {
       {reviews.map((review) => {
         const remaining = daysUntil(review.due_at);
         return (
-          <li key={review.id} className="surface-card flex flex-wrap items-center gap-4 rounded-2xl p-4">
+          <li
+            key={review.id}
+            className="surface-card flex flex-wrap items-center gap-4 rounded-2xl p-4"
+          >
             <div className="min-w-48 flex-1">
               <p className="font-medium text-foreground">
                 {review.person?.full_name ?? review.resource_type ?? "Registro institucional"}

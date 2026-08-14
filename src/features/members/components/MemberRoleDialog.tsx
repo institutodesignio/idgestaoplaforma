@@ -121,11 +121,7 @@ export function MemberRoleDialog({
                 onChange={(event) => setStartsAt(event.target.value)}
               />
             </FormField>
-            <FormField
-              id="role_ends_at"
-              label="Encerramento (opcional)"
-              error={errors["ends_at"]}
-            >
+            <FormField id="role_ends_at" label="Encerramento (opcional)" error={errors["ends_at"]}>
               <Input
                 id="role_ends_at"
                 type="date"

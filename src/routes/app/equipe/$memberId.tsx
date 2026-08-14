@@ -91,7 +91,10 @@ function MemberDetailPage() {
         ) : null}
       </header>
 
-      <section aria-label="Dados do vínculo" className="surface-card grid gap-5 rounded-2xl p-6 sm:grid-cols-2">
+      <section
+        aria-label="Dados do vínculo"
+        className="surface-card grid gap-5 rounded-2xl p-6 sm:grid-cols-2"
+      >
         <div>
           <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
             Entrada na equipe

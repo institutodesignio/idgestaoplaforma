@@ -49,7 +49,10 @@ function ProjectDetailPage() {
       await remove.mutateAsync(projectId);
       toast.success("Projeto excluído.");
       setConfirmOpen(false);
-      void navigate({ to: "/app/projetos", search: { page: 1, search: "", status: "", clinical: "" } });
+      void navigate({
+        to: "/app/projetos",
+        search: { page: 1, search: "", status: "", clinical: "" },
+      });
     } catch (error) {
       toast.error(apiErrorMessage(error));
     }

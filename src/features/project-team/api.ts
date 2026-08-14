@@ -8,10 +8,7 @@ export function listProjectTeam(projectId: string) {
 }
 
 export function addProjectTeamMember(projectId: string, input: ProjectTeamInput) {
-  return apiPost<{ team_member?: ProjectTeamMember }>(
-    `/api/v1/projects/${projectId}/team`,
-    input,
-  );
+  return apiPost<{ team_member?: ProjectTeamMember }>(`/api/v1/projects/${projectId}/team`, input);
 }
 
 export function updateProjectTeamMember(

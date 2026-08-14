@@ -9,7 +9,10 @@ export const Route = createFileRoute("/app/financeiro")({
 function Page() {
   return (
     <RequirePermission permission="finance.read">
-      <ModulePlaceholder title="Financeiro" description="Gestão financeira institucional, repasses e prestação de contas." />
+      <ModulePlaceholder
+        title="Financeiro"
+        description="Gestão financeira institucional, repasses e prestação de contas."
+      />
     </RequirePermission>
   );
 }

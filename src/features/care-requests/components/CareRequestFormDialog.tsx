@@ -115,7 +115,10 @@ export function CareRequestFormDialog({
               error={errors["project_id"]}
               hint="Opcional."
             >
-              <Select value={projectId || "NONE"} onValueChange={(value) => setProjectId(value === "NONE" ? "" : value)}>
+              <Select
+                value={projectId || "NONE"}
+                onValueChange={(value) => setProjectId(value === "NONE" ? "" : value)}
+              >
                 <SelectTrigger id="care-project">
                   <SelectValue />
                 </SelectTrigger>

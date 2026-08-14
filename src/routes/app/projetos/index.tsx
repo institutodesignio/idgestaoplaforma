@@ -25,9 +25,10 @@ export const Route = createFileRoute("/app/projetos/")({
     page: Number(search["page"]) > 0 ? Number(search["page"]) : 1,
     search: typeof search["search"] === "string" ? search["search"] : "",
     status: typeof search["status"] === "string" ? search["status"] : "",
-    clinical: search["clinical"] === "true" || search["clinical"] === "false"
-      ? String(search["clinical"])
-      : "",
+    clinical:
+      search["clinical"] === "true" || search["clinical"] === "false"
+        ? String(search["clinical"])
+        : "",
   }),
   component: ProjectsListPage,
 });

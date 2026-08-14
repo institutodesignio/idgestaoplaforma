@@ -131,8 +131,7 @@ export function SupervisionCaseDialog({
         <div className="space-y-4">
           {editing ? (
             <p className="text-sm text-muted-foreground">
-              Pessoa acompanhada:{" "}
-              <span className="font-medium text-foreground">{personName}</span>
+              Pessoa acompanhada: <span className="font-medium text-foreground">{personName}</span>
             </p>
           ) : (
             <FormField id="case-person" label="Pessoa acompanhada" error={errors["person_id"]}>
@@ -167,7 +166,12 @@ export function SupervisionCaseDialog({
           </FormField>
 
           {projects.length > 0 ? (
-            <FormField id="case-project" label="Projeto" error={errors["project_id"]} hint="Opcional.">
+            <FormField
+              id="case-project"
+              label="Projeto"
+              error={errors["project_id"]}
+              hint="Opcional."
+            >
               <Select
                 value={projectId || "NONE"}
                 onValueChange={(value) => setProjectId(value === "NONE" ? "" : value)}

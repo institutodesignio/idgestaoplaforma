@@ -1,17 +1,8 @@
 export type PrivacyRequestType =
-  | "ACCESS"
-  | "CORRECTION"
-  | "DELETION"
-  | "PORTABILITY"
-  | "CONSENT_REVOCATION"
-  | "INFORMATION";
+  "ACCESS" | "CORRECTION" | "DELETION" | "PORTABILITY" | "CONSENT_REVOCATION" | "INFORMATION";
 
 export type PrivacyRequestStatus =
-  | "RECEIVED"
-  | "IN_ANALYSIS"
-  | "AWAITING_REQUESTER"
-  | "FULFILLED"
-  | "REJECTED";
+  "RECEIVED" | "IN_ANALYSIS" | "AWAITING_REQUESTER" | "FULFILLED" | "REJECTED";
 
 export type PrivacyRequest = {
   id: string;

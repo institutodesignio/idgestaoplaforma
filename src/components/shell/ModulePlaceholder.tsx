@@ -1,10 +1,4 @@
-export function ModulePlaceholder({
-  title,
-  description,
-}: {
-  title: string;
-  description: string;
-}) {
+export function ModulePlaceholder({ title, description }: { title: string; description: string }) {
   return (
     <section>
       <p className="text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground">

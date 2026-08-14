@@ -43,8 +43,8 @@ export function PersonExportSection() {
         Exportação de dados do titular
       </h2>
       <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-        Gera um arquivo JSON com os dados institucionais da pessoa selecionada, para atender
-        pedidos de acesso e portabilidade.
+        Gera um arquivo JSON com os dados institucionais da pessoa selecionada, para atender pedidos
+        de acesso e portabilidade.
       </p>
 
       <div className="mt-5 max-w-md">

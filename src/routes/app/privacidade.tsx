@@ -143,8 +143,8 @@ function PrivacyPage() {
                           request.request_type}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {request.person?.full_name ?? request.requester_name ?? "Titular"} • recebida
-                        em {formatDate(request.received_at ?? request.created_at)}
+                        {request.person?.full_name ?? request.requester_name ?? "Titular"} •
+                        recebida em {formatDate(request.received_at ?? request.created_at)}
                         {remaining !== null
                           ? remaining < 0
                             ? ` • prazo vencido há ${Math.abs(remaining)} dia(s)`

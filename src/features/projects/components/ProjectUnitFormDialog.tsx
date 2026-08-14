@@ -82,9 +82,7 @@ export function ProjectUnitFormDialog({
     };
 
     try {
-      await save.mutateAsync(
-        projectUnit ? { projectUnitId: projectUnit.id, input } : { input },
-      );
+      await save.mutateAsync(projectUnit ? { projectUnitId: projectUnit.id, input } : { input });
       toast.success(projectUnit ? "Vínculo atualizado." : "Unidade vinculada ao projeto.");
       onOpenChange(false);
     } catch (error) {

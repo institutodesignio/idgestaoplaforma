@@ -9,7 +9,10 @@ export const Route = createFileRoute("/app/documentos")({
 function Page() {
   return (
     <RequirePermission permission="document.read">
-      <ModulePlaceholder title="Documentos" description="Documentos institucionais, registros e arquivos organizacionais." />
+      <ModulePlaceholder
+        title="Documentos"
+        description="Documentos institucionais, registros e arquivos organizacionais."
+      />
     </RequirePermission>
   );
 }

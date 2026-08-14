@@ -31,9 +31,7 @@ export function StepGuardians({
       {draft.guardians.map((guardian, index) => (
         <fieldset key={index} className="surface-card space-y-4 rounded-2xl p-4">
           <div className="flex items-center justify-between">
-            <legend className="text-sm font-medium text-foreground">
-              Responsável {index + 1}
-            </legend>
+            <legend className="text-sm font-medium text-foreground">Responsável {index + 1}</legend>
             <Button
               variant="outline"
               size="sm"

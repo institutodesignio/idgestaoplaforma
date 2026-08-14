@@ -1,11 +1,5 @@
 export type CareRequestStatus =
-  | "RECEIVED"
-  | "IN_ANALYSIS"
-  | "WAITING_LIST"
-  | "REFERRED"
-  | "IN_CARE"
-  | "CONCLUDED"
-  | "CANCELLED";
+  "RECEIVED" | "IN_ANALYSIS" | "WAITING_LIST" | "REFERRED" | "IN_CARE" | "CONCLUDED" | "CANCELLED";
 
 export type CareRequestPriority = "LOW" | "MEDIUM" | "HIGH" | "URGENT";
 

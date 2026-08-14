@@ -27,13 +27,15 @@ export type NeurodivergentIntake = {
   work_status?: string | null;
   support_network?: string[] | null;
   priority_needs?: string[] | null;
-  guardians?: {
-    id?: string;
-    full_name?: string | null;
-    relationship?: string | null;
-    phone?: string | null;
-    email?: string | null;
-  }[] | null;
+  guardians?:
+    | {
+        id?: string;
+        full_name?: string | null;
+        relationship?: string | null;
+        phone?: string | null;
+        email?: string | null;
+      }[]
+    | null;
   consents?: IntakeConsent[] | null;
   submitted_at?: string | null;
   created_at?: string | null;
@@ -90,9 +92,10 @@ export const INTAKE_STATUS_LABEL: Record<string, string> = {
   ARCHIVED: "Arquivado",
 };
 
-export const INTAKE_STATUS_OPTIONS = Object.entries(INTAKE_STATUS_LABEL).map(
-  ([value, label]) => ({ value, label }),
-);
+export const INTAKE_STATUS_OPTIONS = Object.entries(INTAKE_STATUS_LABEL).map(([value, label]) => ({
+  value,
+  label,
+}));
 
 export const CONDITION_OPTIONS = [
   { value: "AUTISM", label: "Autismo" },

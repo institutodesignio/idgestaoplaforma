@@ -21,9 +21,9 @@ function Row({ label, value }: { label: string; value: string }) {
 }
 
 export function StepReview({ draft }: { draft: IntakeDraft }) {
-  const grantedConsents = CONSENT_DEFINITIONS.filter(
-    (consent) => draft.consents[consent.type],
-  ).map((consent) => consent.label);
+  const grantedConsents = CONSENT_DEFINITIONS.filter((consent) => draft.consents[consent.type]).map(
+    (consent) => consent.label,
+  );
 
   return (
     <div className="space-y-6">
@@ -34,7 +34,10 @@ export function StepReview({ draft }: { draft: IntakeDraft }) {
       <section className="surface-card grid gap-4 rounded-2xl p-5 sm:grid-cols-2">
         <Row label="Nome" value={draft.fullName} />
         <Row label="Como prefere ser chamada" value={draft.preferredName} />
-        <Row label="Cidade / UF" value={[draft.city, draft.stateCode].filter(Boolean).join(" / ")} />
+        <Row
+          label="Cidade / UF"
+          value={[draft.city, draft.stateCode].filter(Boolean).join(" / ")}
+        />
         <Row label="Bairro" value={draft.neighborhood} />
       </section>
 
@@ -51,10 +54,7 @@ export function StepReview({ draft }: { draft: IntakeDraft }) {
           label="Nível de apoio"
           value={draft.supportLevel ? labelFor(SUPPORT_LEVEL_OPTIONS, draft.supportLevel) : ""}
         />
-        <Row
-          label="Educação"
-          value={labelFor(EDUCATION_STATUS_OPTIONS, draft.educationStatus)}
-        />
+        <Row label="Educação" value={labelFor(EDUCATION_STATUS_OPTIONS, draft.educationStatus)} />
         <Row label="Trabalho" value={labelFor(WORK_STATUS_OPTIONS, draft.workStatus)} />
         <Row
           label="Rede de apoio"

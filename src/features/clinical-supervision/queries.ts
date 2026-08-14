@@ -19,8 +19,7 @@ import type {
 
 export const supervisionKeys = {
   all: ["clinical-supervision"] as const,
-  list: (params: SupervisionCasesListParams) =>
-    ["clinical-supervision", "list", params] as const,
+  list: (params: SupervisionCasesListParams) => ["clinical-supervision", "list", params] as const,
   detail: (id: string) => ["clinical-supervision", "detail", id] as const,
   sessions: (id: string) => ["clinical-supervision", "sessions", id] as const,
 };

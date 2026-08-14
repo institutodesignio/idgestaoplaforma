@@ -135,9 +135,7 @@ export function ProjectFormDialog({
       <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle>{project ? "Editar projeto" : "Novo projeto"}</DialogTitle>
-          <DialogDescription>
-            Projetos institucionais do Instituto Designio.
-          </DialogDescription>
+          <DialogDescription>Projetos institucionais do Instituto Designio.</DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-5">
@@ -222,7 +220,10 @@ export function ProjectFormDialog({
               checked={state.has_clinical_care}
               onCheckedChange={(checked) => set("has_clinical_care", checked === true)}
             />
-            <Label htmlFor="has_clinical_care" className="text-sm font-normal text-muted-foreground">
+            <Label
+              htmlFor="has_clinical_care"
+              className="text-sm font-normal text-muted-foreground"
+            >
               Este projeto possui atendimento clínico.
             </Label>
           </div>

@@ -8,11 +8,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { OptionCheckboxGroup } from "@/components/forms/OptionCheckboxGroup";
 import { FormField } from "@/features/persons/components/FormField";
-import {
-  CONDITION_OPTIONS,
-  DIAGNOSIS_STATUS_OPTIONS,
-  SUPPORT_LEVEL_OPTIONS,
-} from "../../types";
+import { CONDITION_OPTIONS, DIAGNOSIS_STATUS_OPTIONS, SUPPORT_LEVEL_OPTIONS } from "../../types";
 import type { IntakeDraft, StepErrors } from "./state";
 
 export function StepProfile({

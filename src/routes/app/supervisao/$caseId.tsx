@@ -7,7 +7,10 @@ import { Button } from "@/components/ui/button";
 import { useSession } from "@/contexts/SessionContext";
 import { SupervisionCaseDialog } from "@/features/clinical-supervision/components/SupervisionCaseDialog";
 import { SupervisionSessionDialog } from "@/features/clinical-supervision/components/SupervisionSessionDialog";
-import { useSupervisionCase, useSupervisionSessions } from "@/features/clinical-supervision/queries";
+import {
+  useSupervisionCase,
+  useSupervisionSessions,
+} from "@/features/clinical-supervision/queries";
 import {
   SUPERVISION_CASE_STATUS_LABEL,
   SUPERVISION_MODALITY_LABEL,
@@ -152,10 +155,7 @@ function SupervisionCaseDetailPage() {
         ) : (
           <ul className="space-y-3">
             {sessions.map((session) => (
-              <li
-                key={session.id}
-                className="surface-card space-y-3 rounded-2xl p-4"
-              >
+              <li key={session.id} className="surface-card space-y-3 rounded-2xl p-4">
                 <div className="flex flex-wrap items-center gap-3">
                   <p className="flex-1 font-medium text-foreground">
                     {formatDateTime(session.scheduled_at)}

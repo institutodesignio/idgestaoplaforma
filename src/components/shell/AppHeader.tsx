@@ -17,36 +17,36 @@ export function useInstitutionalIdentity() {
   const user = context?.user ?? null;
 
   const name =
-    (typeof user?.['full_name'] === "string" ? (user['full_name'] as string) : undefined) ??
-    (typeof user?.['name'] === "string" ? (user['name'] as string) : undefined) ??
-    (authUser?.user_metadata?.['full_name'] as string | undefined) ??
-    (authUser?.user_metadata?.['name'] as string | undefined) ??
+    (typeof user?.["full_name"] === "string" ? (user["full_name"] as string) : undefined) ??
+    (typeof user?.["name"] === "string" ? (user["name"] as string) : undefined) ??
+    (authUser?.user_metadata?.["full_name"] as string | undefined) ??
+    (authUser?.user_metadata?.["name"] as string | undefined) ??
     authUser?.email ??
     "Colaborador";
 
   const email =
-    (typeof user?.['email'] === "string" ? (user['email'] as string) : undefined) ??
+    (typeof user?.["email"] === "string" ? (user["email"] as string) : undefined) ??
     authUser?.email ??
     "";
 
   const membershipRole =
-    (typeof context?.membership?.['role'] === "string"
-      ? (context.membership['role'] as string)
+    (typeof context?.membership?.["role"] === "string"
+      ? (context.membership["role"] as string)
       : undefined) ??
-    (typeof context?.membership?.['role_name'] === "string"
-      ? (context.membership['role_name'] as string)
+    (typeof context?.membership?.["role_name"] === "string"
+      ? (context.membership["role_name"] as string)
       : undefined);
 
   const role = membershipRole ?? context?.roles[0] ?? "Sem papel definido";
   const organization =
-    (typeof context?.organization?.['name'] === "string"
-      ? (context.organization['name'] as string)
+    (typeof context?.organization?.["name"] === "string"
+      ? (context.organization["name"] as string)
       : undefined) ?? "Instituto Designio";
 
   const avatar =
-    (typeof user?.['avatar_url'] === "string" ? (user['avatar_url'] as string) : undefined) ??
-    (authUser?.user_metadata?.['avatar_url'] as string | undefined) ??
-    (authUser?.user_metadata?.['picture'] as string | undefined);
+    (typeof user?.["avatar_url"] === "string" ? (user["avatar_url"] as string) : undefined) ??
+    (authUser?.user_metadata?.["avatar_url"] as string | undefined) ??
+    (authUser?.user_metadata?.["picture"] as string | undefined);
 
   return { name, email, role, organization, avatar };
 }

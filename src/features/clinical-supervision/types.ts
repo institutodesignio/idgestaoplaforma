@@ -1,9 +1,4 @@
-export type SupervisionCaseStatus =
-  | "OPEN"
-  | "IN_SUPERVISION"
-  | "ON_HOLD"
-  | "CLOSED"
-  | "REFERRED";
+export type SupervisionCaseStatus = "OPEN" | "IN_SUPERVISION" | "ON_HOLD" | "CLOSED" | "REFERRED";
 
 export type SupervisionCase = {
   id: string;
@@ -76,9 +71,9 @@ export const SUPERVISION_CASE_STATUS_LABEL: Record<string, string> = {
   CLOSED: "Encerrado",
 };
 
-export const SUPERVISION_CASE_STATUS_OPTIONS = Object.entries(
-  SUPERVISION_CASE_STATUS_LABEL,
-).map(([value, label]) => ({ value, label }));
+export const SUPERVISION_CASE_STATUS_OPTIONS = Object.entries(SUPERVISION_CASE_STATUS_LABEL).map(
+  ([value, label]) => ({ value, label }),
+);
 
 export const SUPERVISION_SESSION_STATUS_LABEL: Record<string, string> = {
   SCHEDULED: "Agendada",

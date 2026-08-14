@@ -21,9 +21,7 @@ function NewIntakePage() {
         </Link>
 
         <header>
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-            Novo cadastro
-          </h1>
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground">Novo cadastro</h1>
           <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted-foreground">
             Sete etapas curtas, em ritmo tranquilo. Você pode voltar a qualquer momento antes de
             enviar.

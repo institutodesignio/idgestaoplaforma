@@ -39,10 +39,7 @@ export function listRetentionReviews() {
 }
 
 export function updateRetentionReview(id: string, input: RetentionReviewUpdate) {
-  return apiPatch<{ review?: RetentionReview }>(
-    `/api/v1/privacy/retention-reviews/${id}`,
-    input,
-  );
+  return apiPatch<{ review?: RetentionReview }>(`/api/v1/privacy/retention-reviews/${id}`, input);
 }
 
 /** Exportação LGPD: a resposta é um arquivo (Content-Disposition), não um JSON comum. */

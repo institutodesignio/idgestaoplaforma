@@ -107,7 +107,10 @@ export function CareRequestUpdateDialog({
         <div className="space-y-4">
           <div className="grid gap-4 sm:grid-cols-2">
             <FormField id="update-status" label="Situação" error={errors["status"]}>
-              <Select value={status} onValueChange={(value) => setStatus(value as CareRequestStatus)}>
+              <Select
+                value={status}
+                onValueChange={(value) => setStatus(value as CareRequestStatus)}
+              >
                 <SelectTrigger id="update-status">
                   <SelectValue />
                 </SelectTrigger>
@@ -169,11 +172,7 @@ export function CareRequestUpdateDialog({
           ) : null}
 
           {isConclusion ? (
-            <FormField
-              id="update-conclusion"
-              label="Desfecho"
-              error={errors["conclusion_notes"]}
-            >
+            <FormField id="update-conclusion" label="Desfecho" error={errors["conclusion_notes"]}>
               <Textarea
                 id="update-conclusion"
                 value={conclusionNotes}
