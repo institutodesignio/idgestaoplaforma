@@ -38,12 +38,18 @@ export function StepPersonRespondent({
         <PersonPicker
           value={draft.personId}
           selectedLabel={draft.personLabel}
-          onChange={(id, person) => onChange({ personId: id, personLabel: person.full_name ?? null })}
+          onChange={(id, person) =>
+            onChange({ personId: id, personLabel: person.full_name ?? null })
+          }
         />
       </FormField>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <FormField id="intake-respondent-role" label="Quem responde" error={errors["respondent_role"]}>
+        <FormField
+          id="intake-respondent-role"
+          label="Quem responde"
+          error={errors["respondent_role"]}
+        >
           <Select
             value={draft.respondentRole}
             onValueChange={(value) =>

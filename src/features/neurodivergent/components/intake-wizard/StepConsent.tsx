@@ -30,8 +30,8 @@ export function StepConsent({
   return (
     <div className="space-y-6">
       <p className="text-sm leading-relaxed text-muted-foreground">
-        Nada vem marcado. O consentimento é registrado com a versão do termo {CONSENT_TERM_VERSION} e
-        pode ser revogado depois na ficha do cadastro.
+        Nada vem marcado. O consentimento é registrado com a versão do termo {CONSENT_TERM_VERSION}{" "}
+        e pode ser revogado depois na ficha do cadastro.
       </p>
 
       <FormField
@@ -49,7 +49,11 @@ export function StepConsent({
         />
       </FormField>
 
-      <FormField id="intake-consent-role" label="Papel de quem consente" error={errors["consent_role"]}>
+      <FormField
+        id="intake-consent-role"
+        label="Papel de quem consente"
+        error={errors["consent_role"]}
+      >
         <Select
           value={draft.consentRole}
           onValueChange={(value) => onChange({ consentRole: value as ConsentRole })}

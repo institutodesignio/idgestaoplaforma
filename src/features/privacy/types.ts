@@ -8,11 +8,7 @@ export type PrivacyRequestType =
   | "ANONYMIZATION";
 
 export type PrivacyRequestStatus =
-  | "RECEIVED"
-  | "IDENTITY_CHECK"
-  | "IN_PROGRESS"
-  | "COMPLETED"
-  | "DENIED";
+  "RECEIVED" | "IDENTITY_CHECK" | "IN_PROGRESS" | "COMPLETED" | "DENIED";
 
 export type PrivacyRequest = {
   id: string;

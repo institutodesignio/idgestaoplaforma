@@ -1,11 +1,7 @@
 export type IntakeStatus = "DRAFT" | "SUBMITTED" | "REVIEWED" | "DUPLICATE" | "ARCHIVED";
 
 export type IntakeRespondentRole =
-  | "SELF"
-  | "MOTHER_FATHER"
-  | "LEGAL_GUARDIAN"
-  | "CAREGIVER_SUPPORTER"
-  | "OTHER";
+  "SELF" | "MOTHER_FATHER" | "LEGAL_GUARDIAN" | "CAREGIVER_SUPPORTER" | "OTHER";
 
 export type IntakeChannel = "IN_PERSON" | "PAPER" | "SITE";
 

@@ -46,7 +46,10 @@ export function StepNetworkNeeds({
           checked={draft.waitingForService}
           onCheckedChange={(checked) => onChange({ waitingForService: checked === true })}
         />
-        <Label htmlFor="intake-waiting" className="text-sm font-normal leading-snug text-foreground">
+        <Label
+          htmlFor="intake-waiting"
+          className="text-sm font-normal leading-snug text-foreground"
+        >
           Está aguardando algum serviço ou avaliação
         </Label>
       </div>

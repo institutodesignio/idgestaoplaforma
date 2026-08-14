@@ -41,7 +41,9 @@ export function StepReview({ draft }: { draft: IntakeDraft }) {
         />
         <Row
           label="Quem responde"
-          value={draft.respondentRole ? labelFor(RESPONDENT_ROLE_OPTIONS, draft.respondentRole) : ""}
+          value={
+            draft.respondentRole ? labelFor(RESPONDENT_ROLE_OPTIONS, draft.respondentRole) : ""
+          }
         />
         <Row label="Vínculo declarado" value={draft.respondentRelationship} />
         <Row label="Canal" value={labelFor(CHANNEL_OPTIONS, draft.channel)} />
@@ -62,7 +64,9 @@ export function StepReview({ draft }: { draft: IntakeDraft }) {
         <Row
           label="Trabalho"
           value={
-            draft.employmentStatus ? labelFor(EMPLOYMENT_STATUS_OPTIONS, draft.employmentStatus) : ""
+            draft.employmentStatus
+              ? labelFor(EMPLOYMENT_STATUS_OPTIONS, draft.employmentStatus)
+              : ""
           }
         />
       </section>
@@ -84,7 +88,9 @@ export function StepReview({ draft }: { draft: IntakeDraft }) {
       <section className="surface-card grid gap-4 rounded-2xl p-5 sm:grid-cols-2">
         <Row
           label="Consentimento assinado por"
-          value={draft.consentedByPersonLabel ?? <PersonName personId={draft.consentedByPersonId} />}
+          value={
+            draft.consentedByPersonLabel ?? <PersonName personId={draft.consentedByPersonId} />
+          }
         />
         <Row
           label="Papel"

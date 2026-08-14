@@ -18,7 +18,12 @@ import { useSession } from "@/contexts/SessionContext";
 import { apiErrorMessage } from "@/lib/api";
 import { formatDate } from "@/lib/format";
 import { useProjectTeam, useRemoveProjectTeamMember } from "../queries";
-import { isTeamMemberActive, teamPersonName, teamRoleLabel, type ProjectTeamMember } from "../types";
+import {
+  isTeamMemberActive,
+  teamPersonName,
+  teamRoleLabel,
+  type ProjectTeamMember,
+} from "../types";
 import { ProjectTeamFormDialog } from "./ProjectTeamFormDialog";
 
 export function ProjectTeamSection({ projectId }: { projectId: string }) {
@@ -141,8 +146,8 @@ export function ProjectTeamSection({ projectId }: { projectId: string }) {
           <AlertDialogHeader>
             <AlertDialogTitle>Encerrar a participação?</AlertDialogTitle>
             <AlertDialogDescription>
-              {removing ? teamPersonName(removing) : "Esta pessoa"} deixará de constar na equipe ativa
-              do projeto. O histórico institucional é preservado pelo sistema.
+              {removing ? teamPersonName(removing) : "Esta pessoa"} deixará de constar na equipe
+              ativa do projeto. O histórico institucional é preservado pelo sistema.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

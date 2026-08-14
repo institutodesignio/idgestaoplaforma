@@ -199,16 +199,11 @@ function IntakeDetailPage() {
             <Field label="Serviços em andamento" value={profile.current_services ?? ""} />
             <Field
               label="Aguardando serviço"
-              value={
-                profile.waiting_for_service ? profile.waiting_details || "Sim" : "Não"
-              }
+              value={profile.waiting_for_service ? profile.waiting_details || "Sim" : "Não"}
             />
             <Field
               label="Apoios de acessibilidade"
-              value={labelsFor(
-                ACCESSIBILITY_SUPPORT_OPTIONS,
-                profile.accessibility_supports ?? [],
-              )}
+              value={labelsFor(ACCESSIBILITY_SUPPORT_OPTIONS, profile.accessibility_supports ?? [])}
             />
             <Field label="Outro apoio" value={profile.accessibility_other ?? ""} />
           </section>

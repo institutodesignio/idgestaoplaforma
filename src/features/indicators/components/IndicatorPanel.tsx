@@ -66,8 +66,8 @@ export function IndicatorPanel({ dimension }: { dimension: IndicatorDimension })
 
       {indicator.minimumGroupSize !== null ? (
         <p className="mt-5 text-xs leading-relaxed text-muted-foreground">
-          Agregado sem dados identificados. Grupos com menos de {indicator.minimumGroupSize}{" "}
-          pessoas não são divulgados pelo backend institucional.
+          Agregado sem dados identificados. Grupos com menos de {indicator.minimumGroupSize} pessoas
+          não são divulgados pelo backend institucional.
         </p>
       ) : null}
     </section>

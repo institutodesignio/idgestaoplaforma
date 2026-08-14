@@ -93,8 +93,7 @@ function SupervisionCaseDetailPage() {
               personId={supervisionCase.assigned_technical_person_id}
               fallback="Responsável Técnico não definido"
             />{" "}
-            • aberto em{" "}
-            {formatDate(supervisionCase.opened_at)}
+            • aberto em {formatDate(supervisionCase.opened_at)}
           </p>
         </div>
         {canManage ? (
@@ -195,10 +194,7 @@ function SupervisionCaseDetailPage() {
                 </div>
                 <p className="text-xs text-muted-foreground">
                   Supervisão:{" "}
-                  <PersonName
-                    personId={session.supervisor_person_id}
-                    fallback="Não informada"
-                  />
+                  <PersonName personId={session.supervisor_person_id} fallback="Não informada" />
                 </p>
                 {session.notes ? (
                   <p className="text-sm leading-relaxed text-foreground">{session.notes}</p>

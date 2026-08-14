@@ -135,11 +135,7 @@ export function CareRequestFormDialog({
             </FormField>
           ) : null}
 
-          <FormField
-            id="care-category"
-            label="Categoria da demanda"
-            error={errors["category"]}
-          >
+          <FormField id="care-category" label="Categoria da demanda" error={errors["category"]}>
             <Input
               id="care-category"
               value={category}

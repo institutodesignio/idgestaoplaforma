@@ -49,11 +49,7 @@ export function StepProfile({
           </Select>
         </FormField>
 
-        <FormField
-          id="intake-report"
-          label="Laudo ou relatório"
-          error={errors["report_status"]}
-        >
+        <FormField id="intake-report" label="Laudo ou relatório" error={errors["report_status"]}>
           <Select
             value={draft.reportStatus}
             onValueChange={(value) => onChange({ reportStatus: value })}

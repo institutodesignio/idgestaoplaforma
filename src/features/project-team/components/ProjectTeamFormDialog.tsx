@@ -16,11 +16,7 @@ import { PersonPicker } from "@/features/persons/components/PersonPicker";
 import { ApiError, apiErrorMessage } from "@/lib/api";
 import { toDateInput, todayInput } from "@/lib/format";
 import { useSaveProjectTeamMember } from "../queries";
-import {
-  ROLE_TITLE_MAX_LENGTH,
-  teamPersonName,
-  type ProjectTeamMember,
-} from "../types";
+import { ROLE_TITLE_MAX_LENGTH, teamPersonName, type ProjectTeamMember } from "../types";
 
 export function ProjectTeamFormDialog({
   projectId,
@@ -102,7 +98,9 @@ export function ProjectTeamFormDialog({
           {editing ? (
             <p className="text-sm text-muted-foreground">
               Pessoa:{" "}
-              <span className="font-medium text-foreground">{personName ?? "não identificada"}</span>
+              <span className="font-medium text-foreground">
+                {personName ?? "não identificada"}
+              </span>
             </p>
           ) : (
             <FormField id="team-person" label="Pessoa" error={errors["person_id"]}>

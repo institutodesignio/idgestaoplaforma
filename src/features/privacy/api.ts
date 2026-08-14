@@ -32,9 +32,7 @@ export function updatePrivacyRequest(id: string, input: PrivacyRequestUpdate) {
 }
 
 export function listRetentionReviews() {
-  return apiGet<{ data: RetentionReview[] }>(
-    "/api/v1/privacy/retention-reviews",
-  );
+  return apiGet<{ data: RetentionReview[] }>("/api/v1/privacy/retention-reviews");
 }
 
 export function updateRetentionReview(id: string, input: RetentionReviewUpdate) {

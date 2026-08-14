@@ -36,10 +36,9 @@ export function assignMemberRole(memberId: string, input: MemberRoleInput) {
 
 /** Encerramento temporal — o histórico de papéis nunca é apagado. */
 export function endMemberRole(memberId: string, memberRoleId: string, endsAt: string) {
-  return apiPatch<{ data?: MemberRole }>(
-    `/api/v1/members/${memberId}/roles/${memberRoleId}/end`,
-    { ends_at: endsAt },
-  );
+  return apiPatch<{ data?: MemberRole }>(`/api/v1/members/${memberId}/roles/${memberRoleId}/end`, {
+    ends_at: endsAt,
+  });
 }
 
 export function unwrapMember(payload: MemberDetailResponse | undefined): Member | null {
