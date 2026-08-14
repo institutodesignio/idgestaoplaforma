@@ -60,7 +60,7 @@ export const NAV_ITEMS: NavItem[] = [
     label: "Indicadores",
     to: "/app/indicadores",
     icon: BarChart3,
-    anyPermission: ["neurodivergent_profile.read", "neurodivergent_profile.manage"],
+    permission: "indicator.read",
   },
   {
     label: "Privacidade",
