@@ -21,6 +21,7 @@ import { Route as AppEquipeRouteImport } from './routes/app/equipe'
 import { Route as AppFinanceiroRouteImport } from './routes/app/financeiro'
 import { Route as AppPessoasRouteImport } from './routes/app/pessoas'
 import { Route as AppProjetosRouteImport } from './routes/app/projetos'
+import { Route as AppSupervisaoRouteImport } from './routes/app/supervisao'
 import { Route as AppUnidadesRouteImport } from './routes/app/unidades'
 import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 import { Route as AppEquipeIndexRouteImport } from './routes/app/equipe/index'
@@ -29,6 +30,8 @@ import { Route as AppPessoasIndexRouteImport } from './routes/app/pessoas/index'
 import { Route as AppPessoasPersonIdRouteImport } from './routes/app/pessoas/$personId'
 import { Route as AppProjetosIndexRouteImport } from './routes/app/projetos/index'
 import { Route as AppProjetosProjectIdRouteImport } from './routes/app/projetos/$projectId'
+import { Route as AppSupervisaoIndexRouteImport } from './routes/app/supervisao/index'
+import { Route as AppSupervisaoCaseIdRouteImport } from './routes/app/supervisao/$caseId'
 import { Route as AppUnidadesIndexRouteImport } from './routes/app/unidades/index'
 import { Route as AppUnidadesUnitIdRouteImport } from './routes/app/unidades/$unitId'
 
@@ -92,6 +95,11 @@ const AppProjetosRoute = AppProjetosRouteImport.update({
   path: '/projetos',
   getParentRoute: () => AppRoute,
 } as any)
+const AppSupervisaoRoute = AppSupervisaoRouteImport.update({
+  id: '/supervisao',
+  path: '/supervisao',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppUnidadesRoute = AppUnidadesRouteImport.update({
   id: '/unidades',
   path: '/unidades',
@@ -132,6 +140,16 @@ const AppProjetosProjectIdRoute = AppProjetosProjectIdRouteImport.update({
   path: '/$projectId',
   getParentRoute: () => AppProjetosRoute,
 } as any)
+const AppSupervisaoIndexRoute = AppSupervisaoIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppSupervisaoRoute,
+} as any)
+const AppSupervisaoCaseIdRoute = AppSupervisaoCaseIdRouteImport.update({
+  id: '/$caseId',
+  path: '/$caseId',
+  getParentRoute: () => AppSupervisaoRoute,
+} as any)
 const AppUnidadesIndexRoute = AppUnidadesIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -155,16 +173,19 @@ export interface FileRoutesByFullPath {
   '/app/financeiro': typeof AppFinanceiroRoute
   '/app/pessoas': typeof AppPessoasRouteWithChildren
   '/app/projetos': typeof AppProjetosRouteWithChildren
+  '/app/supervisao': typeof AppSupervisaoRouteWithChildren
   '/app/unidades': typeof AppUnidadesRouteWithChildren
   '/auth/callback': typeof AuthCallbackRoute
   '/app/': typeof AppIndexRoute
   '/app/equipe/$memberId': typeof AppEquipeMemberIdRoute
   '/app/pessoas/$personId': typeof AppPessoasPersonIdRoute
   '/app/projetos/$projectId': typeof AppProjetosProjectIdRoute
+  '/app/supervisao/$caseId': typeof AppSupervisaoCaseIdRoute
   '/app/unidades/$unitId': typeof AppUnidadesUnitIdRoute
   '/app/equipe/': typeof AppEquipeIndexRoute
   '/app/pessoas/': typeof AppPessoasIndexRoute
   '/app/projetos/': typeof AppProjetosIndexRoute
+  '/app/supervisao/': typeof AppSupervisaoIndexRoute
   '/app/unidades/': typeof AppUnidadesIndexRoute
 }
 export interface FileRoutesByTo {
@@ -180,10 +201,12 @@ export interface FileRoutesByTo {
   '/app/equipe/$memberId': typeof AppEquipeMemberIdRoute
   '/app/pessoas/$personId': typeof AppPessoasPersonIdRoute
   '/app/projetos/$projectId': typeof AppProjetosProjectIdRoute
+  '/app/supervisao/$caseId': typeof AppSupervisaoCaseIdRoute
   '/app/unidades/$unitId': typeof AppUnidadesUnitIdRoute
   '/app/equipe': typeof AppEquipeIndexRoute
   '/app/pessoas': typeof AppPessoasIndexRoute
   '/app/projetos': typeof AppProjetosIndexRoute
+  '/app/supervisao': typeof AppSupervisaoIndexRoute
   '/app/unidades': typeof AppUnidadesIndexRoute
 }
 export interface FileRoutesById {
@@ -199,16 +222,19 @@ export interface FileRoutesById {
   '/app/financeiro': typeof AppFinanceiroRoute
   '/app/pessoas': typeof AppPessoasRouteWithChildren
   '/app/projetos': typeof AppProjetosRouteWithChildren
+  '/app/supervisao': typeof AppSupervisaoRouteWithChildren
   '/app/unidades': typeof AppUnidadesRouteWithChildren
   '/auth/callback': typeof AuthCallbackRoute
   '/app/': typeof AppIndexRoute
   '/app/equipe/$memberId': typeof AppEquipeMemberIdRoute
   '/app/pessoas/$personId': typeof AppPessoasPersonIdRoute
   '/app/projetos/$projectId': typeof AppProjetosProjectIdRoute
+  '/app/supervisao/$caseId': typeof AppSupervisaoCaseIdRoute
   '/app/unidades/$unitId': typeof AppUnidadesUnitIdRoute
   '/app/equipe/': typeof AppEquipeIndexRoute
   '/app/pessoas/': typeof AppPessoasIndexRoute
   '/app/projetos/': typeof AppProjetosIndexRoute
+  '/app/supervisao/': typeof AppSupervisaoIndexRoute
   '/app/unidades/': typeof AppUnidadesIndexRoute
 }
 export interface FileRouteTypes {
@@ -225,16 +251,19 @@ export interface FileRouteTypes {
     | '/app/financeiro'
     | '/app/pessoas'
     | '/app/projetos'
+    | '/app/supervisao'
     | '/app/unidades'
     | '/auth/callback'
     | '/app/'
     | '/app/equipe/$memberId'
     | '/app/pessoas/$personId'
     | '/app/projetos/$projectId'
+    | '/app/supervisao/$caseId'
     | '/app/unidades/$unitId'
     | '/app/equipe/'
     | '/app/pessoas/'
     | '/app/projetos/'
+    | '/app/supervisao/'
     | '/app/unidades/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -250,10 +279,12 @@ export interface FileRouteTypes {
     | '/app/equipe/$memberId'
     | '/app/pessoas/$personId'
     | '/app/projetos/$projectId'
+    | '/app/supervisao/$caseId'
     | '/app/unidades/$unitId'
     | '/app/equipe'
     | '/app/pessoas'
     | '/app/projetos'
+    | '/app/supervisao'
     | '/app/unidades'
   id:
     | '__root__'
@@ -268,16 +299,19 @@ export interface FileRouteTypes {
     | '/app/financeiro'
     | '/app/pessoas'
     | '/app/projetos'
+    | '/app/supervisao'
     | '/app/unidades'
     | '/auth/callback'
     | '/app/'
     | '/app/equipe/$memberId'
     | '/app/pessoas/$personId'
     | '/app/projetos/$projectId'
+    | '/app/supervisao/$caseId'
     | '/app/unidades/$unitId'
     | '/app/equipe/'
     | '/app/pessoas/'
     | '/app/projetos/'
+    | '/app/supervisao/'
     | '/app/unidades/'
   fileRoutesById: FileRoutesById
 }
@@ -374,6 +408,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppProjetosRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/supervisao': {
+      id: '/app/supervisao'
+      path: '/supervisao'
+      fullPath: '/app/supervisao'
+      preLoaderRoute: typeof AppSupervisaoRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/unidades': {
       id: '/app/unidades'
       path: '/unidades'
@@ -429,6 +470,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/projetos/$projectId'
       preLoaderRoute: typeof AppProjetosProjectIdRouteImport
       parentRoute: typeof AppProjetosRoute
+    }
+    '/app/supervisao/': {
+      id: '/app/supervisao/'
+      path: '/'
+      fullPath: '/app/supervisao/'
+      preLoaderRoute: typeof AppSupervisaoIndexRouteImport
+      parentRoute: typeof AppSupervisaoRoute
+    }
+    '/app/supervisao/$caseId': {
+      id: '/app/supervisao/$caseId'
+      path: '/$caseId'
+      fullPath: '/app/supervisao/$caseId'
+      preLoaderRoute: typeof AppSupervisaoCaseIdRouteImport
+      parentRoute: typeof AppSupervisaoRoute
     }
     '/app/unidades/': {
       id: '/app/unidades/'
@@ -489,6 +544,20 @@ const AppProjetosRouteWithChildren = AppProjetosRoute._addFileChildren(
   AppProjetosRouteChildren,
 )
 
+interface AppSupervisaoRouteChildren {
+  AppSupervisaoCaseIdRoute: typeof AppSupervisaoCaseIdRoute
+  AppSupervisaoIndexRoute: typeof AppSupervisaoIndexRoute
+}
+
+const AppSupervisaoRouteChildren: AppSupervisaoRouteChildren = {
+  AppSupervisaoCaseIdRoute: AppSupervisaoCaseIdRoute,
+  AppSupervisaoIndexRoute: AppSupervisaoIndexRoute,
+}
+
+const AppSupervisaoRouteWithChildren = AppSupervisaoRoute._addFileChildren(
+  AppSupervisaoRouteChildren,
+)
+
 interface AppUnidadesRouteChildren {
   AppUnidadesUnitIdRoute: typeof AppUnidadesUnitIdRoute
   AppUnidadesIndexRoute: typeof AppUnidadesIndexRoute
@@ -512,6 +581,7 @@ interface AppRouteChildren {
   AppFinanceiroRoute: typeof AppFinanceiroRoute
   AppPessoasRoute: typeof AppPessoasRouteWithChildren
   AppProjetosRoute: typeof AppProjetosRouteWithChildren
+  AppSupervisaoRoute: typeof AppSupervisaoRouteWithChildren
   AppUnidadesRoute: typeof AppUnidadesRouteWithChildren
   AppIndexRoute: typeof AppIndexRoute
 }
@@ -525,6 +595,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppFinanceiroRoute: AppFinanceiroRoute,
   AppPessoasRoute: AppPessoasRouteWithChildren,
   AppProjetosRoute: AppProjetosRouteWithChildren,
+  AppSupervisaoRoute: AppSupervisaoRouteWithChildren,
   AppUnidadesRoute: AppUnidadesRouteWithChildren,
   AppIndexRoute: AppIndexRoute,
 }
