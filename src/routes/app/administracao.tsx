@@ -74,7 +74,9 @@ function AdminPage() {
               Membros, papéis e histórico temporal de atuação.
             </p>
             <Button asChild variant="outline">
-              <Link to="/app/equipe">Abrir equipe</Link>
+              <Link to="/app/equipe" search={{ page: 1, search: "" }}>
+                Abrir equipe
+              </Link>
             </Button>
           </div>
         ) : null}
