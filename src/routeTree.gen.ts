@@ -15,6 +15,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppIndexRouteImport } from './routes/app/index'
 import { Route as AppAdministracaoRouteImport } from './routes/app/administracao'
 import { Route as AppAgendaRouteImport } from './routes/app/agenda'
+import { Route as AppDemandasRouteImport } from './routes/app/demandas'
 import { Route as AppDocumentosRouteImport } from './routes/app/documentos'
 import { Route as AppEquipeRouteImport } from './routes/app/equipe'
 import { Route as AppFinanceiroRouteImport } from './routes/app/financeiro'
@@ -59,6 +60,11 @@ const AppAdministracaoRoute = AppAdministracaoRouteImport.update({
 const AppAgendaRoute = AppAgendaRouteImport.update({
   id: '/agenda',
   path: '/agenda',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppDemandasRoute = AppDemandasRouteImport.update({
+  id: '/demandas',
+  path: '/demandas',
   getParentRoute: () => AppRoute,
 } as any)
 const AppDocumentosRoute = AppDocumentosRouteImport.update({
@@ -143,6 +149,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/app/administracao': typeof AppAdministracaoRoute
   '/app/agenda': typeof AppAgendaRoute
+  '/app/demandas': typeof AppDemandasRoute
   '/app/documentos': typeof AppDocumentosRoute
   '/app/equipe': typeof AppEquipeRouteWithChildren
   '/app/financeiro': typeof AppFinanceiroRoute
@@ -165,6 +172,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/app/administracao': typeof AppAdministracaoRoute
   '/app/agenda': typeof AppAgendaRoute
+  '/app/demandas': typeof AppDemandasRoute
   '/app/documentos': typeof AppDocumentosRoute
   '/app/financeiro': typeof AppFinanceiroRoute
   '/auth/callback': typeof AuthCallbackRoute
@@ -185,6 +193,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/app/administracao': typeof AppAdministracaoRoute
   '/app/agenda': typeof AppAgendaRoute
+  '/app/demandas': typeof AppDemandasRoute
   '/app/documentos': typeof AppDocumentosRoute
   '/app/equipe': typeof AppEquipeRouteWithChildren
   '/app/financeiro': typeof AppFinanceiroRoute
@@ -210,6 +219,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/app/administracao'
     | '/app/agenda'
+    | '/app/demandas'
     | '/app/documentos'
     | '/app/equipe'
     | '/app/financeiro'
@@ -232,6 +242,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/app/administracao'
     | '/app/agenda'
+    | '/app/demandas'
     | '/app/documentos'
     | '/app/financeiro'
     | '/auth/callback'
@@ -251,6 +262,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/app/administracao'
     | '/app/agenda'
+    | '/app/demandas'
     | '/app/documentos'
     | '/app/equipe'
     | '/app/financeiro'
@@ -318,6 +330,13 @@ declare module '@tanstack/react-router' {
       path: '/agenda'
       fullPath: '/app/agenda'
       preLoaderRoute: typeof AppAgendaRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/demandas': {
+      id: '/app/demandas'
+      path: '/demandas'
+      fullPath: '/app/demandas'
+      preLoaderRoute: typeof AppDemandasRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/documentos': {
@@ -487,6 +506,7 @@ const AppUnidadesRouteWithChildren = AppUnidadesRoute._addFileChildren(
 interface AppRouteChildren {
   AppAdministracaoRoute: typeof AppAdministracaoRoute
   AppAgendaRoute: typeof AppAgendaRoute
+  AppDemandasRoute: typeof AppDemandasRoute
   AppDocumentosRoute: typeof AppDocumentosRoute
   AppEquipeRoute: typeof AppEquipeRouteWithChildren
   AppFinanceiroRoute: typeof AppFinanceiroRoute
@@ -499,6 +519,7 @@ interface AppRouteChildren {
 const AppRouteChildren: AppRouteChildren = {
   AppAdministracaoRoute: AppAdministracaoRoute,
   AppAgendaRoute: AppAgendaRoute,
+  AppDemandasRoute: AppDemandasRoute,
   AppDocumentosRoute: AppDocumentosRoute,
   AppEquipeRoute: AppEquipeRouteWithChildren,
   AppFinanceiroRoute: AppFinanceiroRoute,
