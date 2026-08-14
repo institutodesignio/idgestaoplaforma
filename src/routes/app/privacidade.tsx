@@ -2,7 +2,6 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Plus, ShieldCheck } from "lucide-react";
 import { useState } from "react";
 import { EmptyState, ErrorState, ListSkeleton } from "@/components/data/QueryStates";
-import { Pager } from "@/components/data/Pager";
 import { RequirePermission } from "@/components/shell/RequirePermission";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -27,6 +26,7 @@ import {
   daysUntil,
   type PrivacyRequest,
 } from "@/features/privacy/types";
+import { PersonName } from "@/features/persons/components/PersonName";
 import { formatDate } from "@/lib/format";
 
 type PrivacySearch = { page: number; status: string };
@@ -143,8 +143,8 @@ function PrivacyPage() {
                           request.request_type}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {request.person?.full_name ?? request.requester_name ?? "Titular"} •
-                        recebida em {formatDate(request.received_at ?? request.created_at)}
+                        <PersonName personId={request.person_id} fallback="Titular" /> • recebida em{" "}
+                        {formatDate(request.received_at ?? request.created_at)}
                         {remaining !== null
                           ? remaining < 0
                             ? ` • prazo vencido há ${Math.abs(remaining)} dia(s)`
@@ -166,13 +166,42 @@ function PrivacyPage() {
             </ul>
           )}
 
-          <Pager
-            pagination={query.data?.pagination}
-            unitLabel="solicitações"
-            onChange={(next) =>
-              void navigate({ search: (prev: PrivacySearch) => ({ ...prev, page: next }) })
-            }
-          />
+          {requests.length > 0 ? (
+            <div className="flex items-center justify-between gap-3 pt-2">
+              <p className="text-xs text-muted-foreground">
+                Página {page} • {requests.length} solicitação(ões) nesta página
+              </p>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={page <= 1}
+                  onClick={() =>
+                    void navigate({
+                      search: (prev: PrivacySearch) => ({
+                        ...prev,
+                        page: Math.max(1, prev.page - 1),
+                      }),
+                    })
+                  }
+                >
+                  Anterior
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={requests.length < LIMIT}
+                  onClick={() =>
+                    void navigate({
+                      search: (prev: PrivacySearch) => ({ ...prev, page: prev.page + 1 }),
+                    })
+                  }
+                >
+                  Próxima
+                </Button>
+              </div>
+            </div>
+          ) : null}
         </TabsContent>
 
         <TabsContent value="retention" className="pt-6">
