@@ -4,13 +4,12 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { ApiError, apiErrorMessage } from "@/lib/api";
-import { CONSENT_DEFINITIONS, intakeProtocol } from "../../types";
+import { intakeProtocol } from "../../types";
 import { useSubmitIntake } from "../../queries";
 import { StepEducationWork } from "./StepEducationWork";
-import { StepGuardians } from "./StepGuardians";
 import { StepNetworkNeeds } from "./StepNetworkNeeds";
-import { StepPersonTerritory } from "./StepPersonTerritory";
-import { StepPrivacy } from "./StepPrivacy";
+import { StepPersonRespondent } from "./StepPersonRespondent";
+import { StepConsent } from "./StepConsent";
 import { StepProfile } from "./StepProfile";
 import { StepReview } from "./StepReview";
 import {
@@ -21,10 +20,6 @@ import {
   type IntakeDraft,
   type StepErrors,
 } from "./state";
-
-const REQUIRED_CONSENTS = CONSENT_DEFINITIONS.filter((consent) => consent.required).map(
-  (consent) => consent.type,
-);
 
 export function IntakeWizard() {
   // Dado sensível permanece apenas em memória — nunca em localStorage.
@@ -39,7 +34,7 @@ export function IntakeWizard() {
   }
 
   function goNext() {
-    const stepErrors = validateStep(step, draft, REQUIRED_CONSENTS);
+    const stepErrors = validateStep(step, draft);
     setErrors(stepErrors);
     if (Object.keys(stepErrors).length > 0) return;
     setStep((prev) => Math.min(STEP_TITLES.length - 1, prev + 1));
@@ -52,7 +47,7 @@ export function IntakeWizard() {
 
   async function handleSubmit() {
     for (let index = 0; index < STEP_TITLES.length - 1; index += 1) {
-      const stepErrors = validateStep(index, draft, REQUIRED_CONSENTS);
+      const stepErrors = validateStep(index, draft);
       if (Object.keys(stepErrors).length > 0) {
         setStep(index);
         setErrors(stepErrors);
@@ -63,8 +58,7 @@ export function IntakeWizard() {
 
     try {
       const result = await submit.mutateAsync(draftToPayload(draft));
-      const code =
-        result?.protocol ?? (result?.intake ? intakeProtocol(result.intake) : null) ?? "registrado";
+      const code = result?.data ? intakeProtocol(result.data) : "registrado";
       setProtocol(code);
       // Limpa o estado somente após o sucesso confirmado pela API.
       setDraft(EMPTY_DRAFT);
@@ -142,7 +136,7 @@ export function IntakeWizard() {
         </h2>
         <div className="mt-5">
           {step === 0 ? (
-            <StepPersonTerritory draft={draft} errors={errors} onChange={patch} />
+            <StepPersonRespondent draft={draft} errors={errors} onChange={patch} />
           ) : step === 1 ? (
             <StepProfile draft={draft} errors={errors} onChange={patch} />
           ) : step === 2 ? (
@@ -150,9 +144,7 @@ export function IntakeWizard() {
           ) : step === 3 ? (
             <StepNetworkNeeds draft={draft} errors={errors} onChange={patch} />
           ) : step === 4 ? (
-            <StepGuardians draft={draft} errors={errors} onChange={patch} />
-          ) : step === 5 ? (
-            <StepPrivacy draft={draft} errors={errors} onChange={patch} />
+            <StepConsent draft={draft} errors={errors} onChange={patch} />
           ) : (
             <StepReview draft={draft} />
           )}
