@@ -18,6 +18,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useSession } from "@/contexts/SessionContext";
 import { ProjectFormDialog } from "@/features/projects/components/ProjectFormDialog";
 import { ProjectUnitsSection } from "@/features/projects/components/ProjectUnitsSection";
+import { ProjectTeamSection } from "@/features/project-team/components/ProjectTeamSection";
 import { useDeleteProject, useProject } from "@/features/projects/queries";
 import { PROJECT_STATUS_LABEL } from "@/features/projects/types";
 import { apiErrorMessage } from "@/lib/api";
@@ -152,6 +153,8 @@ function ProjectDetailPage() {
       </section>
 
       <ProjectUnitsSection projectId={projectId} embeddedUnits={query.data?.units ?? null} />
+
+      <ProjectTeamSection projectId={projectId} />
 
       <ProjectFormDialog open={editOpen} onOpenChange={setEditOpen} project={project} />
 
