@@ -1,5 +1,4 @@
 import { apiDownload, apiGet, apiPatch, apiPost } from "@/lib/api";
-import type { Pagination } from "@/features/persons/types";
 import type {
   PrivacyRequest,
   PrivacyRequestInput,
@@ -16,7 +15,7 @@ export type PrivacyRequestsListParams = {
 };
 
 export function listPrivacyRequests(params: PrivacyRequestsListParams) {
-  return apiGet<{ data: PrivacyRequest[]; pagination?: Pagination }>("/api/v1/privacy/requests", {
+  return apiGet<{ data: PrivacyRequest[] }>("/api/v1/privacy/requests", {
     page: params.page,
     limit: params.limit,
     status: params.status || undefined,
@@ -25,21 +24,21 @@ export function listPrivacyRequests(params: PrivacyRequestsListParams) {
 }
 
 export function createPrivacyRequest(input: PrivacyRequestInput) {
-  return apiPost<{ request?: PrivacyRequest }>("/api/v1/privacy/requests", input);
+  return apiPost<{ data?: PrivacyRequest }>("/api/v1/privacy/requests", input);
 }
 
 export function updatePrivacyRequest(id: string, input: PrivacyRequestUpdate) {
-  return apiPatch<{ request?: PrivacyRequest }>(`/api/v1/privacy/requests/${id}`, input);
+  return apiPatch<{ data?: PrivacyRequest }>(`/api/v1/privacy/requests/${id}`, input);
 }
 
 export function listRetentionReviews() {
-  return apiGet<{ data?: RetentionReview[]; reviews?: RetentionReview[] }>(
+  return apiGet<{ data: RetentionReview[] }>(
     "/api/v1/privacy/retention-reviews",
   );
 }
 
 export function updateRetentionReview(id: string, input: RetentionReviewUpdate) {
-  return apiPatch<{ review?: RetentionReview }>(`/api/v1/privacy/retention-reviews/${id}`, input);
+  return apiPatch<{ data?: RetentionReview }>(`/api/v1/privacy/retention-reviews/${id}`, input);
 }
 
 /** Exportação LGPD: a resposta é um arquivo (Content-Disposition), não um JSON comum. */
