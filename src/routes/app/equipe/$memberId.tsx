@@ -50,7 +50,9 @@ function MemberDetailPage() {
         <p className="text-sm font-medium text-foreground">Não foi possível carregar o membro</p>
         <p className="mt-2 text-sm text-muted-foreground">{apiErrorMessage(query.error)}</p>
         <Button variant="outline" className="mt-5" asChild>
-          <Link to="/app/equipe">Voltar para a equipe</Link>
+          <Link to="/app/equipe" search={{ page: 1, search: "" }}>
+            Voltar para a equipe
+          </Link>
         </Button>
       </div>
     );
