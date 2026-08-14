@@ -1,10 +1,15 @@
 import {
   CalendarDays,
   Building2,
+  BarChart3,
   FileText,
   FolderKanban,
+  HeartHandshake,
   LayoutDashboard,
+  ScrollText,
   ShieldCheck,
+  Sparkles,
+  Stethoscope,
   Users,
   Wallet,
   type LucideIcon,
@@ -18,6 +23,8 @@ export type NavItem = {
   permission?: string;
   /** Alternativas administrativas: qualquer uma libera o item. */
   anyPermission?: string[];
+  /** Módulo sem endpoint oficial: exibido como em planejamento. */
+  planned?: boolean;
 };
 
 export const NAV_ITEMS: NavItem[] = [
@@ -31,9 +38,58 @@ export const NAV_ITEMS: NavItem[] = [
     icon: Users,
     anyPermission: ["user.read", "role.read"],
   },
-  { label: "Agenda", to: "/app/agenda", icon: CalendarDays, permission: "appointment.read" },
-  { label: "Documentos", to: "/app/documentos", icon: FileText, permission: "document.read" },
-  { label: "Financeiro", to: "/app/financeiro", icon: Wallet, permission: "finance.read" },
+  {
+    label: "Supervisão Clínica",
+    to: "/app/supervisao",
+    icon: Stethoscope,
+    anyPermission: ["clinical_supervision.read", "clinical_supervision.manage"],
+  },
+  {
+    label: "Cadastro Neurodivergente",
+    to: "/app/cadastro-neurodivergente",
+    icon: Sparkles,
+    anyPermission: ["neurodivergent_profile.read", "neurodivergent_profile.manage"],
+  },
+  {
+    label: "Demandas",
+    to: "/app/demandas",
+    icon: HeartHandshake,
+    anyPermission: ["care_request.read", "care_request.manage"],
+  },
+  {
+    label: "Indicadores",
+    to: "/app/indicadores",
+    icon: BarChart3,
+    anyPermission: ["neurodivergent_profile.read", "neurodivergent_profile.manage"],
+  },
+  {
+    label: "Privacidade",
+    to: "/app/privacidade",
+    icon: ShieldCheck,
+    anyPermission: ["privacy.read", "privacy.manage"],
+  },
+  { label: "Auditoria", to: "/app/auditoria", icon: ScrollText, permission: "audit.read" },
+  {
+    label: "Agenda",
+    to: "/app/agenda",
+    icon: CalendarDays,
+    permission: "appointment.read",
+    planned: true,
+  },
+  {
+    label: "Documentos",
+    to: "/app/documentos",
+    icon: FileText,
+    permission: "document.read",
+    planned: true,
+  },
+  {
+    label: "Financeiro",
+    to: "/app/financeiro",
+    icon: Wallet,
+    permission: "finance.read",
+    planned: true,
+  },
   {
     label: "Administração",
     to: "/app/administracao",
@@ -45,6 +101,8 @@ export const NAV_ITEMS: NavItem[] = [
       "role.manage",
       "permission.read",
       "user.manage",
+      "user.invite",
+      "audit.read",
       "membership.manage",
     ],
   },

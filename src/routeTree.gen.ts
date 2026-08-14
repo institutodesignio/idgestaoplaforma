@@ -15,12 +15,15 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppIndexRouteImport } from './routes/app/index'
 import { Route as AppAdministracaoRouteImport } from './routes/app/administracao'
 import { Route as AppAgendaRouteImport } from './routes/app/agenda'
+import { Route as AppAuditoriaRouteImport } from './routes/app/auditoria'
 import { Route as AppCadastroNeurodivergenteRouteImport } from './routes/app/cadastro-neurodivergente'
 import { Route as AppDemandasRouteImport } from './routes/app/demandas'
 import { Route as AppDocumentosRouteImport } from './routes/app/documentos'
 import { Route as AppEquipeRouteImport } from './routes/app/equipe'
 import { Route as AppFinanceiroRouteImport } from './routes/app/financeiro'
+import { Route as AppIndicadoresRouteImport } from './routes/app/indicadores'
 import { Route as AppPessoasRouteImport } from './routes/app/pessoas'
+import { Route as AppPrivacidadeRouteImport } from './routes/app/privacidade'
 import { Route as AppProjetosRouteImport } from './routes/app/projetos'
 import { Route as AppSupervisaoRouteImport } from './routes/app/supervisao'
 import { Route as AppUnidadesRouteImport } from './routes/app/unidades'
@@ -69,6 +72,11 @@ const AppAgendaRoute = AppAgendaRouteImport.update({
   path: '/agenda',
   getParentRoute: () => AppRoute,
 } as any)
+const AppAuditoriaRoute = AppAuditoriaRouteImport.update({
+  id: '/auditoria',
+  path: '/auditoria',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppCadastroNeurodivergenteRoute =
   AppCadastroNeurodivergenteRouteImport.update({
     id: '/cadastro-neurodivergente',
@@ -95,9 +103,19 @@ const AppFinanceiroRoute = AppFinanceiroRouteImport.update({
   path: '/financeiro',
   getParentRoute: () => AppRoute,
 } as any)
+const AppIndicadoresRoute = AppIndicadoresRouteImport.update({
+  id: '/indicadores',
+  path: '/indicadores',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppPessoasRoute = AppPessoasRouteImport.update({
   id: '/pessoas',
   path: '/pessoas',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPrivacidadeRoute = AppPrivacidadeRouteImport.update({
+  id: '/privacidade',
+  path: '/privacidade',
   getParentRoute: () => AppRoute,
 } as any)
 const AppProjetosRoute = AppProjetosRouteImport.update({
@@ -195,12 +213,15 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/app/administracao': typeof AppAdministracaoRoute
   '/app/agenda': typeof AppAgendaRoute
+  '/app/auditoria': typeof AppAuditoriaRoute
   '/app/cadastro-neurodivergente': typeof AppCadastroNeurodivergenteRouteWithChildren
   '/app/demandas': typeof AppDemandasRoute
   '/app/documentos': typeof AppDocumentosRoute
   '/app/equipe': typeof AppEquipeRouteWithChildren
   '/app/financeiro': typeof AppFinanceiroRoute
+  '/app/indicadores': typeof AppIndicadoresRoute
   '/app/pessoas': typeof AppPessoasRouteWithChildren
+  '/app/privacidade': typeof AppPrivacidadeRoute
   '/app/projetos': typeof AppProjetosRouteWithChildren
   '/app/supervisao': typeof AppSupervisaoRouteWithChildren
   '/app/unidades': typeof AppUnidadesRouteWithChildren
@@ -225,9 +246,12 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/app/administracao': typeof AppAdministracaoRoute
   '/app/agenda': typeof AppAgendaRoute
+  '/app/auditoria': typeof AppAuditoriaRoute
   '/app/demandas': typeof AppDemandasRoute
   '/app/documentos': typeof AppDocumentosRoute
   '/app/financeiro': typeof AppFinanceiroRoute
+  '/app/indicadores': typeof AppIndicadoresRoute
+  '/app/privacidade': typeof AppPrivacidadeRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/app': typeof AppIndexRoute
   '/app/cadastro-neurodivergente/$intakeId': typeof AppCadastroNeurodivergenteIntakeIdRoute
@@ -251,12 +275,15 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/app/administracao': typeof AppAdministracaoRoute
   '/app/agenda': typeof AppAgendaRoute
+  '/app/auditoria': typeof AppAuditoriaRoute
   '/app/cadastro-neurodivergente': typeof AppCadastroNeurodivergenteRouteWithChildren
   '/app/demandas': typeof AppDemandasRoute
   '/app/documentos': typeof AppDocumentosRoute
   '/app/equipe': typeof AppEquipeRouteWithChildren
   '/app/financeiro': typeof AppFinanceiroRoute
+  '/app/indicadores': typeof AppIndicadoresRoute
   '/app/pessoas': typeof AppPessoasRouteWithChildren
+  '/app/privacidade': typeof AppPrivacidadeRoute
   '/app/projetos': typeof AppProjetosRouteWithChildren
   '/app/supervisao': typeof AppSupervisaoRouteWithChildren
   '/app/unidades': typeof AppUnidadesRouteWithChildren
@@ -284,12 +311,15 @@ export interface FileRouteTypes {
     | '/login'
     | '/app/administracao'
     | '/app/agenda'
+    | '/app/auditoria'
     | '/app/cadastro-neurodivergente'
     | '/app/demandas'
     | '/app/documentos'
     | '/app/equipe'
     | '/app/financeiro'
+    | '/app/indicadores'
     | '/app/pessoas'
+    | '/app/privacidade'
     | '/app/projetos'
     | '/app/supervisao'
     | '/app/unidades'
@@ -314,9 +344,12 @@ export interface FileRouteTypes {
     | '/login'
     | '/app/administracao'
     | '/app/agenda'
+    | '/app/auditoria'
     | '/app/demandas'
     | '/app/documentos'
     | '/app/financeiro'
+    | '/app/indicadores'
+    | '/app/privacidade'
     | '/auth/callback'
     | '/app'
     | '/app/cadastro-neurodivergente/$intakeId'
@@ -339,12 +372,15 @@ export interface FileRouteTypes {
     | '/login'
     | '/app/administracao'
     | '/app/agenda'
+    | '/app/auditoria'
     | '/app/cadastro-neurodivergente'
     | '/app/demandas'
     | '/app/documentos'
     | '/app/equipe'
     | '/app/financeiro'
+    | '/app/indicadores'
     | '/app/pessoas'
+    | '/app/privacidade'
     | '/app/projetos'
     | '/app/supervisao'
     | '/app/unidades'
@@ -416,6 +452,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAgendaRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/auditoria': {
+      id: '/app/auditoria'
+      path: '/auditoria'
+      fullPath: '/app/auditoria'
+      preLoaderRoute: typeof AppAuditoriaRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/cadastro-neurodivergente': {
       id: '/app/cadastro-neurodivergente'
       path: '/cadastro-neurodivergente'
@@ -451,11 +494,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppFinanceiroRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/indicadores': {
+      id: '/app/indicadores'
+      path: '/indicadores'
+      fullPath: '/app/indicadores'
+      preLoaderRoute: typeof AppIndicadoresRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/pessoas': {
       id: '/app/pessoas'
       path: '/pessoas'
       fullPath: '/app/pessoas'
       preLoaderRoute: typeof AppPessoasRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/privacidade': {
+      id: '/app/privacidade'
+      path: '/privacidade'
+      fullPath: '/app/privacidade'
+      preLoaderRoute: typeof AppPrivacidadeRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/projetos': {
@@ -672,12 +729,15 @@ const AppUnidadesRouteWithChildren = AppUnidadesRoute._addFileChildren(
 interface AppRouteChildren {
   AppAdministracaoRoute: typeof AppAdministracaoRoute
   AppAgendaRoute: typeof AppAgendaRoute
+  AppAuditoriaRoute: typeof AppAuditoriaRoute
   AppCadastroNeurodivergenteRoute: typeof AppCadastroNeurodivergenteRouteWithChildren
   AppDemandasRoute: typeof AppDemandasRoute
   AppDocumentosRoute: typeof AppDocumentosRoute
   AppEquipeRoute: typeof AppEquipeRouteWithChildren
   AppFinanceiroRoute: typeof AppFinanceiroRoute
+  AppIndicadoresRoute: typeof AppIndicadoresRoute
   AppPessoasRoute: typeof AppPessoasRouteWithChildren
+  AppPrivacidadeRoute: typeof AppPrivacidadeRoute
   AppProjetosRoute: typeof AppProjetosRouteWithChildren
   AppSupervisaoRoute: typeof AppSupervisaoRouteWithChildren
   AppUnidadesRoute: typeof AppUnidadesRouteWithChildren
@@ -687,12 +747,15 @@ interface AppRouteChildren {
 const AppRouteChildren: AppRouteChildren = {
   AppAdministracaoRoute: AppAdministracaoRoute,
   AppAgendaRoute: AppAgendaRoute,
+  AppAuditoriaRoute: AppAuditoriaRoute,
   AppCadastroNeurodivergenteRoute: AppCadastroNeurodivergenteRouteWithChildren,
   AppDemandasRoute: AppDemandasRoute,
   AppDocumentosRoute: AppDocumentosRoute,
   AppEquipeRoute: AppEquipeRouteWithChildren,
   AppFinanceiroRoute: AppFinanceiroRoute,
+  AppIndicadoresRoute: AppIndicadoresRoute,
   AppPessoasRoute: AppPessoasRouteWithChildren,
+  AppPrivacidadeRoute: AppPrivacidadeRoute,
   AppProjetosRoute: AppProjetosRouteWithChildren,
   AppSupervisaoRoute: AppSupervisaoRouteWithChildren,
   AppUnidadesRoute: AppUnidadesRouteWithChildren,
