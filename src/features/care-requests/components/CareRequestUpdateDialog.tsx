@@ -19,13 +19,13 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { FormField } from "@/features/persons/components/FormField";
+import { PersonPicker } from "@/features/persons/components/PersonPicker";
 import { ApiError, apiErrorMessage } from "@/lib/api";
-import { todayInput } from "@/lib/format";
+import { toDateInput } from "@/lib/format";
 import { useUpdateCareRequest } from "../queries";
 import {
   CARE_REQUEST_PRIORITY_OPTIONS,
   CARE_REQUEST_STATUS_OPTIONS,
-  careRequestPersonName,
   type CareRequest,
   type CareRequestPriority,
   type CareRequestStatus,
@@ -41,33 +41,38 @@ export function CareRequestUpdateDialog({
   onOpenChange: (open: boolean) => void;
 }) {
   const update = useUpdateCareRequest();
-  const [status, setStatus] = useState<CareRequestStatus>("RECEIVED");
-  const [priority, setPriority] = useState<CareRequestPriority>("MEDIUM");
+  const [status, setStatus] = useState<CareRequestStatus>("IDENTIFIED");
+  const [priority, setPriority] = useState<CareRequestPriority>("NORMAL");
+  const [category, setCategory] = useState("");
+  const [description, setDescription] = useState("");
   const [destination, setDestination] = useState("");
-  const [referralNotes, setReferralNotes] = useState("");
-  const [conclusionNotes, setConclusionNotes] = useState("");
+  const [waitingSince, setWaitingSince] = useState("");
+  const [assignedId, setAssignedId] = useState("");
+  const [assignedName, setAssignedName] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (!open || !request) return;
-    setStatus((request.status as CareRequestStatus) ?? "RECEIVED");
-    setPriority((request.priority as CareRequestPriority) ?? "MEDIUM");
+    setStatus((request.status as CareRequestStatus) ?? "IDENTIFIED");
+    setPriority((request.priority as CareRequestPriority) ?? "NORMAL");
+    setCategory(request.category ?? "");
+    setDescription(request.description ?? "");
     setDestination(request.referral_destination ?? "");
-    setReferralNotes(request.referral_notes ?? "");
-    setConclusionNotes(request.conclusion_notes ?? "");
+    setWaitingSince(toDateInput(request.waiting_since ?? null));
+    setAssignedId(request.assigned_person_id ?? "");
+    setAssignedName(null);
     setErrors({});
   }, [open, request]);
 
   const isReferral = status === "REFERRED";
-  const isConclusion = status === "CONCLUDED" || status === "CANCELLED";
 
   async function handleSubmit() {
     if (!request) return;
     const nextErrors: Record<string, string> = {};
+    if (!category.trim()) nextErrors["category"] = "Informe a categoria da demanda.";
+    if (!description.trim()) nextErrors["description"] = "Descreva a demanda.";
     if (isReferral && !destination.trim())
       nextErrors["referral_destination"] = "Informe o destino do encaminhamento.";
-    if (isConclusion && !conclusionNotes.trim())
-      nextErrors["conclusion_notes"] = "Registre o desfecho desta demanda.";
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length > 0) return;
 
@@ -77,10 +82,11 @@ export function CareRequestUpdateDialog({
         input: {
           status,
           priority,
-          referral_destination: isReferral ? destination.trim() : null,
-          referral_notes: isReferral ? referralNotes.trim() || null : null,
-          conclusion_notes: isConclusion ? conclusionNotes.trim() : null,
-          concluded_at: isConclusion ? todayInput() : null,
+          category: category.trim(),
+          description: description.trim(),
+          referral_destination: destination.trim() || null,
+          waiting_since: waitingSince || null,
+          assigned_person_id: assignedId || null,
         },
       });
       toast.success("Demanda atualizada.");
@@ -95,12 +101,11 @@ export function CareRequestUpdateDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg">
+      <DialogContent className="max-h-[90vh] max-w-lg overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Atualizar demanda</DialogTitle>
           <DialogDescription>
-            {request ? careRequestPersonName(request) : "Demanda institucional"} —{" "}
-            {request?.requested_service ?? "serviço não informado"}
+            Acompanhe a situação, prioridade e encaminhamento desta demanda.
           </DialogDescription>
         </DialogHeader>
 
@@ -142,45 +147,66 @@ export function CareRequestUpdateDialog({
             </FormField>
           </div>
 
-          {isReferral ? (
-            <>
-              <FormField
-                id="update-destination"
-                label="Destino do encaminhamento"
-                error={errors["referral_destination"]}
-              >
-                <Input
-                  id="update-destination"
-                  value={destination}
-                  onChange={(event) => setDestination(event.target.value)}
-                  placeholder="Ex.: rede pública de saúde, unidade parceira"
-                />
-              </FormField>
-              <FormField
-                id="update-referral-notes"
-                label="Observações do encaminhamento"
-                error={errors["referral_notes"]}
-              >
-                <Textarea
-                  id="update-referral-notes"
-                  value={referralNotes}
-                  onChange={(event) => setReferralNotes(event.target.value)}
-                  rows={3}
-                />
-              </FormField>
-            </>
-          ) : null}
+          <FormField id="update-category" label="Categoria" error={errors["category"]}>
+            <Input
+              id="update-category"
+              value={category}
+              onChange={(event) => setCategory(event.target.value)}
+            />
+          </FormField>
 
-          {isConclusion ? (
-            <FormField id="update-conclusion" label="Desfecho" error={errors["conclusion_notes"]}>
-              <Textarea
-                id="update-conclusion"
-                value={conclusionNotes}
-                onChange={(event) => setConclusionNotes(event.target.value)}
-                rows={3}
-              />
-            </FormField>
-          ) : null}
+          <FormField id="update-description" label="Descrição" error={errors["description"]}>
+            <Textarea
+              id="update-description"
+              value={description}
+              onChange={(event) => setDescription(event.target.value)}
+              rows={3}
+            />
+          </FormField>
+
+          <FormField
+            id="update-waiting"
+            label="Em espera desde"
+            error={errors["waiting_since"]}
+            hint="Opcional."
+          >
+            <Input
+              id="update-waiting"
+              type="date"
+              value={waitingSince}
+              onChange={(event) => setWaitingSince(event.target.value)}
+            />
+          </FormField>
+
+          <FormField
+            id="update-destination"
+            label="Destino do encaminhamento"
+            error={errors["referral_destination"]}
+            hint={isReferral ? undefined : "Opcional."}
+          >
+            <Input
+              id="update-destination"
+              value={destination}
+              onChange={(event) => setDestination(event.target.value)}
+              placeholder="Ex.: rede pública de saúde, unidade parceira"
+            />
+          </FormField>
+
+          <FormField
+            id="update-assigned"
+            label="Pessoa responsável"
+            error={errors["assigned_person_id"]}
+            hint="Opcional."
+          >
+            <PersonPicker
+              value={assignedId}
+              selectedLabel={assignedName}
+              onChange={(id, person) => {
+                setAssignedId(id);
+                setAssignedName(person.full_name ?? null);
+              }}
+            />
+          </FormField>
         </div>
 
         <DialogFooter>
