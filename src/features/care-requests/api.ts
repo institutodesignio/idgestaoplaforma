@@ -1,5 +1,4 @@
 import { apiGet, apiPatch, apiPost } from "@/lib/api";
-import type { Pagination } from "@/features/persons/types";
 import type { CareRequest, CareRequestInput, CareRequestUpdate } from "./types";
 
 export type CareRequestsListParams = {
@@ -10,7 +9,8 @@ export type CareRequestsListParams = {
   priority?: string;
 };
 
-export type CareRequestsListResponse = { data: CareRequest[]; pagination?: Pagination };
+/** A listagem de demandas não devolve paginação. */
+export type CareRequestsListResponse = { data: CareRequest[] };
 
 export function listCareRequests(params: CareRequestsListParams) {
   return apiGet<CareRequestsListResponse>("/api/v1/care-requests", {
@@ -23,9 +23,9 @@ export function listCareRequests(params: CareRequestsListParams) {
 }
 
 export function createCareRequest(input: CareRequestInput) {
-  return apiPost<{ care_request?: CareRequest }>("/api/v1/care-requests", input);
+  return apiPost<{ data?: CareRequest }>("/api/v1/care-requests", input);
 }
 
 export function updateCareRequest(id: string, input: CareRequestUpdate) {
-  return apiPatch<{ care_request?: CareRequest }>(`/api/v1/care-requests/${id}`, input);
+  return apiPatch<{ data?: CareRequest }>(`/api/v1/care-requests/${id}`, input);
 }
