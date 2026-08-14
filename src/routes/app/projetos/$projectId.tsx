@@ -69,7 +69,9 @@ function ProjectDetailPage() {
         <p className="text-sm font-medium text-foreground">Não foi possível carregar o projeto</p>
         <p className="mt-2 text-sm text-muted-foreground">{apiErrorMessage(query.error)}</p>
         <Button variant="outline" className="mt-5" asChild>
-          <Link to="/app/projetos">Voltar para projetos</Link>
+          <Link to="/app/projetos" search={{ page: 1, search: "", status: "", clinical: "" }}>
+            Voltar para projetos
+          </Link>
         </Button>
       </div>
     );
