@@ -73,16 +73,14 @@ export function useUpdateSupervisionCase(id: string) {
 export function useSaveSupervisionSession(caseId: string) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({
-      sessionId,
-      input,
-    }: {
-      sessionId?: string;
-      input: SupervisionSessionInput | SupervisionSessionUpdate;
-    }) =>
-      sessionId
-        ? updateSupervisionSession(caseId, sessionId, input as SupervisionSessionUpdate)
-        : createSupervisionSession(caseId, input as SupervisionSessionInput),
+    mutationFn: (
+      args:
+        | { mode: "create"; input: SupervisionSessionInput }
+        | { mode: "update"; sessionId: string; input: SupervisionSessionUpdate },
+    ) =>
+      args.mode === "update"
+        ? updateSupervisionSession(caseId, args.sessionId, args.input)
+        : createSupervisionSession(caseId, args.input),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: supervisionKeys.all }),
   });
 }
