@@ -148,9 +148,12 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   );
 
   const signOut = useCallback(async () => {
+    // Ordem obrigatória: cancelar + limpar cache sensível antes de encerrar a sessão.
+    await purgeCache();
     await supabase.auth.signOut();
     setContext(null);
-  }, []);
+  }, [purgeCache]);
+
 
   const value = useMemo<SessionContextValue>(
     () => ({
