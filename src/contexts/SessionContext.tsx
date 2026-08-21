@@ -45,24 +45,45 @@ const FAILURE_TO_STATUS: Partial<Record<ApiFailureKind, SessionStatus>> = {
 };
 
 export function SessionProvider({ children }: { children: ReactNode }) {
+  const queryClient = useQueryClient();
   const [session, setSession] = useState<Session | null>(null);
   const [sessionResolved, setSessionResolved] = useState(false);
   const [context, setContext] = useState<InstitutionalContext | null>(null);
   const [status, setStatus] = useState<SessionStatus>("loading");
   const [reloadKey, setReloadKey] = useState(0);
 
+  /**
+   * Descarta qualquer dado institucional em cache. Obrigatório ao encerrar ou
+   * trocar de sessão: as consultas contêm dados sensíveis e não podem ser
+   * reaproveitadas por outra identidade no mesmo navegador.
+   */
+  const purgeCache = useCallback(async () => {
+    await queryClient.cancelQueries();
+    queryClient.clear();
+  }, [queryClient]);
+
   // 1) Sessão: exclusivamente pelo SDK oficial do Supabase.
   useEffect(() => {
     let active = true;
+    let currentUserId: string | null | undefined;
 
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, next) => {
+    const { data: sub } = supabase.auth.onAuthStateChange((event, next) => {
       if (!active) return;
+      const nextUserId = next?.user?.id ?? null;
+      const identityChanged =
+        currentUserId !== undefined && currentUserId !== nextUserId;
+      if (event === "SIGNED_OUT" || identityChanged) {
+        setContext(null);
+        void purgeCache();
+      }
+      currentUserId = nextUserId;
       setSession(next);
       setSessionResolved(true);
     });
 
     void supabase.auth.getSession().then(({ data }) => {
       if (!active) return;
+      currentUserId = data.session?.user?.id ?? null;
       setSession(data.session);
       setSessionResolved(true);
     });
@@ -71,7 +92,8 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       active = false;
       sub.subscription.unsubscribe();
     };
-  }, []);
+  }, [purgeCache]);
+
 
   // 2) Contexto institucional via GET /api/v1/me com Bearer <access_token>.
   useEffect(() => {
