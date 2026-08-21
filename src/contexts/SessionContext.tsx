@@ -8,9 +8,11 @@ import {
   type ReactNode,
 } from "react";
 import type { Session, User } from "@supabase/supabase-js";
+import { useQueryClient } from "@tanstack/react-query";
 import { ApiError, type ApiFailureKind } from "@/lib/api";
 import { fetchInstitutionalContext, type InstitutionalContext } from "@/lib/institutional";
 import { supabase } from "@/lib/supabase";
+
 
 export type SessionStatus =
   "loading" | "unauthenticated" | "expired" | "no_context" | "error" | "ready";
