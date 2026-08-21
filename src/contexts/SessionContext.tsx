@@ -13,7 +13,6 @@ import { ApiError, type ApiFailureKind } from "@/lib/api";
 import { fetchInstitutionalContext, type InstitutionalContext } from "@/lib/institutional";
 import { supabase } from "@/lib/supabase";
 
-
 export type SessionStatus =
   "loading" | "unauthenticated" | "expired" | "no_context" | "error" | "ready";
 
@@ -70,8 +69,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     const { data: sub } = supabase.auth.onAuthStateChange((event, next) => {
       if (!active) return;
       const nextUserId = next?.user?.id ?? null;
-      const identityChanged =
-        currentUserId !== undefined && currentUserId !== nextUserId;
+      const identityChanged = currentUserId !== undefined && currentUserId !== nextUserId;
       if (event === "SIGNED_OUT" || identityChanged) {
         setContext(null);
         void purgeCache();
@@ -93,7 +91,6 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       sub.subscription.unsubscribe();
     };
   }, [purgeCache]);
-
 
   // 2) Contexto institucional via GET /api/v1/me com Bearer <access_token>.
   useEffect(() => {
@@ -153,7 +150,6 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     await supabase.auth.signOut();
     setContext(null);
   }, [purgeCache]);
-
 
   const value = useMemo<SessionContextValue>(
     () => ({
