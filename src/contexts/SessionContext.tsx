@@ -162,8 +162,6 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     };
   }, [status, queryClient, purgeCache]);
 
-
-
   const permissions = useMemo(() => new Set(context?.permissions ?? []), [context]);
   const roles = useMemo(() => new Set(context?.roles ?? []), [context]);
   const scopes = useMemo(() => new Set(context?.scopes ?? []), [context]);
