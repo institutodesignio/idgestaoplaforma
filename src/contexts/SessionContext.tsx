@@ -123,6 +123,45 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     };
   }, [session, sessionResolved, reloadKey]);
 
+  /**
+   * Defeito corrigido: um 401 devolvido por QUALQUER consulta/mutação institucional
+   * depois do carregamento inicial não encerrava a sessão — a interface continuava
+   * exibindo dados sensíveis em cache de uma sessão já inválida. Aqui qualquer
+   * falha "expired" (401) derruba a sessão e limpa o cache imediatamente.
+   */
+  useEffect(() => {
+    if (status !== "ready") return;
+
+    let active = true;
+
+    const handleFailure = (error: unknown) => {
+      if (!active) return;
+      if (!(error instanceof ApiError) || error.kind !== "expired") return;
+      active = false;
+      setContext(null);
+      setStatus("expired");
+      void purgeCache();
+    };
+
+    const unsubscribeQueries = queryClient.getQueryCache().subscribe((event) => {
+      if (event.type === "updated" && event.query.state.status === "error") {
+        handleFailure(event.query.state.error);
+      }
+    });
+
+    const unsubscribeMutations = queryClient.getMutationCache().subscribe((event) => {
+      if (event.type === "updated" && event.mutation?.state.status === "error") {
+        handleFailure(event.mutation.state.error);
+      }
+    });
+
+    return () => {
+      active = false;
+      unsubscribeQueries();
+      unsubscribeMutations();
+    };
+  }, [status, queryClient, purgeCache]);
+
   const permissions = useMemo(() => new Set(context?.permissions ?? []), [context]);
   const roles = useMemo(() => new Set(context?.roles ?? []), [context]);
   const scopes = useMemo(() => new Set(context?.scopes ?? []), [context]);
