@@ -74,21 +74,18 @@ export const NAV_ITEMS: NavItem[] = [
     to: "/app/agenda",
     icon: CalendarDays,
     permission: "appointment.read",
-    planned: true,
   },
   {
     label: "Documentos",
     to: "/app/documentos",
     icon: FileText,
     permission: "document.read",
-    planned: true,
   },
   {
     label: "Financeiro",
     to: "/app/financeiro",
     icon: Wallet,
     permission: "finance.read",
-    planned: true,
   },
   {
     label: "Administração",
