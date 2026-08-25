@@ -23,11 +23,16 @@ export function listProjects(params: ProjectsListParams) {
   });
 }
 
-export type ProjectDetailResponse = { project?: Project; units?: ProjectUnit[] } & Partial<Project>;
+export type ProjectDetailResponse = {
+  data?: Project;
+  project?: Project;
+  units?: ProjectUnit[];
+} & Partial<Project>;
 
 export function getProject(id: string) {
   return apiGet<ProjectDetailResponse>(`/api/v1/projects/${id}`);
 }
+
 
 export function listProjectUnits(projectId: string) {
   return apiGet<{ data?: ProjectUnit[]; units?: ProjectUnit[] }>(
