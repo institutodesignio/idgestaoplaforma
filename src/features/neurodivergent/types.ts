@@ -257,3 +257,17 @@ export function labelFor(options: { value: string; label: string }[], value: str
 export function labelsFor(options: { value: string; label: string }[], values: string[]): string {
   return values.map((value) => labelFor(options, value)).join(", ");
 }
+
+/**
+ * Resume as condições declaradas evitando repetir "Outra condição"
+ * quando já existe texto livre informado.
+ */
+export function conditionsSummary(conditions: string[], otherCondition: string): string {
+  const other = otherCondition.trim();
+  const labels = conditions.map((value) =>
+    value === "OTHER" && other ? other : labelFor(CONDITION_OPTIONS, value),
+  );
+  if (other && !conditions.includes("OTHER")) labels.push(other);
+  return labels.join(", ");
+}
+
