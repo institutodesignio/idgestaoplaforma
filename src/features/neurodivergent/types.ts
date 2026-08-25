@@ -42,6 +42,9 @@ export type NeurodivergentProfile = {
 
 export type NeurodivergentIntake = {
   id: string;
+  /** Contrato oficial atual. */
+  protocol_number?: string | null;
+  /** Compatibilidade com respostas antigas. */
   protocol?: string | null;
   status: IntakeStatus | string;
   person_id: string | null;
@@ -52,9 +55,31 @@ export type NeurodivergentIntake = {
   submitted_at?: string | null;
   created_at?: string | null;
   updated_at?: string | null;
-  neurodivergent_profiles?: NeurodivergentProfile[] | null;
+  /** PostgREST devolve objeto (relação 1:1) ou array. */
+  neurodivergent_profiles?: NeurodivergentProfile[] | NeurodivergentProfile | null;
   data_consents?: IntakeDataConsent[] | null;
 };
+
+/** Resposta oficial de POST /neurodivergent-intakes/submit. */
+export type IntakeSubmitResult = {
+  intake_id: string;
+  protocol_number?: string | null;
+  profile_id?: string | null;
+  consent_id?: string | null;
+  status?: IntakeStatus | string | null;
+};
+
+export function intakeProfile(intake: NeurodivergentIntake): NeurodivergentProfile | null {
+  const relation = intake.neurodivergent_profiles;
+  if (!relation) return null;
+  if (Array.isArray(relation)) return relation[0] ?? null;
+  return relation;
+}
+
+export function submitProtocol(result: IntakeSubmitResult): string {
+  return result.protocol_number?.trim() || result.intake_id;
+}
+
 
 export type IntakeProfileInput = {
   identification_status: string;
