@@ -33,7 +33,6 @@ export function getProject(id: string) {
   return apiGet<ProjectDetailResponse>(`/api/v1/projects/${id}`);
 }
 
-
 export function listProjectUnits(projectId: string) {
   return apiGet<{ data?: ProjectUnit[]; units?: ProjectUnit[] }>(
     `/api/v1/projects/${projectId}/units`,
@@ -47,7 +46,6 @@ export function createProject(input: ProjectInput) {
 export function updateProject(id: string, input: Partial<ProjectInput>) {
   return apiPatch<ProjectDetailResponse>(`/api/v1/projects/${id}`, input);
 }
-
 
 /** Exclusão lógica (soft delete) executada pelo backend. */
 export function deleteProject(id: string) {
@@ -80,4 +78,3 @@ export function unwrapProject(payload: ProjectDetailResponse | undefined): Proje
   if (payload.project) return payload.project;
   return payload.id ? (payload as Project) : null;
 }
-
