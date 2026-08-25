@@ -3,7 +3,7 @@ import {
   ACCESSIBILITY_SUPPORT_OPTIONS,
   CHANNEL_OPTIONS,
   COMMUNICATION_CHANNEL_OPTIONS,
-  CONDITION_OPTIONS,
+  conditionsSummary,
   CONSENT_ROLE_OPTIONS,
   CONSENT_TERM_VERSION,
   EDUCATION_STATUS_OPTIONS,
@@ -55,8 +55,10 @@ export function StepReview({ draft }: { draft: IntakeDraft }) {
           value={labelFor(IDENTIFICATION_STATUS_OPTIONS, draft.identificationStatus)}
         />
         <Row label="Laudo" value={labelFor(REPORT_STATUS_OPTIONS, draft.reportStatus)} />
-        <Row label="Condições" value={labelsFor(CONDITION_OPTIONS, draft.conditions)} />
-        <Row label="Outra condição" value={draft.otherCondition} />
+        <Row
+          label="Condições"
+          value={conditionsSummary(draft.conditions, draft.otherCondition)}
+        />
         <Row
           label="Educação"
           value={labelsFor(EDUCATION_STATUS_OPTIONS, draft.educationStatuses)}
