@@ -11,6 +11,11 @@ export type UnitsListParams = {
 
 export type UnitsListResponse = { data: Unit[]; pagination?: Pagination };
 
+export type UnitDetailResponse = {
+  data?: Unit;
+  unit?: Unit;
+} & Partial<Unit>;
+
 export function listUnits(params: UnitsListParams) {
   return apiGet<UnitsListResponse>("/api/v1/units", {
     page: params.page,
@@ -21,15 +26,15 @@ export function listUnits(params: UnitsListParams) {
 }
 
 export function getUnit(id: string) {
-  return apiGet<{ unit?: Unit } | Unit>(`/api/v1/units/${id}`);
+  return apiGet<UnitDetailResponse>(`/api/v1/units/${id}`);
 }
 
 export function createUnit(input: UnitInput) {
-  return apiPost<{ unit?: Unit } | Unit>("/api/v1/units", input);
+  return apiPost<UnitDetailResponse>("/api/v1/units", input);
 }
 
 export function updateUnit(id: string, input: Partial<UnitInput>) {
-  return apiPatch<{ unit?: Unit } | Unit>(`/api/v1/units/${id}`, input);
+  return apiPatch<UnitDetailResponse>(`/api/v1/units/${id}`, input);
 }
 
 /** Exclusão lógica (soft delete) executada pelo backend. */
@@ -37,8 +42,10 @@ export function deleteUnit(id: string) {
   return apiDelete<void>(`/api/v1/units/${id}`);
 }
 
-export function unwrapUnit(payload: { unit?: Unit } | Unit | undefined): Unit | null {
+/** Aceita os envelopes oficiais `{ data }`, `{ unit }` ou o objeto direto. */
+export function unwrapUnit(payload: UnitDetailResponse | undefined): Unit | null {
   if (!payload || typeof payload !== "object") return null;
-  if ("unit" in payload && payload.unit) return payload.unit;
-  return "id" in payload ? (payload as Unit) : null;
+  if (payload.data && typeof payload.data === "object" && payload.data.id) return payload.data;
+  if (payload.unit) return payload.unit;
+  return payload.id ? (payload as Unit) : null;
 }
