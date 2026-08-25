@@ -25,11 +25,9 @@ export function getIntake(id: string) {
 }
 
 export function submitIntake(input: IntakeSubmitInput) {
-  return apiPost<{ data?: NeurodivergentIntake & { protocol?: string | null } }>(
-    `${BASE}/submit`,
-    input,
-  );
+  return apiPost<{ data?: IntakeSubmitResult }>(`${BASE}/submit`, input);
 }
+
 
 export function revokeIntakeConsent(intakeId: string, consentId: string, reason: string) {
   return apiPatch<{ data?: { id: string; revoked_at: string | null } }>(
