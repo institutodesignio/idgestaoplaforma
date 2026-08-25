@@ -80,7 +80,6 @@ export function submitProtocol(result: IntakeSubmitResult): string {
   return result.protocol_number?.trim() || result.intake_id;
 }
 
-
 export type IntakeProfileInput = {
   identification_status: string;
   conditions: string[];
@@ -249,7 +248,6 @@ export function intakeProtocol(intake: NeurodivergentIntake): string {
   return intake.protocol_number?.trim() || intake.protocol?.trim() || intake.id;
 }
 
-
 export function labelFor(options: { value: string; label: string }[], value: string): string {
   return options.find((option) => option.value === value)?.label ?? value;
 }
@@ -270,4 +268,3 @@ export function conditionsSummary(conditions: string[], otherCondition: string):
   if (other && !conditions.includes("OTHER")) labels.push(other);
   return labels.join(", ");
 }
-

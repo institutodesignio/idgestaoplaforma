@@ -55,10 +55,7 @@ export function StepReview({ draft }: { draft: IntakeDraft }) {
           value={labelFor(IDENTIFICATION_STATUS_OPTIONS, draft.identificationStatus)}
         />
         <Row label="Laudo" value={labelFor(REPORT_STATUS_OPTIONS, draft.reportStatus)} />
-        <Row
-          label="Condições"
-          value={conditionsSummary(draft.conditions, draft.otherCondition)}
-        />
+        <Row label="Condições" value={conditionsSummary(draft.conditions, draft.otherCondition)} />
         <Row
           label="Educação"
           value={labelsFor(EDUCATION_STATUS_OPTIONS, draft.educationStatuses)}
