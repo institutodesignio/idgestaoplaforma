@@ -58,8 +58,9 @@ export function IntakeWizard() {
 
     try {
       const result = await submit.mutateAsync(draftToPayload(draft));
-      const code = result?.data ? intakeProtocol(result.data) : "registrado";
+      const code = result?.data ? submitProtocol(result.data) : "registrado";
       setProtocol(code);
+
       // Limpa o estado somente após o sucesso confirmado pela API.
       setDraft(EMPTY_DRAFT);
       setErrors({});
