@@ -246,8 +246,9 @@ export const MAX_PRIORITY_NEEDS = 5;
 export const CONSENT_TERM_VERSION = "v1";
 
 export function intakeProtocol(intake: NeurodivergentIntake): string {
-  return intake.protocol ?? intake.id;
+  return intake.protocol_number?.trim() || intake.protocol?.trim() || intake.id;
 }
+
 
 export function labelFor(options: { value: string; label: string }[], value: string): string {
   return options.find((option) => option.value === value)?.label ?? value;
