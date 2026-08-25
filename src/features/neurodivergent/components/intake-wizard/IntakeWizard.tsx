@@ -4,7 +4,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { ApiError, apiErrorMessage } from "@/lib/api";
-import { intakeProtocol } from "../../types";
+import { submitProtocol } from "../../types";
 import { useSubmitIntake } from "../../queries";
 import { StepEducationWork } from "./StepEducationWork";
 import { StepNetworkNeeds } from "./StepNetworkNeeds";
