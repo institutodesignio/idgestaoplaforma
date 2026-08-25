@@ -41,12 +41,13 @@ export function listProjectUnits(projectId: string) {
 }
 
 export function createProject(input: ProjectInput) {
-  return apiPost<{ project?: Project } | Project>("/api/v1/projects", input);
+  return apiPost<ProjectDetailResponse>("/api/v1/projects", input);
 }
 
 export function updateProject(id: string, input: Partial<ProjectInput>) {
-  return apiPatch<{ project?: Project } | Project>(`/api/v1/projects/${id}`, input);
+  return apiPatch<ProjectDetailResponse>(`/api/v1/projects/${id}`, input);
 }
+
 
 /** Exclusão lógica (soft delete) executada pelo backend. */
 export function deleteProject(id: string) {
@@ -72,8 +73,11 @@ export function unlinkProjectUnit(projectId: string, projectUnitId: string) {
   return apiDelete<void>(`/api/v1/projects/${projectId}/units/${projectUnitId}`);
 }
 
+/** Aceita os envelopes oficiais `{ data }`, `{ project }` ou o objeto direto. */
 export function unwrapProject(payload: ProjectDetailResponse | undefined): Project | null {
   if (!payload || typeof payload !== "object") return null;
+  if (payload.data && typeof payload.data === "object" && payload.data.id) return payload.data;
   if (payload.project) return payload.project;
   return payload.id ? (payload as Project) : null;
 }
+
