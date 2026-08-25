@@ -1,5 +1,5 @@
 import { apiGet, apiPatch, apiPost } from "@/lib/api";
-import type { IntakeSubmitInput, NeurodivergentIntake } from "./types";
+import type { IntakeSubmitInput, IntakeSubmitResult, NeurodivergentIntake } from "./types";
 
 export type IntakesListParams = {
   page: number;
@@ -24,10 +24,7 @@ export function getIntake(id: string) {
 }
 
 export function submitIntake(input: IntakeSubmitInput) {
-  return apiPost<{ data?: NeurodivergentIntake & { protocol?: string | null } }>(
-    `${BASE}/submit`,
-    input,
-  );
+  return apiPost<{ data?: IntakeSubmitResult }>(`${BASE}/submit`, input);
 }
 
 export function revokeIntakeConsent(intakeId: string, consentId: string, reason: string) {

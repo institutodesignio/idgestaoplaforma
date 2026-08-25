@@ -4,7 +4,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { ApiError, apiErrorMessage } from "@/lib/api";
-import { intakeProtocol } from "../../types";
+import { submitProtocol } from "../../types";
 import { useSubmitIntake } from "../../queries";
 import { StepEducationWork } from "./StepEducationWork";
 import { StepNetworkNeeds } from "./StepNetworkNeeds";
@@ -58,8 +58,9 @@ export function IntakeWizard() {
 
     try {
       const result = await submit.mutateAsync(draftToPayload(draft));
-      const code = result?.data ? intakeProtocol(result.data) : "registrado";
+      const code = result?.data ? submitProtocol(result.data) : "registrado";
       setProtocol(code);
+
       // Limpa o estado somente após o sucesso confirmado pela API.
       setDraft(EMPTY_DRAFT);
       setErrors({});

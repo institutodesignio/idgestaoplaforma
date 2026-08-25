@@ -34,6 +34,7 @@ import {
   REPORT_STATUS_OPTIONS,
   RESPONDENT_ROLE_OPTIONS,
   SERVICE_NETWORK_OPTIONS,
+  intakeProfile,
   intakeProtocol,
   labelFor,
   labelsFor,
@@ -77,7 +78,7 @@ function IntakeDetailPage() {
     );
   }
 
-  const profile = intake.neurodivergent_profiles?.[0] ?? null;
+  const profile = intakeProfile(intake);
   const consents = intake.data_consents ?? [];
 
   async function handleRevoke() {
