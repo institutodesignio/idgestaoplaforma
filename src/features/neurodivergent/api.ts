@@ -1,5 +1,6 @@
 import { apiGet, apiPatch, apiPost } from "@/lib/api";
-import type { IntakeSubmitInput, NeurodivergentIntake } from "./types";
+import type { IntakeSubmitInput, IntakeSubmitResult, NeurodivergentIntake } from "./types";
+
 
 export type IntakesListParams = {
   page: number;
