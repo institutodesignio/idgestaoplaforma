@@ -10,6 +10,7 @@ import {
 import type { Session, User } from "@supabase/supabase-js";
 import { useQueryClient } from "@tanstack/react-query";
 import { ApiError, type ApiFailureKind } from "@/lib/api";
+import { signOutCurrentSession } from "@/lib/auth-session";
 import { fetchInstitutionalContext, type InstitutionalContext } from "@/lib/institutional";
 import { supabase } from "@/lib/supabase";
 
@@ -186,8 +187,16 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const signOut = useCallback(async () => {
     // Ordem obrigatória: cancelar + limpar cache sensível antes de encerrar a sessão.
     await purgeCache();
-    await supabase.auth.signOut();
     setContext(null);
+    try {
+      await signOutCurrentSession((options) => supabase.auth.signOut(options));
+      setSession(null);
+      setStatus("unauthenticated");
+    } catch (error) {
+      // Nenhum dado institucional volta à tela se a revogação remota falhar.
+      setStatus("error");
+      throw error;
+    }
   }, [purgeCache]);
 
   const value = useMemo<SessionContextValue>(

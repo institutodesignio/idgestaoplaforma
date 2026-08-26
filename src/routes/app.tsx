@@ -4,7 +4,6 @@ import { AppHeader } from "@/components/shell/AppHeader";
 import { AppSidebar } from "@/components/shell/AppSidebar";
 import { FullScreenLoader, StateMessage } from "@/components/shell/StateScreens";
 import { SessionProvider, useSession } from "@/contexts/SessionContext";
-import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/app")({
   ssr: false,
@@ -36,7 +35,7 @@ function AppLayoutRoute() {
 
 function AppGate() {
   const navigate = useNavigate();
-  const { status, reload } = useSession();
+  const { status, reload, signOut } = useSession();
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -55,7 +54,7 @@ function AppGate() {
         description="Por segurança, o acesso institucional foi encerrado. Entre novamente com sua conta Google para continuar."
         actionLabel="Entrar novamente"
         onAction={async () => {
-          await supabase.auth.signOut();
+          await signOut();
           void navigate({ to: "/login", search: { error: undefined }, replace: true });
         }}
       />
@@ -71,7 +70,7 @@ function AppGate() {
         onAction={reload}
         secondaryLabel="Sair"
         onSecondary={async () => {
-          await supabase.auth.signOut();
+          await signOut();
           void navigate({ to: "/login", search: { error: undefined }, replace: true });
         }}
       />
