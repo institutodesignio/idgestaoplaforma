@@ -1,13 +1,25 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, Plus } from "lucide-react";
+import { ArrowLeft, Plus, Power } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSession } from "@/contexts/SessionContext";
 import { MemberRoleDialog } from "@/features/members/components/MemberRoleDialog";
-import { useMember } from "@/features/members/queries";
+import { useMember, useUpdateMemberStatus } from "@/features/members/queries";
 import {
+  MEMBER_TYPE_LABEL,
   MEMBER_STATUS_LABEL,
   isRoleActive,
   memberDisplayName,
@@ -32,6 +44,8 @@ function MemberDetailPage() {
   const { can } = useSession();
   const query = useMember(memberId);
   const [roleOpen, setRoleOpen] = useState(false);
+  const [statusOpen, setStatusOpen] = useState(false);
+  const updateStatus = useUpdateMemberStatus(memberId);
 
   const member = query.data?.member ?? null;
 
@@ -83,17 +97,25 @@ function MemberDetailPage() {
           </div>
           <p className="mt-2 text-sm text-muted-foreground">{memberEmail(member) ?? "—"}</p>
         </div>
-        {can("membership.manage") || can("role.manage") ? (
-          <Button onClick={() => setRoleOpen(true)}>
-            <Plus aria-hidden="true" className="size-4" />
-            Atribuir papel
-          </Button>
-        ) : null}
+        <div className="flex flex-wrap gap-2">
+          {can("membership.manage") || can("role.manage") ? (
+            <Button onClick={() => setRoleOpen(true)}>
+              <Plus aria-hidden="true" className="size-4" />
+              Atribuir papel
+            </Button>
+          ) : null}
+          {can("user.update") ? (
+            <Button variant="outline" onClick={() => setStatusOpen(true)}>
+              <Power aria-hidden="true" className="size-4" />
+              {member.status === "ACTIVE" ? "Inativar" : "Ativar"}
+            </Button>
+          ) : null}
+        </div>
       </header>
 
       <section
         aria-label="Dados do vínculo"
-        className="surface-card grid gap-5 rounded-2xl p-6 sm:grid-cols-2"
+        className="surface-card grid gap-5 rounded-2xl p-6 sm:grid-cols-2 lg:grid-cols-3"
       >
         <div>
           <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
@@ -106,6 +128,28 @@ function MemberDetailPage() {
             Papéis ativos
           </p>
           <p className="mt-1 text-sm text-foreground">{roles.filter(isRoleActive).length}</p>
+        </div>
+        <div>
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Tipo</p>
+          <p className="mt-1 text-sm text-foreground">
+            {member.member_type ? MEMBER_TYPE_LABEL[member.member_type] : "—"}
+          </p>
+        </div>
+        <div>
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            Função
+          </p>
+          <p className="mt-1 text-sm text-foreground">{member.job_title ?? "—"}</p>
+        </div>
+        <div>
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            Registro profissional
+          </p>
+          <p className="mt-1 text-sm text-foreground">
+            {[member.professional_council, member.professional_registration]
+              .filter(Boolean)
+              .join("/") || "—"}
+          </p>
         </div>
       </section>
 
@@ -138,6 +182,46 @@ function MemberDetailPage() {
       </section>
 
       <MemberRoleDialog open={roleOpen} onOpenChange={setRoleOpen} memberId={memberId} />
+      <AlertDialog open={statusOpen} onOpenChange={setStatusOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {member.status === "ACTIVE" ? "Inativar profissional?" : "Ativar profissional?"}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {member.status === "ACTIVE"
+                ? "O acesso será interrompido, mas vínculos, documentos e histórico serão preservados."
+                : "O acesso voltará a depender dos papéis e autorizações atualmente vigentes."}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              disabled={updateStatus.isPending}
+              onClick={(event) => {
+                event.preventDefault();
+                void updateStatus
+                  .mutateAsync(member.status === "ACTIVE" ? "INACTIVE" : "ACTIVE")
+                  .then(() => {
+                    toast.success(
+                      member.status === "ACTIVE"
+                        ? "Profissional inativado."
+                        : "Profissional ativado.",
+                    );
+                    setStatusOpen(false);
+                  })
+                  .catch((error) => toast.error(apiErrorMessage(error)));
+              }}
+            >
+              {updateStatus.isPending
+                ? "Salvando…"
+                : member.status === "ACTIVE"
+                  ? "Inativar"
+                  : "Ativar"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
