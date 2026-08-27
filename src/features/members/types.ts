@@ -36,7 +36,18 @@ export type Member = {
   } | null;
   email?: string | null;
   full_name?: string | null;
+  member_type?: MemberType | null;
+  job_title?: string | null;
+  professional_council?: string | null;
+  professional_registration?: string | null;
   roles?: MemberRole[] | null;
+};
+
+export type MemberType = "TECHNICAL_PROFESSIONAL" | "ADMINISTRATIVE_PROFESSIONAL";
+
+export const MEMBER_TYPE_LABEL: Record<MemberType, string> = {
+  TECHNICAL_PROFESSIONAL: "Profissional técnico",
+  ADMINISTRATIVE_PROFESSIONAL: "Profissional administrativo",
 };
 
 export type MemberRoleInput = {

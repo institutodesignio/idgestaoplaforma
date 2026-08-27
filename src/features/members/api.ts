@@ -47,7 +47,15 @@ export function unwrapMember(payload: MemberDetailResponse | undefined): Member 
   return payload.id ? (payload as Member) : null;
 }
 
-export type MemberInviteInput = { email: string; full_name: string; role_id: string };
+export type MemberInviteInput = {
+  email: string;
+  full_name: string;
+  role_id: string;
+  member_type: "TECHNICAL_PROFESSIONAL" | "ADMINISTRATIVE_PROFESSIONAL";
+  job_title: string;
+  professional_council?: string | null;
+  professional_registration?: string | null;
+};
 
 export type MemberInviteResult = {
   auth_user_id: string;
@@ -61,4 +69,9 @@ export type MemberInviteResult = {
 /** Convite institucional — exige user.invite e user.manage_roles. */
 export function inviteMember(input: MemberInviteInput) {
   return apiPost<{ data?: MemberInviteResult }>("/api/v1/members/invite", input);
+}
+
+/** Ativação/inativação preserva vínculos, documentos e trilha de auditoria. */
+export function updateMemberStatus(memberId: string, status: "ACTIVE" | "INACTIVE") {
+  return apiPatch<{ data?: Member }>(`/api/v1/members/${memberId}`, { status });
 }

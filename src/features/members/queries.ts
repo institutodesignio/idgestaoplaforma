@@ -6,6 +6,7 @@ import {
   inviteMember,
   listMembers,
   listRoles,
+  updateMemberStatus,
   unwrapMember,
   type MemberInviteInput,
   type MembersListParams,
@@ -76,6 +77,14 @@ export function useInviteMember() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (input: MemberInviteInput) => inviteMember(input),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: memberKeys.all }),
+  });
+}
+
+export function useUpdateMemberStatus(memberId: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (status: "ACTIVE" | "INACTIVE") => updateMemberStatus(memberId, status),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: memberKeys.all }),
   });
 }
