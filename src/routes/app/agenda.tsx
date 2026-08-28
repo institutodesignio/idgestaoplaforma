@@ -47,7 +47,7 @@ import { formatDateTime, toIsoWithOffset } from "@/lib/format";
 
 type AgendaSearch = { from: string; to: string; status: string };
 
-function dateOffset(days: number) {
+function dateOffset(days = 0) {
   const date = new Date();
   date.setDate(date.getDate() + days);
   return date.toISOString().slice(0, 10);
@@ -55,8 +55,8 @@ function dateOffset(days: number) {
 
 export const Route = createFileRoute("/app/agenda")({
   validateSearch: (search: Record<string, unknown>): AgendaSearch => ({
-    from: typeof search["from"] === "string" ? search["from"] : dateOffset(-30),
-    to: typeof search["to"] === "string" ? search["to"] : dateOffset(90),
+    from: typeof search["from"] === "string" ? search["from"] : dateOffset(),
+    to: typeof search["to"] === "string" ? search["to"] : dateOffset(),
     status: typeof search["status"] === "string" ? search["status"] : "",
   }),
   component: () => (
