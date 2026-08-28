@@ -88,7 +88,11 @@ export function MemberInviteDialog({
       if (error instanceof ApiError && Object.keys(error.fieldErrors).length > 0) {
         setErrors(error.fieldErrors);
       }
-      toast.error(apiErrorMessage(error));
+      toast.error(
+        error instanceof ApiError && error.kind === "conflict"
+          ? "Esta conta institucional já está vinculada à equipe."
+          : apiErrorMessage(error),
+      );
     }
   }
 
@@ -176,23 +180,9 @@ export function MemberInviteDialog({
             </div>
           ) : null}
           <FormField id="invite-role" label="Papel institucional" error={errors["role_id"]}>
-            <Select
-              value={roleId}
-              onValueChange={setRoleId}
-              disabled={rolesQuery.isPending || rolesQuery.isError || roles.length === 0}
-            >
+            <Select value={roleId} onValueChange={setRoleId}>
               <SelectTrigger id="invite-role">
-                <SelectValue
-                  placeholder={
-                    rolesQuery.isPending
-                      ? "Carregando papéis…"
-                      : rolesQuery.isError
-                        ? "Não foi possível carregar os papéis"
-                        : roles.length === 0
-                          ? "Nenhum papel disponível"
-                          : "Selecione um papel"
-                  }
-                />
+                <SelectValue placeholder="Selecione um papel" />
               </SelectTrigger>
               <SelectContent>
                 {roles.map((role) => (
@@ -202,11 +192,6 @@ export function MemberInviteDialog({
                 ))}
               </SelectContent>
             </Select>
-            {rolesQuery.isError ? (
-              <p className="mt-1 text-sm text-destructive">
-                Atualize a página. Se o problema continuar, informe a administração do sistema.
-              </p>
-            ) : null}
           </FormField>
         </div>
 
