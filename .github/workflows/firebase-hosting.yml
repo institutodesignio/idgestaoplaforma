@@ -27,9 +27,9 @@ jobs:
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v3
         with:
-          project_id: id-gestao
-          workload_identity_provider: projects/218040880055/locations/global/workloadIdentityPools/github-actions/providers/idgestao-frontend
-          service_account: github-firebase-hosting@id-gestao.iam.gserviceaccount.com
+          project_id: id-gestao-web
+          workload_identity_provider: projects/520153966348/locations/global/workloadIdentityPools/github-actions/providers/idgestao-frontend
+          service_account: github-firebase-hosting@id-gestao-web.iam.gserviceaccount.com
 
       - name: Set up Bun
         uses: oven-sh/setup-bun@v2
@@ -46,4 +46,4 @@ jobs:
         run: bun run build:firebase
 
       - name: Deploy to Firebase Hosting
-        run: bunx firebase-tools@latest deploy --only hosting --project id-gestao --non-interactive
+        run: bunx firebase-tools@latest deploy --only hosting --project id-gestao-web --non-interactive
