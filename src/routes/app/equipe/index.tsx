@@ -1,11 +1,13 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { Search, Users } from "lucide-react";
+import { Plus, Search, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useMembersList } from "@/features/members/queries";
+import { MemberInviteDialog } from "@/features/members/components/MemberInviteDialog";
+import { useSession } from "@/contexts/SessionContext";
 import {
   MEMBER_STATUS_LABEL,
   TECHNICAL_RESPONSIBLE_CODE,
@@ -39,7 +41,9 @@ function formatDate(value: string | null) {
 function TeamListPage() {
   const { page, search } = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
+  const { can } = useSession();
   const [term, setTerm] = useState(search);
+  const [inviteOpen, setInviteOpen] = useState(false);
 
   useEffect(() => setTerm(search), [search]);
 
@@ -58,14 +62,22 @@ function TeamListPage() {
 
   return (
     <div className="space-y-8">
-      <header>
-        <p className="text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground">
-          Módulo
-        </p>
-        <h1 className="mt-3 text-2xl font-semibold tracking-tight text-foreground">Equipe</h1>
-        <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted-foreground">
-          Membros da equipe institucional, vínculos e papéis atuais.
-        </p>
+      <header className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground">
+            Módulo
+          </p>
+          <h1 className="mt-3 text-2xl font-semibold tracking-tight text-foreground">Equipe</h1>
+          <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted-foreground">
+            Membros da equipe institucional, vínculos e papéis atuais.
+          </p>
+        </div>
+        {can("user.create") ? (
+          <Button onClick={() => setInviteOpen(true)}>
+            <Plus aria-hidden="true" className="size-4" />
+            Cadastrar profissional
+          </Button>
+        ) : null}
       </header>
 
       <section aria-label="Busca" className="surface-card rounded-2xl p-4">
@@ -194,6 +206,7 @@ function TeamListPage() {
           </nav>
         ) : null}
       </section>
+      <MemberInviteDialog open={inviteOpen} onOpenChange={setInviteOpen} />
     </div>
   );
 }
