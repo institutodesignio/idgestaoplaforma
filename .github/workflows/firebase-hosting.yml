@@ -12,18 +12,24 @@ concurrency:
 
 permissions:
   contents: read
+  id-token: write
 
 jobs:
   deploy:
     name: Test, build and deploy
     runs-on: ubuntu-latest
-    env:
-      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_ID_GESTAO_WEB }}
     if: ${{ github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/firebase-hosting' }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v3
+        with:
+          project_id: id-gestao
+          workload_identity_provider: projects/218040880055/locations/global/workloadIdentityPools/github-actions/providers/idgestao-frontend
+          service_account: github-firebase-hosting@id-gestao.iam.gserviceaccount.com
 
       - name: Set up Bun
         uses: oven-sh/setup-bun@v2
@@ -39,16 +45,5 @@ jobs:
       - name: Build Firebase application
         run: bun run build:firebase
 
-      - name: Verify Firebase credential
-        if: ${{ env.FIREBASE_SERVICE_ACCOUNT == '' }}
-        run: |
-          echo "Missing FIREBASE_SERVICE_ACCOUNT_ID_GESTAO_WEB repository secret."
-          exit 1
-
       - name: Deploy to Firebase Hosting
-        uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_ID_GESTAO_WEB }}
-          channelId: live
-          projectId: id-gestao-web
+        run: bunx firebase-tools@latest deploy --only hosting --project id-gestao --non-interactive
