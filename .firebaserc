@@ -1,9 +1,9 @@
 {
   "projects": {
-    "default": "id-gestao-web"
+    "default": "id-gestao"
   },
   "targets": {
-    "id-gestao-web": {
+    "id-gestao": {
       "hosting": {
         "id-gestao-web": [
           "id-gestao-web"
