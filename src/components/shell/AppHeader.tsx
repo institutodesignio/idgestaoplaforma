@@ -1,7 +1,9 @@
 import { LogOut, Menu } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
+import { toast } from "sonner";
 import { useSession } from "@/contexts/SessionContext";
+import { apiErrorMessage } from "@/lib/api";
 
 function initials(name: string) {
   return name
@@ -59,8 +61,13 @@ export function AppHeader({ onOpenMenu }: { onOpenMenu: () => void }) {
 
   async function handleSignOut() {
     setSigningOut(true);
-    await signOut();
-    void navigate({ to: "/login", search: { error: undefined }, replace: true });
+    try {
+      await signOut();
+      void navigate({ to: "/login", search: { error: undefined }, replace: true });
+    } catch (error) {
+      toast.error(apiErrorMessage(error));
+      setSigningOut(false);
+    }
   }
 
   return (

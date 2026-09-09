@@ -56,11 +56,11 @@ function AdminPage() {
             <span className="flex size-11 items-center justify-center rounded-xl bg-secondary text-secondary-foreground">
               <MailPlus aria-hidden="true" className="size-5" />
             </span>
-            <h2 className="text-base font-semibold text-foreground">Convite institucional</h2>
+            <h2 className="text-base font-semibold text-foreground">Cadastro de profissionais</h2>
             <p className="text-sm text-muted-foreground">
-              Convide uma pessoa para a equipe e defina o papel inicial.
+              Cadastre técnicos e administrativos, definindo função, acesso e e-mail institucional.
             </p>
-            <Button onClick={() => setInviteOpen(true)}>Convidar pessoa</Button>
+            <Button onClick={() => setInviteOpen(true)}>Cadastrar profissional</Button>
           </div>
         ) : null}
 
